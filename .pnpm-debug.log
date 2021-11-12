@@ -1,0 +1,23 @@
+{
+  "0 debug pnpm:scope": {
+    "selected": 1
+  },
+  "1 info pnpm": {
+    "err": {
+      "name": "Error",
+      "message": "not found: insteall",
+      "code": "ENOENT",
+      "stack": "Error: not found: insteall\n    at getNotFoundError (/home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:48499:51)\n    at Function.whichSync [as sync] (/home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:48576:13)\n    at getCommandAbsolutePathSync (/home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:50141:44)\n    at default_1 (/home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:50150:32)\n    at /home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:129975:39"
+    }
+  },
+  "2 error pnpm": {
+    "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+    "prefix": "/home/greg/projects/balboa",
+    "err": {
+      "name": "pnpm",
+      "message": "not found: insteall",
+      "code": "ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL",
+      "stack": "Error: not found: insteall\n    at getNotFoundError (/home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:48499:51)\n    at Function.whichSync [as sync] (/home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:48576:13)\n    at getCommandAbsolutePathSync (/home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:50141:44)\n    at default_1 (/home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:50150:32)\n    at /home/greg/.local/share/pnpm-global/5/node_modules/.pnpm/pnpm@6.20.4/node_modules/pnpm/dist/pnpm.cjs:129975:39"
+    }
+  }
+}
