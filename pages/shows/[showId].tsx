@@ -1,7 +1,7 @@
 import {FC} from 'react';
 import tw from 'twin.macro';
 
-import {FetchShowResponse, getExternalShow} from '../api/shows';
+import {GetTvMazeShowResponse, getTvMazeShow} from '../../externalApi/tvMaze';
 
 /*
  * Styles.
@@ -55,13 +55,13 @@ const ShowGenreSpan = tw.span`
  */
 
 interface ShowProps {
-  show: FetchShowResponse;
+  show: GetTvMazeShowResponse;
 }
 
 export async function getServerSideProps({query}) {
   const {showId} = query;
 
-  const show = await getExternalShow(parseInt(showId));
+  const show = await getTvMazeShow(parseInt(showId));
 
   if (!show) {
     return {

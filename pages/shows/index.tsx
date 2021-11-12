@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import {SWRConfig} from 'swr';
 import tw from 'twin.macro';
 
+import {GetTvMazeShowsResponse, getTvMazeShows} from '../../externalApi/tvMaze';
 import {useNetGet} from '../../utils/hooks';
-import {FetchShowsResponse, getExternalShows, showsUrl} from '../api/shows';
+import {showsUrl} from '../api/shows';
 
 /*
  * Styles.
@@ -42,16 +43,16 @@ const ShowImg = styled.img`
  */
 
 interface ShowsContainerProps {
-  fallback: {[key: string]: FetchShowsResponse};
+  fallback: {[key: string]: GetTvMazeShowsResponse};
 }
 
 interface ShowsBarProps {
-  shows: FetchShowsResponse;
+  shows: GetTvMazeShowsResponse;
 }
 
 export async function getStaticProps() {
   // TODO: Use same DB retrieval which is used as internal shows URL.
-  const shows = await getExternalShows();
+  const shows = await getTvMazeShows(1);
 
   return {
     props: {
@@ -67,7 +68,7 @@ export async function getStaticProps() {
  */
 
 const Shows = () => {
-  const {data: shows, error} = useNetGet<FetchShowsResponse>(showsUrl);
+  const {data: shows, error} = useNetGet<GetTvMazeShowsResponse>(showsUrl);
 
   if (error) return <>failed to load</>;
   if (!shows) return <>loading...</>;

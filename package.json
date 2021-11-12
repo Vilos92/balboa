@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "dbLoadShows": "ts-node scripts/dbLoadShows.ts"
+    "getExternalShows": "ts-node scripts/getExternalShows.ts"
   },
   "dependencies": {
     "axios": "^0.24.0",
