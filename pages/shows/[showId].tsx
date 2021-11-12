@@ -7,7 +7,7 @@ import {FetchShowResponse, getExternalShow} from '../api/shows';
  * Styles.
  */
 
-const TwContainer = tw.div`
+const ContainerDiv = tw.div`
   flex
   flex-col
   items-center
@@ -16,7 +16,7 @@ const TwContainer = tw.div`
   py-2
 `;
 
-const TwShowDiv = tw.div`
+const ShowDiv = tw.div`
   flex
   flex-wrap
   content-start
@@ -25,21 +25,21 @@ const TwShowDiv = tw.div`
   rounded-sm
 `;
 
-const TwShowImg = tw.img`
+const ShowImg = tw.img`
   h-32
 `;
 
-const TvShowDetailsDiv = tw.div`
+const ShowDetailsDiv = tw.div`
   pl-2
 `;
 
-const TwShowHeader = tw.h1`
+const ShowHeader = tw.h1`
   text-gray-700
   font-semibold
   text-xl
 `;
 
-const TwShowGenreSpan = tw.span`
+const ShowGenreSpan = tw.span`
   px-2
   py-0.5
   mr-0.5
@@ -82,17 +82,17 @@ export async function getServerSideProps({query}) {
 
 const Show: FC<ShowProps> = ({show}) => {
   return (
-    <TwContainer>
-      <TwShowDiv>
-        <TwShowImg src={show.image.medium} />
-        <TvShowDetailsDiv>
-          <TwShowHeader>{show.name}</TwShowHeader>
+    <ContainerDiv>
+      <ShowDiv>
+        <ShowImg src={show.image.medium} />
+        <ShowDetailsDiv>
+          <ShowHeader>{show.name}</ShowHeader>
           {show.genres.map(genre => (
-            <TwShowGenreSpan key={genre}>{genre}</TwShowGenreSpan>
+            <ShowGenreSpan key={genre}>{genre}</ShowGenreSpan>
           ))}
-        </TvShowDetailsDiv>
-      </TwShowDiv>
-    </TwContainer>
+        </ShowDetailsDiv>
+      </ShowDiv>
+    </ContainerDiv>
   );
 };
 
