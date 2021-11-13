@@ -3,6 +3,7 @@ import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
 import {GetTvMazeShowsResponse, getTvMazeShows} from '../externalApi/tvMaze';
+import {SupabaseConfig, createSupabaseClient} from '../utils/supabase';
 
 /*
  * Types.
@@ -10,6 +11,11 @@ import {GetTvMazeShowsResponse, getTvMazeShows} from '../externalApi/tvMaze';
 
 enum CommandsEnum {
   EXECUTE = 'execute'
+}
+
+enum ExecuteArgsEnum {
+  URL = 'url',
+  ANON_KEY = 'anonKey'
 }
 
 enum ArgsEnum {
@@ -27,9 +33,9 @@ function parseArgv(argv: Array<string>) {
   const parser = yargs(argvSansBin)
     .usage('Usage: $0 <command> [options]')
     .example('Usage: $0 --start 1 --end 5', 'print pages of shows from the TV Maze API')
-    .command(CommandsEnum.EXECUTE, 'save shows from the TV Maze API to the database')
+    .command(`${CommandsEnum.EXECUTE} <url> <anonKey>`, 'save shows from the TV Maze API to the database')
     .example(
-      `Usage: $0 ${CommandsEnum.EXECUTE} --start 1 --end 5`,
+      `Usage: $0 ${CommandsEnum.EXECUTE} <url> <anonKey> --start 1 --end 5`,
       'save pages 1 through 5 from the TV Maze API to the database'
     )
     .alias(ArgsEnum.START, 'start')
@@ -62,9 +68,19 @@ async function run(argv: Array<string>) {
   const pagesRange = computeRange(start, end);
   const showsPages = await Promise.all(pagesRange.map(async page => getTvMazeShows(page)));
 
-  const showsHandler = shouldExecute ? saveShows : printShows;
+  const showsHandler = shouldExecute
+    ? async (shows: GetTvMazeShowsResponse) => {
+        const url = yargv[ExecuteArgsEnum.URL];
+        const anonKey = yargv[ExecuteArgsEnum.ANON_KEY];
 
-  showsPages.forEach(shows => showsHandler(shows));
+        if (typeof url !== 'string' || typeof anonKey !== 'string')
+          throw new Error('Cannot execute without both a supabase url and anonKey');
+
+        await saveShows(shows, {url, anonKey});
+      }
+    : printShows;
+
+  Promise.all(showsPages.map(async shows => showsHandler(shows)));
 }
 
 /*
@@ -77,8 +93,16 @@ function computeRange(start: number, end: number): ReadonlyArray<number> {
   return Array.from({length: pagesCount}, (_, k) => k + start);
 }
 
-function saveShows(shows: GetTvMazeShowsResponse) {
+async function saveShows(shows: GetTvMazeShowsResponse, supabaseConfig: SupabaseConfig) {
   console.warn('saving show to db', shows.length);
+
+  const supabase = createSupabaseClient(supabaseConfig);
+
+  const {data, error, count} = await supabase.from('tv_show').select(`name`, {count: 'exact'});
+
+  console.log('error', error);
+  console.log('count', count);
+  console.log('data', data);
 }
 
 function printShows(shows: GetTvMazeShowsResponse) {
