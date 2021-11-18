@@ -3,7 +3,7 @@ import {hideBin} from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 
 import {GetTvMazeShowsResponse, getTvMazeShows} from '../externalApi/tvMaze';
-import {SupabaseConfig, createSupabaseClient} from '../utils/supabase';
+import {SupabaseConfig, makeSupabaseClient} from '../utils/supabase';
 
 /*
  * Types.
@@ -96,7 +96,7 @@ function computeRange(start: number, end: number): ReadonlyArray<number> {
 async function saveShows(shows: GetTvMazeShowsResponse, supabaseConfig: SupabaseConfig) {
   console.warn('saving show to db', shows.length);
 
-  const supabase = createSupabaseClient(supabaseConfig);
+  const supabase = makeSupabaseClient(supabaseConfig);
 
   const {data, error, count} = await supabase.from('tv_show').select(`name`, {count: 'exact'});
 

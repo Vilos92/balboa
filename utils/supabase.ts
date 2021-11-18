@@ -24,7 +24,7 @@ const envAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY;
  * @returns a function which itself returns the existing supabase
  * client, or creates a new supabase client.
  */
-function makeCreateSupabaseClient() {
+function makeSupabaseClientFactory() {
   let supabase: SupabaseClient | undefined;
 
   return (supabaseConfig?: SupabaseConfig): SupabaseClient => {
@@ -37,4 +37,4 @@ function makeCreateSupabaseClient() {
   };
 }
 
-export const createSupabaseClient = makeCreateSupabaseClient();
+export const makeSupabaseClient = makeSupabaseClientFactory();
