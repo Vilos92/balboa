@@ -30,6 +30,9 @@ const LandingH1 = tw.h1`
 `;
 
 const LandingFormInputGroupDiv = tw.div`
+  flex
+  flex-row
+  justify-start
   mb-3
 `;
 
@@ -92,7 +95,10 @@ function LandingForm() {
 
   return (
     <form>
-      <input type='color' value={color} onChange={event => setColor(event.target.value)} />
+      <LandingFormInputGroupDiv>
+        <LandingFormLabel htmlFor='color'>Color</LandingFormLabel>
+        <input id='color' type='color' value={color} onChange={event => setColor(event.target.value)} />
+      </LandingFormInputGroupDiv>
 
       <LandingFormInputGroupDiv>
         <LandingFormLabel htmlFor='name'>Name</LandingFormLabel>
