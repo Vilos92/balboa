@@ -1,5 +1,13 @@
 import {useState} from 'react';
-import tw from 'twin.macro';
+import tw, {styled} from 'twin.macro';
+
+/*
+ * Types.
+ */
+
+interface LandingFormSubmitButtonProps {
+  color: string;
+}
 
 /*
  * Styles.
@@ -76,16 +84,21 @@ const LandingFormTextArea = tw.textarea`
   focus:outline-none
 `;
 
-const LandingFormSubmitButton = tw.button`
-  bg-blue-500
-  hover:bg-blue-700
-  text-white
-  font-bold
-  py-2
-  px-4
-  rounded
-  focus:outline-none
-  focus:shadow
+const LandingFormSubmitButton = styled.button<LandingFormSubmitButtonProps>`
+  ${tw`
+    hover:brightness-150
+    text-white
+    font-bold
+    py-2
+    px-4
+    rounded
+    focus:outline-none
+    focus:shadow
+  `}
+
+  text-shadow: 0 2px 4px rgba(0,0,0,0.10);
+
+  ${({color}) => `background-color: ${color}`}
 `;
 
 /*
@@ -132,7 +145,9 @@ function LandingForm() {
       </LandingFormInputGroupDiv>
 
       <LandingFormInputGroupDiv>
-        <LandingFormSubmitButton type='button'>Create</LandingFormSubmitButton>
+        <LandingFormSubmitButton type='button' color={color}>
+          Create
+        </LandingFormSubmitButton>
       </LandingFormInputGroupDiv>
     </form>
   );
