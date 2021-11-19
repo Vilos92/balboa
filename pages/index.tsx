@@ -97,7 +97,7 @@ const LandingFormTextArea = tw.textarea`
 
 const LandingFormButton = styled.button.attrs<LandingFormButtonProps>(({backgroundColor}) => ({
   style: {backgroundColor}
-}))`
+}))<LandingFormButtonProps>`
   ${tw`
     hover:brightness-150
     text-white
