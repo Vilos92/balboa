@@ -1,12 +1,22 @@
-import {useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 /*
  * Types.
  */
 
-interface LandingFormSubmitButtonProps {
-  color: string;
+interface LandingFormProps {
+  planColor: string;
+  setPlanColor: (string) => void;
+  onNextStage: () => void;
+}
+
+interface LandingSuccessProps {
+  planColor: string;
+}
+
+interface LandingFormButtonProps {
+  backgroundColor: string;
 }
 
 /*
@@ -32,18 +42,19 @@ const LandingDiv = tw.div`
   rounded-2xl
   shadow-md
   w-full
-  md:w-6/12
+  sm:w-7/12
 `;
 
 const LandingH1 = tw.h1`
-  text-2xl
+  text-white
+  text-3xl
   text-center
   mb-6
 `;
 
 const LandingH2 = tw.h2`
   text-lg
-  text-left
+  text-center
   font-bold
   mb-2
 `;
@@ -84,7 +95,9 @@ const LandingFormTextArea = tw.textarea`
   focus:outline-none
 `;
 
-const LandingFormSubmitButton = styled.button<LandingFormSubmitButtonProps>`
+const LandingFormButton = styled.button.attrs<LandingFormButtonProps>(({backgroundColor}) => ({
+  style: {backgroundColor}
+}))`
   ${tw`
     hover:brightness-150
     text-white
@@ -97,58 +110,93 @@ const LandingFormSubmitButton = styled.button<LandingFormSubmitButtonProps>`
   `}
 
   text-shadow: 0 2px 4px rgba(0,0,0,0.10);
-
-  ${({color}) => `background-color: ${color}`}
 `;
 
 /*
  * Page.
  */
 
-export default function Landing() {
+const Landing: FC = () => {
+  const [stage, setStage] = useState(0);
+  const onNextStage = () => setStage(stage + 1);
+
+  const [planColor, setPlanColor] = useState('#ffffff');
+  useEffect(() => {
+    const randColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    setPlanColor(randColor);
+  }, []);
+
+  const content =
+    stage === 0 ? (
+      <LandingForm planColor={planColor} setPlanColor={setPlanColor} onNextStage={onNextStage} />
+    ) : (
+      <LandingSuccess planColor={planColor} />
+    );
+
   return (
     <BodyDiv>
       <LandingContainerDiv>
+        <LandingH1>Grueplan</LandingH1>
         <LandingDiv>
-          <LandingH1>Welcome to Grueplan!</LandingH1>
-          <LandingH2>Let's create an event.</LandingH2>
-          <LandingForm />
+          <LandingH2>Let's plan</LandingH2>
+          {content}
         </LandingDiv>
       </LandingContainerDiv>
     </BodyDiv>
   );
-}
+};
+
+export default Landing;
 
 /*
  * Components.
  */
 
-function LandingForm() {
-  const randColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-  const [color, setColor] = useState(randColor);
-
+const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage}) => {
   return (
     <form>
       <LandingFormInputGroupDiv>
-        <LandingFormLabel htmlFor='name'>Name</LandingFormLabel>
-        <LandingFormInput id='name' type='text' placeholder='Name'></LandingFormInput>
+        <LandingFormLabel htmlFor='name'>What is the plan?</LandingFormLabel>
+        <LandingFormInput id='name' type='text' placeholder='Name' />
       </LandingFormInputGroupDiv>
 
       <LandingFormInputGroupDiv>
         <LandingFormLabel htmlFor='color'>Color</LandingFormLabel>
-        <input id='color' type='color' value={color} onChange={event => setColor(event.target.value)} />
+        <input
+          id='color'
+          type='color'
+          value={planColor}
+          onChange={event => setPlanColor(event.target.value)}
+        />
       </LandingFormInputGroupDiv>
 
       <LandingFormInputGroupDiv>
-        <LandingFormLabel htmlFor='description'>Description</LandingFormLabel>
-        <LandingFormTextArea id='description' placeholder='Description'></LandingFormTextArea>
+        <LandingFormLabel htmlFor='start'>When is the plan?</LandingFormLabel>
+        <LandingFormInput id='start' type='text' placeholder='Start' />
+        <LandingFormInput id='end' type='text' placeholder='End' />
       </LandingFormInputGroupDiv>
 
       <LandingFormInputGroupDiv>
-        <LandingFormSubmitButton type='button' color={color}>
-          Create
-        </LandingFormSubmitButton>
+        <LandingFormLabel htmlFor='description'>How is the plan?</LandingFormLabel>
+        <LandingFormTextArea id='description' placeholder='Description' />
+      </LandingFormInputGroupDiv>
+
+      <LandingFormInputGroupDiv>
+        <LandingFormButton type='button' backgroundColor={planColor} onClick={onNextStage}>
+          Next
+        </LandingFormButton>
       </LandingFormInputGroupDiv>
     </form>
   );
-}
+};
+
+const LandingSuccess: FC<LandingSuccessProps> = ({planColor}) => {
+  return (
+    <>
+      <LandingFormInput id='share' type='text' value='https://grueplan.com/ijalfk' readOnly />
+      <LandingFormButton type='button' backgroundColor={planColor}>
+        Copy
+      </LandingFormButton>
+    </>
+  );
+};
