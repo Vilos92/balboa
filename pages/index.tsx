@@ -1,3 +1,4 @@
+import {useState} from 'react';
 import tw from 'twin.macro';
 
 /*
@@ -5,7 +6,7 @@ import tw from 'twin.macro';
  */
 
 const BodyDiv = tw.div`
-  bg-gray-500
+  bg-gray-800
 `;
 
 const LandingContainerDiv = tw.div`
@@ -20,8 +21,16 @@ const LandingContainerDiv = tw.div`
 const LandingDiv = tw.div`
   p-3
   bg-white
-  rounded-sm
+  rounded-2xl
   shadow-md
+`;
+
+const LandingH1 = tw.h1`
+  mb-6
+`;
+
+const LandingFormInputGroupDiv = tw.div`
+  mb-3
 `;
 
 const LandingFormLabel = tw.label`
@@ -46,8 +55,18 @@ const LandingFormInput = tw.input`
   focus:shadow-sm
 `;
 
+const LandingFormTextArea = tw.textarea`
+  w-full
+  px-3
+  py-2
+  text-gray-700
+  border
+  rounded-lg
+  focus:outline-none
+`;
+
 /*
- * Page Component.
+ * Page.
  */
 
 export default function Landing() {
@@ -55,7 +74,7 @@ export default function Landing() {
     <BodyDiv>
       <LandingContainerDiv>
         <LandingDiv>
-          Welcome to Grueplan! Let's schedule an event.
+          <LandingH1>Welcome to Grueplan! Let's schedule an event.</LandingH1>
           <LandingForm />
         </LandingDiv>
       </LandingContainerDiv>
@@ -64,14 +83,26 @@ export default function Landing() {
 }
 
 /*
- * Sub-Components.
+ * Components.
  */
 
 function LandingForm() {
+  const randColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+  const [color, setColor] = useState(randColor);
+
   return (
     <form>
-      <LandingFormLabel htmlFor='name'>Name</LandingFormLabel>
-      <LandingFormInput id='name' type='text' placeholder='Name'></LandingFormInput>
+      <input type='color' value={color} onChange={event => setColor(event.target.value)} />
+
+      <LandingFormInputGroupDiv>
+        <LandingFormLabel htmlFor='name'>Name</LandingFormLabel>
+        <LandingFormInput id='name' type='text' placeholder='Name'></LandingFormInput>
+      </LandingFormInputGroupDiv>
+
+      <LandingFormInputGroupDiv>
+        <LandingFormLabel htmlFor='description'>Description</LandingFormLabel>
+        <LandingFormTextArea id='description' placeholder='Description'></LandingFormTextArea>
+      </LandingFormInputGroupDiv>
     </form>
   );
 }
