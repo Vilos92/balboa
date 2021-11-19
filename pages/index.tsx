@@ -23,16 +23,24 @@ const LandingDiv = tw.div`
   bg-white
   rounded-2xl
   shadow-md
+  w-full
+  md:w-6/12
 `;
 
 const LandingH1 = tw.h1`
+  text-2xl
+  text-center
   mb-6
 `;
 
+const LandingH2 = tw.h2`
+  text-lg
+  text-left
+  font-bold
+  mb-2
+`;
+
 const LandingFormInputGroupDiv = tw.div`
-  flex
-  flex-row
-  justify-start
   mb-3
 `;
 
@@ -68,6 +76,18 @@ const LandingFormTextArea = tw.textarea`
   focus:outline-none
 `;
 
+const LandingFormSubmitButton = tw.button`
+  bg-blue-500
+  hover:bg-blue-700
+  text-white
+  font-bold
+  py-2
+  px-4
+  rounded
+  focus:outline-none
+  focus:shadow
+`;
+
 /*
  * Page.
  */
@@ -77,7 +97,8 @@ export default function Landing() {
     <BodyDiv>
       <LandingContainerDiv>
         <LandingDiv>
-          <LandingH1>Welcome to Grueplan! Let's schedule an event.</LandingH1>
+          <LandingH1>Welcome to Grueplan!</LandingH1>
+          <LandingH2>Let's create an event.</LandingH2>
           <LandingForm />
         </LandingDiv>
       </LandingContainerDiv>
@@ -96,18 +117,22 @@ function LandingForm() {
   return (
     <form>
       <LandingFormInputGroupDiv>
-        <LandingFormLabel htmlFor='color'>Color</LandingFormLabel>
-        <input id='color' type='color' value={color} onChange={event => setColor(event.target.value)} />
-      </LandingFormInputGroupDiv>
-
-      <LandingFormInputGroupDiv>
         <LandingFormLabel htmlFor='name'>Name</LandingFormLabel>
         <LandingFormInput id='name' type='text' placeholder='Name'></LandingFormInput>
       </LandingFormInputGroupDiv>
 
       <LandingFormInputGroupDiv>
+        <LandingFormLabel htmlFor='color'>Color</LandingFormLabel>
+        <input id='color' type='color' value={color} onChange={event => setColor(event.target.value)} />
+      </LandingFormInputGroupDiv>
+
+      <LandingFormInputGroupDiv>
         <LandingFormLabel htmlFor='description'>Description</LandingFormLabel>
         <LandingFormTextArea id='description' placeholder='Description'></LandingFormTextArea>
+      </LandingFormInputGroupDiv>
+
+      <LandingFormInputGroupDiv>
+        <LandingFormSubmitButton type='button'>Create</LandingFormSubmitButton>
       </LandingFormInputGroupDiv>
     </form>
   );
