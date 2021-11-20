@@ -1,5 +1,5 @@
 import {FC, useEffect, useState} from 'react';
-import tw, {styled} from 'twin.macro';
+import tw, {css, styled} from 'twin.macro';
 
 /*
  * Types.
@@ -59,40 +59,80 @@ const LandingH2 = tw.h2`
   mb-2
 `;
 
-const LandingFormInputGroupDiv = tw.div`
+const LandingFormGroupTitleDiv = tw.div`
+  text-gray-700
   mb-3
 `;
 
-const LandingFormLabel = tw.label`
-  block
-  text-gray-700
-  text-sm
-  font-bold
-  mb-2
+const LandingFormInputGroupDiv = tw.div`
+  relative
+  mb-3
 `;
 
-const LandingFormInput = tw.input`
-  shadow
-  appearance-none
-  border
-  rounded
-  w-full
-  py-2
-  px-3
-  text-gray-700
-  leading-tight
-  focus:outline-none
-  focus:shadow-sm
+const LandingFormInputLabel = tw.label`
+  absolute
+  left-0
+  z-0
+  mt-2
+  ml-3
+  text-gray-400
 `;
 
-const LandingFormTextArea = tw.textarea`
-  w-full
-  px-3
-  py-2
-  text-gray-700
-  border
-  rounded-lg
-  focus:outline-none
+const inputLabelTransitionCss = css`
+  & ~ label {
+    ${tw`duration-300`}
+  }
+
+  &:focus-within ~ label,
+  &:not(:placeholder-shown) ~ label {
+    ${tw`transform scale-75 -translate-y-7 text-blue-500`}
+  }
+
+  &:focus-within ~ label {
+    ${tw`text-blue-500`}
+  }
+`;
+
+const LandingFormInput = styled.input`
+  ${tw`
+    relative
+    z-10
+    shadow
+    appearance-none
+    border
+    rounded
+    w-full
+    py-2
+    px-3
+    bg-transparent
+    text-gray-700
+    leading-tight
+    focus:outline-none
+    focus:shadow-sm
+    focus-within:border-blue-500
+  `}
+
+  ${inputLabelTransitionCss}
+`;
+
+const LandingFormTextArea = styled.textarea`
+  ${tw`
+    w-full
+    px-3
+    py-2
+    text-gray-700
+    border
+    rounded-lg
+    focus:outline-none
+  `}
+
+  ${inputLabelTransitionCss}
+`;
+
+const LandingFormNameColorGroupDiv = tw.div`
+  flex
+  flex-row
+  mb-3
 `;
 
 const LandingFormButton = styled.button.attrs<LandingFormButtonProps>(({backgroundColor}) => ({
@@ -155,35 +195,42 @@ export default Landing;
 const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage}) => {
   return (
     <form>
+      <LandingFormGroupTitleDiv>What should we call the plan?</LandingFormGroupTitleDiv>
+      <LandingFormNameColorGroupDiv>
+        <LandingFormInputGroupDiv>
+          <LandingFormInput id='title' type='text' placeholder=' ' />
+          <LandingFormInputLabel htmlFor='title'>Title</LandingFormInputLabel>
+        </LandingFormInputGroupDiv>
+
+        <LandingFormInputGroupDiv>
+          <input
+            aria-label='color'
+            type='color'
+            value={planColor}
+            onChange={event => setPlanColor(event.target.value)}
+          />
+        </LandingFormInputGroupDiv>
+      </LandingFormNameColorGroupDiv>
+
+      <LandingFormGroupTitleDiv>When is the plan?</LandingFormGroupTitleDiv>
       <LandingFormInputGroupDiv>
-        <LandingFormLabel htmlFor='name'>What is the plan?</LandingFormLabel>
-        <LandingFormInput id='name' type='text' placeholder='Name' />
+        <LandingFormInput id='start' type='text' placeholder=' ' />
+        <LandingFormInputLabel htmlFor='start'>Start</LandingFormInputLabel>
+      </LandingFormInputGroupDiv>
+      <LandingFormInputGroupDiv>
+        <LandingFormInput id='end' type='text' placeholder=' ' />
+        <LandingFormInputLabel htmlFor='end'>End</LandingFormInputLabel>
       </LandingFormInputGroupDiv>
 
+      <LandingFormGroupTitleDiv>What is the plan?</LandingFormGroupTitleDiv>
       <LandingFormInputGroupDiv>
-        <LandingFormLabel htmlFor='color'>Color</LandingFormLabel>
-        <input
-          id='color'
-          type='color'
-          value={planColor}
-          onChange={event => setPlanColor(event.target.value)}
-        />
-      </LandingFormInputGroupDiv>
-
-      <LandingFormInputGroupDiv>
-        <LandingFormLabel htmlFor='start'>When is the plan?</LandingFormLabel>
-        <LandingFormInput id='start' type='text' placeholder='Start' />
-        <LandingFormInput id='end' type='text' placeholder='End' />
-      </LandingFormInputGroupDiv>
-
-      <LandingFormInputGroupDiv>
-        <LandingFormLabel htmlFor='description'>How is the plan?</LandingFormLabel>
-        <LandingFormTextArea id='description' placeholder='Description' />
+        <LandingFormTextArea id='description' placeholder=' ' />
+        <LandingFormInputLabel htmlFor='description'>Description</LandingFormInputLabel>
       </LandingFormInputGroupDiv>
 
       <LandingFormInputGroupDiv>
         <LandingFormButton type='button' backgroundColor={planColor} onClick={onNextStage}>
-          Next
+          Mark it!
         </LandingFormButton>
       </LandingFormInputGroupDiv>
     </form>
