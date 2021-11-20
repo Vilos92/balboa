@@ -8,7 +8,8 @@ import tw, {css, styled} from 'twin.macro';
 interface InputProps {
   label: string;
   value: string;
-  onChange: (ChangeEvent) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
 }
 
 /*
@@ -19,6 +20,7 @@ const StyledInputGroupDiv = tw.div`
   relative
   pt-3
   mb-1
+  w-full
 `;
 
 const StyledLabel = tw.label`
@@ -89,6 +91,16 @@ const StyledTextArea = styled.textarea`
   ${textAreaLabelTransitionCss}
 `;
 
+const StyledColorInput = tw.input`
+  w-10
+  h-10
+  shadow
+  appearance-none
+  border-none
+  outline-none
+  rounded
+`;
+
 /*
  * Components.
  */
@@ -107,6 +119,6 @@ export const TextAreaInput: FC<InputProps> = ({label, value, onChange}) => (
   </StyledInputGroupDiv>
 );
 
-export const ColorInput: FC<InputProps> = ({label, value, onChange}) => (
-  <input aria-label={label} type='color' value={value} onChange={onChange} />
+export const ColorInput: FC<InputProps> = ({label, value, onChange, className}) => (
+  <StyledColorInput aria-label={label} type='color' value={value} onChange={onChange} className={className} />
 );

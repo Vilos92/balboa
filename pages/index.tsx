@@ -1,4 +1,4 @@
-import {FC, useEffect, useState} from 'react';
+import {ChangeEvent, FC, useEffect, useState} from 'react';
 import tw, {css, styled} from 'twin.macro';
 
 import {ColorInput, TextAreaInput, TextInput} from '../components/Inputs';
@@ -65,15 +65,21 @@ const StyledGroupDiv = tw.div`
   mb-2
 `;
 
+const StyledGroupTitleDiv = tw.div`
+  text-gray-700
+  font-bold
+  w-full
+`;
+
 const StyledNameColorGroupDiv = tw(StyledGroupDiv)`
   flex
   flex-row
 `;
 
-const StyledGroupTitleDiv = tw.div`
-  text-gray-700
-  font-bold
-  w-full
+const StyledColorInput = tw(ColorInput)`
+  flex-none
+  mt-3
+  ml-3
 `;
 
 const LandingFormButton = styled.button.attrs<LandingFormButtonProps>(({backgroundColor}) => ({
@@ -134,24 +140,35 @@ export default Landing;
  */
 
 const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage}) => {
+  const [title, setTitle] = useState('');
+  const [start, setStart] = useState('');
+  const [end, setEnd] = useState('');
+  const [description, setDescription] = useState('');
+
+  const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value);
+  const onChangeColor = (event: ChangeEvent<HTMLInputElement>) => setPlanColor(event.target.value);
+  const onChangeStart = (event: ChangeEvent<HTMLInputElement>) => setStart(event.target.value);
+  const onChangeEnd = (event: ChangeEvent<HTMLInputElement>) => setEnd(event.target.value);
+  const onChangeDescription = (event: ChangeEvent<HTMLInputElement>) => setDescription(event.target.value);
+
   return (
     <form>
       <StyledGroupTitleDiv>What should we title this plan?</StyledGroupTitleDiv>
       <StyledNameColorGroupDiv>
-        <TextInput label='Title' value='' onChange={() => false} />
+        <TextInput label='Title' value={title} onChange={onChangeTitle} />
 
-        <ColorInput label='Color' value={planColor} onChange={event => setPlanColor(event.target.value)} />
+        <StyledColorInput label='Color' value={planColor} onChange={onChangeColor} />
       </StyledNameColorGroupDiv>
 
       <StyledGroupDiv>
         <StyledGroupTitleDiv>When is the plan?</StyledGroupTitleDiv>
-        <TextInput label='Start' value='' onChange={() => false} />
-        <TextInput label='End' value='' onChange={() => false} />
+        <TextInput label='Start' value={start} onChange={onChangeStart} />
+        <TextInput label='End' value={end} onChange={onChangeEnd} />
       </StyledGroupDiv>
 
       <StyledGroupDiv>
         <StyledGroupTitleDiv>What is the plan?</StyledGroupTitleDiv>
-        <TextAreaInput label='Description' value='' onChange={() => false} />
+        <TextAreaInput label='Description' value={description} onChange={onChangeDescription} />
       </StyledGroupDiv>
 
       <LandingFormButton type='button' backgroundColor={planColor} onClick={onNextStage}>
