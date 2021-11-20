@@ -8,7 +8,7 @@ import tw, {css, styled} from 'twin.macro';
 interface InputProps {
   label: string;
   value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   className?: string;
 }
 
@@ -39,11 +39,11 @@ const inputLabelTransitionCss = css`
 
   &:focus-within ~ label,
   &:not(:placeholder-shown) ~ label {
-    ${tw`transform scale-75 -translate-y-7 -translate-x-3 text-green-500`}
+    ${tw`transform scale-75 -translate-y-7 -translate-x-3 text-purple-500`}
   }
 
   &:focus-within ~ label {
-    ${tw`text-green-500`}
+    ${tw`text-purple-500`}
   }
 `;
 
@@ -70,7 +70,7 @@ const StyledTextInput = styled.input`
     leading-tight
     focus:outline-none
     focus:shadow-sm
-    focus-within:border-green-500
+    focus-within:border-purple-500
   `}
 
   ${inputLabelTransitionCss}
@@ -96,9 +96,6 @@ const StyledColorInput = tw.input`
   h-10
   shadow
   appearance-none
-  border-none
-  outline-none
-  rounded
 `;
 
 /*
@@ -115,6 +112,13 @@ export const TextInput: FC<InputProps> = ({label, value, onChange}) => (
 export const TextAreaInput: FC<InputProps> = ({label, value, onChange}) => (
   <StyledInputGroupDiv>
     <StyledTextArea id={label} placeholder=' ' value={value} onChange={onChange} />
+    <StyledLabel htmlFor={label}>{label}</StyledLabel>
+  </StyledInputGroupDiv>
+);
+
+export const DateInput: FC<InputProps> = ({label, value, onChange}) => (
+  <StyledInputGroupDiv>
+    <StyledTextInput id={label} type='date' placeholder=' ' value={value} onChange={onChange} />
     <StyledLabel htmlFor={label}>{label}</StyledLabel>
   </StyledInputGroupDiv>
 );

@@ -1,7 +1,7 @@
 import {ChangeEvent, FC, useEffect, useState} from 'react';
 import tw, {css, styled} from 'twin.macro';
 
-import {ColorInput, TextAreaInput, TextInput} from '../components/Inputs';
+import {ColorInput, DateInput, TextAreaInput, TextInput} from '../components/Inputs';
 
 /*
  * Types.
@@ -78,8 +78,8 @@ const StyledNameColorGroupDiv = tw(StyledGroupDiv)`
 
 const StyledColorInput = tw(ColorInput)`
   flex-none
-  mt-3
-  ml-3
+  mt-2.5
+  mr-3
 `;
 
 const LandingFormButton = styled.button.attrs<LandingFormButtonProps>(({backgroundColor}) => ({
@@ -155,15 +155,14 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
     <form>
       <StyledGroupTitleDiv>What should we title this plan?</StyledGroupTitleDiv>
       <StyledNameColorGroupDiv>
-        <TextInput label='Title' value={title} onChange={onChangeTitle} />
-
         <StyledColorInput label='Color' value={planColor} onChange={onChangeColor} />
+        <TextInput label='Title' value={title} onChange={onChangeTitle} />
       </StyledNameColorGroupDiv>
 
       <StyledGroupDiv>
         <StyledGroupTitleDiv>When is the plan?</StyledGroupTitleDiv>
-        <TextInput label='Start' value={start} onChange={onChangeStart} />
-        <TextInput label='End' value={end} onChange={onChangeEnd} />
+        <DateInput label='Start' value={start} onChange={onChangeStart} />
+        <DateInput label='End' value={end} onChange={onChangeEnd} />
       </StyledGroupDiv>
 
       <StyledGroupDiv>
