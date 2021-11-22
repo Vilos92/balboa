@@ -1,6 +1,5 @@
-import {LatLngExpression} from 'leaflet';
-import {FC} from 'react';
-import {MapContainer, TileLayer} from 'react-leaflet';
+import {FC, useState} from 'react';
+import ReactMapGL from 'react-map-gl';
 import {styled} from 'twin.macro';
 
 import {GetGeolocationResponse, geolocationApi} from '../pages/api/geolocation';
@@ -14,6 +13,13 @@ import {useNetGet} from '../utils/hooks';
 interface LocationVisualizerProps {
   location: string;
 }
+
+/*
+ * Constants.
+ */
+
+const mapboxAccessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
+console.log('token', mapboxAccessToken);
 
 /*
  * Styles.
@@ -42,19 +48,23 @@ const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
 
   const {data, error} = useNetGet<GetGeolocationResponse>(url.href);
 
+  const [zoom, setZoom] = useState(8);
+
   if (!data || data.length === 0 || error) return null;
 
   const {latitude, longitude} = data[0];
-  const position: LatLngExpression = [latitude, longitude];
 
   return (
     <StyledMapDiv>
-      <MapContainer style={{height: '100px'}} center={position} zoom={13}>
-        <TileLayer
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributor'
-          url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
-        ></TileLayer>
-      </MapContainer>
+      <ReactMapGL
+        mapboxApiAccessToken={mapboxAccessToken}
+        latitude={latitude}
+        longitude={longitude}
+        zoom={zoom}
+        width='100%'
+        height='100%'
+        onViewportChange={viewport => setZoom(viewport.zoom)}
+      />
     </StyledMapDiv>
   );
 };
