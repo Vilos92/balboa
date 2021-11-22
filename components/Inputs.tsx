@@ -103,7 +103,7 @@ const StyledTextArea = styled.textarea`
   ${textAreaLabelTransitionCss}
 `;
 
-const StyledColorSpan = styled.span.attrs<StyledColorSpanProps>(({backgroundColor}) => ({
+const StyledColorDiv = styled.div.attrs<StyledColorSpanProps>(({backgroundColor}) => ({
   style: {backgroundColor}
 }))<StyledColorSpanProps>`
   ${tw`
@@ -147,13 +147,14 @@ export const DateInput: FC<InputProps> = ({label, value, onChange, min}) => (
   </StyledInputGroupDiv>
 );
 
-export const ColorInput: FC<InputProps> = ({label, value, onChange, className}) => {
+export const ColorInput: FC<InputProps> = props => {
+  const {label, value, onChange, className} = props;
   const inputRef = useRef<HTMLInputElement>(null);
   const onSpanClick = () => inputRef.current.click();
 
   return (
-    <StyledColorSpan onClick={onSpanClick} backgroundColor={value} className={className}>
+    <StyledColorDiv onClick={onSpanClick} backgroundColor={value} className={className}>
       <StyledColorInput ref={inputRef} aria-label={label} type='color' value={value} onChange={onChange} />
-    </StyledColorSpan>
+    </StyledColorDiv>
   );
 };

@@ -1,7 +1,8 @@
 import {ChangeEvent, FC, useEffect, useState} from 'react';
-import tw, {css, styled} from 'twin.macro';
+import tw, {styled} from 'twin.macro';
 
 import {ColorInput, DateInput, TextAreaInput, TextInput} from '../components/Inputs';
+import {Tooltip} from '../components/Tooltip';
 
 /*
  * Types.
@@ -15,6 +16,11 @@ interface LandingFormProps {
 
 interface LandingSuccessProps {
   planColor: string;
+}
+
+interface ColorInputWithTooltipProps {
+  value: string;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
 interface LandingFormButtonProps {
@@ -184,7 +190,7 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
     <form>
       <StyledGroupTitleDiv>What should we title this plan?</StyledGroupTitleDiv>
       <StyledNameColorGroupDiv>
-        <StyledColorInput label='Color' value={planColor} onChange={onChangeColor} />
+        <ColorInputWithTooltip value={planColor} onChange={onChangeColor} />
         <TextInput label='Title' value={title} onChange={onChangeTitle} />
       </StyledNameColorGroupDiv>
 
@@ -203,6 +209,23 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
         Mark it!
       </LandingFormButton>
     </form>
+  );
+};
+
+const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({value, onChange}) => {
+  const [isTooltipVisible, setIsTooltipVisible] = useState(true);
+
+  const onChangeColor = (event: ChangeEvent<HTMLInputElement>) => {
+    setIsTooltipVisible(false);
+    onChange(event);
+  };
+
+  const onClickTooltip = () => setIsTooltipVisible(false);
+
+  return (
+    <Tooltip isVisible={isTooltipVisible} text='Set a color' onClick={onClickTooltip}>
+      <StyledColorInput label='Color' value={value} onChange={onChangeColor} />
+    </Tooltip>
   );
 };
 
