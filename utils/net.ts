@@ -6,6 +6,10 @@ import axios from 'axios';
 
 type NetGet<T> = (url: string) => Promise<T>;
 
+export interface NetResponse {
+  message: string;
+}
+
 /*
  * Utilities.
  */

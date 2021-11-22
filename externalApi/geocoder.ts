@@ -4,12 +4,14 @@ import {netGet} from '../utils/net';
  * Types.
  */
 
+export interface Geolocation {
+  latitude: number;
+  longitude: number;
+  label: string;
+}
+
 export interface GetPositionStackResponse {
-  data: {
-    latitude: number;
-    longitude: number;
-    label: string;
-  };
+  data: readonly Geolocation[];
 }
 
 /*
@@ -23,7 +25,7 @@ const positionStackAccessKey = process.env.POSITIONSTACK_ACCESS_KEY;
  * Network.
  */
 
-export function getPositionStack(query: string) {
+export function getPositionStack(query: string): Promise<GetPositionStackResponse> {
   const url = new URL(positionStackForwardApi);
   url.searchParams.set('access_key', positionStackAccessKey);
   url.searchParams.set('query', query);
