@@ -1,4 +1,4 @@
-import {ChangeEvent, FC} from 'react';
+import {ChangeEvent, FC, useRef} from 'react';
 import tw, {css, styled} from 'twin.macro';
 
 /*
@@ -10,6 +10,10 @@ interface InputProps {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   className?: string;
+}
+
+interface StyledColorSpanProps {
+  backgroundColor: string;
 }
 
 /*
@@ -91,11 +95,23 @@ const StyledTextArea = styled.textarea`
   ${textAreaLabelTransitionCss}
 `;
 
+const StyledColorSpan = styled.span.attrs<StyledColorSpanProps>(({backgroundColor}) => ({
+  style: {backgroundColor}
+}))<StyledColorSpanProps>`
+  ${tw`
+    rounded-full
+    w-10
+    h-10
+    border-2
+    border-gray-300
+  `}
+`;
+
 const StyledColorInput = tw.input`
   w-10
   h-10
-  shadow
   appearance-none
+  hidden
 `;
 
 /*
@@ -123,6 +139,13 @@ export const DateInput: FC<InputProps> = ({label, value, onChange}) => (
   </StyledInputGroupDiv>
 );
 
-export const ColorInput: FC<InputProps> = ({label, value, onChange, className}) => (
-  <StyledColorInput aria-label={label} type='color' value={value} onChange={onChange} className={className} />
-);
+export const ColorInput: FC<InputProps> = ({label, value, onChange, className}) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const onSpanClick = () => inputRef.current.click();
+
+  return (
+    <StyledColorSpan onClick={onSpanClick} backgroundColor={value} className={className}>
+      <StyledColorInput ref={inputRef} aria-label={label} type='color' value={value} onChange={onChange} />
+    </StyledColorSpan>
+  );
+};
