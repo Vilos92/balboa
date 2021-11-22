@@ -69,6 +69,7 @@ const StyledGroupTitleDiv = tw.div`
   text-gray-700
   font-bold
   w-full
+  mb-0.5
 `;
 
 const StyledNameColorGroupDiv = tw(StyledGroupDiv)`
@@ -80,6 +81,10 @@ const StyledColorInput = tw(ColorInput)`
   flex-none
   mt-2.5
   mr-3
+`;
+
+const StyledTextAreaInput = styled(TextAreaInput)`
+  min-height: 72px;
 `;
 
 const LandingFormButton = styled.button.attrs<LandingFormButtonProps>(({backgroundColor}) => ({
@@ -147,9 +152,33 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value);
   const onChangeColor = (event: ChangeEvent<HTMLInputElement>) => setPlanColor(event.target.value);
-  const onChangeStart = (event: ChangeEvent<HTMLInputElement>) => setStart(event.target.value);
-  const onChangeEnd = (event: ChangeEvent<HTMLInputElement>) => setEnd(event.target.value);
-  const onChangeDescription = (event: ChangeEvent<HTMLInputElement>) => setDescription(event.target.value);
+
+  const onChangeStart = (event: ChangeEvent<HTMLInputElement>) => {
+    const startDate = new Date(event.target.value);
+    const endDate = new Date(end);
+
+    setStart(event.target.value);
+    if (startDate > endDate) setEnd(event.target.value);
+  };
+  const onChangeEnd = (event: ChangeEvent<HTMLInputElement>) => {
+    const startDate = new Date(start);
+    const endDate = new Date(event.target.value);
+
+    setEnd(event.target.value);
+    if (endDate < startDate) setStart(event.target.value);
+  };
+
+  const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value);
+
+  // Initial date should only be set on the client (no SSR).
+  useEffect(() => {
+    const defaultDate = computeDefaultDate();
+    setStart(defaultDate);
+    setEnd(defaultDate);
+  }, []);
+
+  // Cannot select dates before today.
+  const minimumDate = computeInputValueFromDate(new Date());
 
   return (
     <form>
@@ -161,13 +190,13 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
 
       <StyledGroupDiv>
         <StyledGroupTitleDiv>When is the plan?</StyledGroupTitleDiv>
-        <DateInput label='Start' value={start} onChange={onChangeStart} />
-        <DateInput label='End' value={end} onChange={onChangeEnd} />
+        <DateInput label='Start' value={start} onChange={onChangeStart} min={minimumDate} />
+        <DateInput label='End' value={end} onChange={onChangeEnd} min={minimumDate} />
       </StyledGroupDiv>
 
       <StyledGroupDiv>
         <StyledGroupTitleDiv>What is the plan?</StyledGroupTitleDiv>
-        <TextAreaInput label='Description' value={description} onChange={onChangeDescription} />
+        <StyledTextAreaInput label='Description' value={description} onChange={onChangeDescription} />
       </StyledGroupDiv>
 
       <LandingFormButton type='button' backgroundColor={planColor} onClick={onNextStage}>
@@ -187,3 +216,18 @@ const LandingSuccess: FC<LandingSuccessProps> = ({planColor}) => {
     </>
   );
 };
+
+/*
+ * Helpers.
+ */
+
+function computeDefaultDate(): string {
+  const start = new Date();
+  start.setDate(start.getDate() + 7);
+  return computeInputValueFromDate(start);
+}
+
+function computeInputValueFromDate(date: Date): string {
+  const [month, day, year] = date.toLocaleDateString().split('/');
+  return `${year}-${month}-${day}`;
+}

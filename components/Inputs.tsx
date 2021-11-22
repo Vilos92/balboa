@@ -8,7 +8,15 @@ import tw, {css, styled} from 'twin.macro';
 interface InputProps {
   label: string;
   value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  className?: string;
+  min?: string;
+}
+
+interface TextAreaInputProps {
+  label: string;
+  value: string;
+  onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
   className?: string;
 }
 
@@ -125,16 +133,16 @@ export const TextInput: FC<InputProps> = ({label, value, onChange}) => (
   </StyledInputGroupDiv>
 );
 
-export const TextAreaInput: FC<InputProps> = ({label, value, onChange}) => (
+export const TextAreaInput: FC<TextAreaInputProps> = ({label, value, onChange, className}) => (
   <StyledInputGroupDiv>
-    <StyledTextArea id={label} placeholder=' ' value={value} onChange={onChange} />
+    <StyledTextArea id={label} placeholder=' ' value={value} onChange={onChange} className={className} />
     <StyledLabel htmlFor={label}>{label}</StyledLabel>
   </StyledInputGroupDiv>
 );
 
-export const DateInput: FC<InputProps> = ({label, value, onChange}) => (
+export const DateInput: FC<InputProps> = ({label, value, onChange, min}) => (
   <StyledInputGroupDiv>
-    <StyledTextInput id={label} type='date' placeholder=' ' value={value} onChange={onChange} />
+    <StyledTextInput id={label} type='date' placeholder=' ' value={value} onChange={onChange} min={min} />
     <StyledLabel htmlFor={label}>{label}</StyledLabel>
   </StyledInputGroupDiv>
 );
