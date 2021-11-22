@@ -223,7 +223,7 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({value, onChange}
   const onClickTooltip = () => setIsTooltipVisible(false);
 
   return (
-    <Tooltip isVisible={isTooltipVisible} text='Set a color' onClick={onClickTooltip}>
+    <Tooltip isVisible={isTooltipVisible} text='Set a color' onClick={onClickTooltip} placement='left'>
       <StyledColorInput label='Color' value={value} onChange={onChangeColor} />
     </Tooltip>
   );

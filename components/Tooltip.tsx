@@ -9,6 +9,7 @@ import tw, {styled} from 'twin.macro';
 interface TooltipProps {
   text: string;
   isVisible: boolean;
+  placement?: 'auto' | 'top' | 'right' | 'bottom' | 'left';
   onClick?: MouseEventHandler<HTMLDivElement>;
 }
 
@@ -51,14 +52,15 @@ const StyledArrowDiv = tw.div`
  * Component.
  */
 
-export const Tooltip: FC<TooltipProps> = ({children, text, isVisible, onClick}) => {
+export const Tooltip: FC<TooltipProps> = ({children, text, isVisible, placement, onClick}) => {
   const containerRef = useRef<HTMLSpanElement>(null);
   const popperRef = useRef<HTMLDivElement>(null);
   // TODO: style and actually use arrow.
   const arrowRef = useRef<HTMLDivElement>(null);
 
   const {styles, attributes} = usePopper(containerRef.current, popperRef.current, {
-    modifiers: [{name: 'arrow', options: {element: arrowRef.current}}]
+    modifiers: [{name: 'arrow', options: {element: arrowRef.current}}],
+    placement
   });
 
   return (
