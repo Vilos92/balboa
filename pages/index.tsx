@@ -3,6 +3,9 @@ import tw, {styled} from 'twin.macro';
 
 import {ColorInput, DateInput, TextAreaInput, TextInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
+import {GetPositionStackResponse} from '../externalApi/geocoder';
+import {geolocationApi} from './api/geolocation';
+import {useNetGet} from './utils/hooks';
 
 /*
  * Types.
@@ -21,6 +24,10 @@ interface LandingSuccessProps {
 interface ColorInputWithTooltipProps {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+}
+
+interface LocationVisualizerProps {
+  location: string;
 }
 
 interface LandingFormButtonProps {
@@ -155,6 +162,7 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
   const [description, setDescription] = useState('');
+  const [location, setLocation] = useState('');
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value);
   const onChangeColor = (event: ChangeEvent<HTMLInputElement>) => setPlanColor(event.target.value);
@@ -173,6 +181,8 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
     setEnd(event.target.value);
     if (endDate < startDate) setStart(event.target.value);
   };
+
+  const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => setLocation(event.target.value);
 
   const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value);
 
@@ -198,6 +208,12 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
         <StyledGroupTitleDiv>When is the plan?</StyledGroupTitleDiv>
         <DateInput label='Start' value={start} onChange={onChangeStart} min={minimumDate} />
         <DateInput label='End' value={end} onChange={onChangeEnd} min={minimumDate} />
+      </StyledGroupDiv>
+
+      <StyledGroupDiv>
+        <StyledGroupTitleDiv>Where is the plan?</StyledGroupTitleDiv>
+        <TextInput label='Location' value={location} onChange={onChangeLocation} />
+        {location.length > 0 && <LocationVisualizer location={location} />}
       </StyledGroupDiv>
 
       <StyledGroupDiv>
@@ -227,6 +243,33 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({value, onChange}
       <StyledColorInput label='Color' value={value} onChange={onChangeColor} />
     </Tooltip>
   );
+};
+
+function useDebounce(value: string, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedValue(value);
+    }, delay);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [value, delay]);
+
+  return debouncedValue;
+}
+
+const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
+  const debouncedLocation = useDebounce(location, 1000);
+
+  const url = new URL(geolocationApi, window.location.origin);
+  url.searchParams.set('query', debouncedLocation);
+
+  const {data, error} = useNetGet<GetPositionStackResponse>(url.href);
+
+  return <div>{JSON.stringify(data)}</div>;
 };
 
 const LandingSuccess: FC<LandingSuccessProps> = ({planColor}) => {
