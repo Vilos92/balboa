@@ -6,10 +6,6 @@ import {ColorInput, DateInput, TextAreaInput, TextInput} from '../components/Inp
 import {Tooltip} from '../components/Tooltip';
 
 /*
- * Dynamic imports.
- */
-
-/*
  * Types.
  */
 

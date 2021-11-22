@@ -1,3 +1,4 @@
+import 'mapbox-gl/dist/mapbox-gl.css';
 import {FC, useState} from 'react';
 import ReactMapGL from 'react-map-gl';
 import {styled} from 'twin.macro';
@@ -19,17 +20,14 @@ interface LocationVisualizerProps {
  */
 
 const mapboxAccessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
-console.log('token', mapboxAccessToken);
 
 /*
  * Styles.
  */
 
 const StyledMapDiv = styled.div`
-  height: 100%;
-  width: 100px;
+  height: 300px;
   position: relative;
-  background: red;
 `;
 
 /*
@@ -48,10 +46,9 @@ const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
 
   const {data, error} = useNetGet<GetGeolocationResponse>(url.href);
 
-  const [zoom, setZoom] = useState(8);
+  const [zoom, setZoom] = useState(13);
 
   if (!data || data.length === 0 || error) return null;
-
   const {latitude, longitude} = data[0];
 
   return (
