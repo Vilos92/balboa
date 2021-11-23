@@ -1,4 +1,4 @@
-import {ChangeEvent, FC, useRef} from 'react';
+import {ChangeEvent, FC, FocusEvent, useRef} from 'react';
 import tw, {css, styled} from 'twin.macro';
 
 /*
@@ -9,6 +9,7 @@ interface InputProps {
   label: string;
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
   className?: string;
   min?: string;
 }
@@ -126,9 +127,16 @@ const StyledColorInput = tw.input`
  * Components.
  */
 
-export const TextInput: FC<InputProps> = ({label, value, onChange}) => (
+export const TextInput: FC<InputProps> = ({label, value, onChange, onFocus}) => (
   <StyledInputGroupDiv>
-    <StyledTextInput id={label} type='text' placeholder=' ' value={value} onChange={onChange} />
+    <StyledTextInput
+      id={label}
+      type='text'
+      placeholder=' '
+      value={value}
+      onChange={onChange}
+      onFocus={onFocus}
+    />
     <StyledLabel htmlFor={label}>{label}</StyledLabel>
   </StyledInputGroupDiv>
 );

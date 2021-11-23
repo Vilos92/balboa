@@ -1,9 +1,14 @@
 import dynamic from 'next/dynamic';
-import {ChangeEvent, FC, useEffect, useMemo, useState} from 'react';
+import {ChangeEvent, FC, FocusEvent, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {ColorInput, DateInput, TextAreaInput, TextInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
+
+const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
+  loading: () => <p>Loading map</p>,
+  ssr: false
+});
 
 /*
  * Types.
@@ -157,6 +162,7 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
   const [end, setEnd] = useState('');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
+  const [hasLocationFocused, setHasLocationFocused] = useState(false);
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value);
   const onChangeColor = (event: ChangeEvent<HTMLInputElement>) => setPlanColor(event.target.value);
@@ -177,6 +183,7 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
   };
 
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => setLocation(event.target.value);
+  const onFocusLocation = () => setHasLocationFocused(true);
 
   const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value);
 
@@ -189,15 +196,6 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
 
   // Cannot select dates before today.
   const minimumDate = computeInputValueFromDate(new Date());
-
-  const locationVisualizerMemo = useMemo(() => {
-    const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
-      loading: () => <p>Loading map</p>,
-      ssr: false
-    });
-
-    return <LocationVisualizer location={location} />;
-  }, [location]);
 
   return (
     <form>
@@ -215,8 +213,8 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
 
       <StyledGroupDiv>
         <StyledGroupTitleDiv>Where is the plan?</StyledGroupTitleDiv>
-        <TextInput label='Location' value={location} onChange={onChangeLocation} />
-        {location.length > 0 && locationVisualizerMemo}
+        <TextInput label='Location' value={location} onChange={onChangeLocation} onFocus={onFocusLocation} />
+        {(hasLocationFocused || location.length > 0) && <LocationVisualizer location={location} />}
       </StyledGroupDiv>
 
       <StyledGroupDiv>
