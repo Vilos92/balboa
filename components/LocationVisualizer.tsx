@@ -5,6 +5,7 @@ import ReactMapGL, {Marker} from 'react-map-gl';
 import {styled} from 'twin.macro';
 
 import {GetGeolocationResponse, geolocationApi} from '../pages/api/geolocation';
+import MapStyle from '../styles/map-style-basic-v8.json';
 import {useDebounce} from '../utils/hooks';
 import {useNetGet} from '../utils/hooks';
 
@@ -47,8 +48,6 @@ const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
   const {data, error} = useNetGet<GetGeolocationResponse>(geolocationUrl);
   const [latitude, longitude] = computeLatLongFromResponse(data, error);
 
-  console.log(latitude, longitude);
-
   const [zoom, setZoom] = useState(13);
 
   return (
@@ -60,6 +59,7 @@ const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
         zoom={zoom}
         width='100%'
         height='100%'
+        mapStyle={MapStyle}
         onViewportChange={viewport => setZoom(viewport.zoom)}
       >
         <Marker latitude={latitude} longitude={longitude} offsetLeft={-20} offsetTop={-10}>
