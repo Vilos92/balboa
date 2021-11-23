@@ -77,13 +77,6 @@ const StyledGroupDiv = tw.div`
   mb-2
 `;
 
-const StyledGroupTitleDiv = tw.div`
-  text-gray-700
-  font-bold
-  w-full
-  mb-0.5
-`;
-
 const StyledNameColorGroupDiv = tw(StyledGroupDiv)`
   flex
   flex-row
@@ -142,7 +135,7 @@ const Landing: FC = () => {
       <StyledContainerDiv>
         <StyledLandingH1>Grueplan</StyledLandingH1>
         <StyledLandingDiv>
-          <StyledLandingH2>Let's make a plan.</StyledLandingH2>
+          <StyledLandingH2>Enter your event details here</StyledLandingH2>
           {content}
         </StyledLandingDiv>
       </StyledContainerDiv>
@@ -199,31 +192,27 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
 
   return (
     <form>
-      <StyledGroupTitleDiv>What should we title this plan?</StyledGroupTitleDiv>
       <StyledNameColorGroupDiv>
         <ColorInputWithTooltip value={planColor} onChange={onChangeColor} />
         <TextInput label='Title' value={title} onChange={onChangeTitle} />
       </StyledNameColorGroupDiv>
 
       <StyledGroupDiv>
-        <StyledGroupTitleDiv>When is the plan?</StyledGroupTitleDiv>
         <DateInput label='Start' value={start} onChange={onChangeStart} min={minimumDate} />
         <DateInput label='End' value={end} onChange={onChangeEnd} min={minimumDate} />
       </StyledGroupDiv>
 
       <StyledGroupDiv>
-        <StyledGroupTitleDiv>Where is the plan?</StyledGroupTitleDiv>
         <TextInput label='Location' value={location} onChange={onChangeLocation} onFocus={onFocusLocation} />
         {(hasLocationFocused || location.length > 0) && <LocationVisualizer location={location} />}
       </StyledGroupDiv>
 
       <StyledGroupDiv>
-        <StyledGroupTitleDiv>What is the plan?</StyledGroupTitleDiv>
         <StyledTextAreaInput label='Description' value={description} onChange={onChangeDescription} />
       </StyledGroupDiv>
 
       <LandingFormButton type='button' backgroundColor={planColor} onClick={onNextStage}>
-        Mark it!
+        Go time!
       </LandingFormButton>
     </form>
   );

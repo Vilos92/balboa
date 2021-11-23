@@ -28,7 +28,7 @@ const mapboxAccessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
  */
 
 const StyledMapDiv = styled.div`
-  height: 300px;
+  height: 200px;
   position: relative;
 `;
 

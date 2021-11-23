@@ -91,9 +91,12 @@ const StyledTextInput = styled.input`
 
 const StyledTextArea = styled.textarea`
   ${tw`
+    relative
+    z-10
     w-full
     px-3
     py-2
+    bg-transparent
     text-gray-700
     border
     rounded-lg
