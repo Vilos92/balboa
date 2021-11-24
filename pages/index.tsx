@@ -6,7 +6,6 @@ import tw, {styled} from 'twin.macro';
 import {Body, Card} from '../components/Commons';
 import {ColorInput, DateInput, TextAreaInput, TextInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
-import {postPlan} from './api/plans';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <p>Loading map</p>,

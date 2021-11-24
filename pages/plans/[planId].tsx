@@ -1,5 +1,6 @@
 import {FC} from 'react';
 
+import {Body, Card} from '../../components/Commons';
 import {PlanModel, findPlan} from '../../models/plan';
 
 /*
@@ -10,12 +11,12 @@ interface PlanPageProps {
   plan: PlanModel;
 }
 
-export async function getServerSideProps({query}) {
+export async function getServerSideProps({query, res}) {
   const {planId} = query;
 
-  const plan = await findPlan(parseInt(planId));
+  const {plan, error} = await findPlan(parseInt(planId));
 
-  if (!plan) {
+  if (!plan || error) {
     return {
       notFound: true
     };
@@ -33,7 +34,11 @@ export async function getServerSideProps({query}) {
  */
 
 const PlanPage: FC<PlanPageProps> = ({plan}) => {
-  return <div>{JSON.stringify(plan)}</div>;
+  return (
+    <Body>
+      <Card>{JSON.stringify(plan)}</Card>
+    </Body>
+  );
 };
 
 export default PlanPage;
