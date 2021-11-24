@@ -25,3 +25,8 @@ export function makeNetGet<T>(): NetGet<T> {
     return response.data;
   };
 }
+
+export async function netPost<T, V>(url: string, body?: T): Promise<V> {
+  const response = await axios.post<V>(url, body);
+  return response.data;
+}

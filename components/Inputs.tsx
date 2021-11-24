@@ -5,20 +5,12 @@ import tw, {css, styled} from 'twin.macro';
  * Types.
  */
 
-interface InputProps {
+interface InputProps extends React.HTMLProps<HTMLInputElement> {
   label: string;
-  value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onFocus?: (event: FocusEvent<HTMLInputElement>) => void;
-  className?: string;
-  min?: string;
 }
 
-interface TextAreaInputProps {
+interface TextAreaInputProps extends React.HTMLProps<HTMLTextAreaElement> {
   label: string;
-  value: string;
-  onChange: (event: ChangeEvent<HTMLTextAreaElement>) => void;
-  className?: string;
 }
 
 interface StyledColorSpanProps {
@@ -163,8 +155,10 @@ export const ColorInput: FC<InputProps> = props => {
   const inputRef = useRef<HTMLInputElement>(null);
   const onSpanClick = () => inputRef.current.click();
 
+  const backgroundColor = typeof value === 'string' ? value : '';
+
   return (
-    <StyledColorDiv onClick={onSpanClick} backgroundColor={value} className={className}>
+    <StyledColorDiv onClick={onSpanClick} backgroundColor={backgroundColor} className={className}>
       <StyledColorInput ref={inputRef} aria-label={label} type='color' value={value} onChange={onChange} />
     </StyledColorDiv>
   );

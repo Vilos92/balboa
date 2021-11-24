@@ -9,6 +9,7 @@ import {makeNetGet} from './net';
  */
 
 export function useNetGet<T>(url: string): SWRResponse<T, AxiosError<Error>> {
+  // TODO: Can you just pass the real netGet directly in?
   const netGet = makeNetGet<T>();
   return useSWR<T, AxiosError<Error>>(url, netGet);
 }

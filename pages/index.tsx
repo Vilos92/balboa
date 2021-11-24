@@ -4,6 +4,8 @@ import tw, {styled} from 'twin.macro';
 
 import {ColorInput, DateInput, TextAreaInput, TextInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
+import {netPost} from '../utils/net';
+import {plansUrl} from './api/plans';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <p>Loading map</p>,
@@ -149,7 +151,7 @@ export default Landing;
  * Components.
  */
 
-const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage}) => {
+const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor}) => {
   const [title, setTitle] = useState('');
   const [start, setStart] = useState('');
   const [end, setEnd] = useState('');
@@ -190,6 +192,10 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
   // Cannot select dates before today.
   const minimumDate = computeInputValueFromDate(new Date());
 
+  const onClick = () => {
+    netPost(plansUrl, {title, color: planColor, start, end, location, description});
+  };
+
   return (
     <form>
       <StyledNameColorGroupDiv>
@@ -211,7 +217,7 @@ const LandingForm: FC<LandingFormProps> = ({planColor, setPlanColor, onNextStage
         <StyledTextAreaInput label='Description' value={description} onChange={onChangeDescription} />
       </StyledGroupDiv>
 
-      <LandingFormButton type='button' backgroundColor={planColor} onClick={onNextStage}>
+      <LandingFormButton type='button' backgroundColor={planColor} onClick={onClick}>
         Go time!
       </LandingFormButton>
     </form>
