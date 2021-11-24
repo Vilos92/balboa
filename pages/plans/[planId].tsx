@@ -1,7 +1,8 @@
 import {FC} from 'react';
-import tw, {styled} from 'twin.macro';
+import tw from 'twin.macro';
 
 import {Body, Card} from '../../components/Commons';
+import {ColorInput} from '../../components/Inputs';
 import {PlanModel, findPlan} from '../../models/plan';
 
 /*
@@ -13,14 +14,23 @@ interface PlanPageProps {
 }
 
 /*
- * Types.
+ * Styles.
  */
 
-const StyledLandingH2 = tw.h2`
+const StyledColorTitleDiv = tw.div`
+  flex
+  flex-row
+  align-middle
+`;
+
+const StyledTitleDiv = tw.div`
+  pt-1.5
+  ml-3 
+`;
+
+const StyledTitleH2 = tw.h2`
   text-lg
-  text-left
   font-bold
-  mb-2
 `;
 
 /*
@@ -53,12 +63,16 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => {
   return (
     <Body>
       <Card>
-        <StyledLandingH2>{plan.title}</StyledLandingH2>
-        {plan.color}
+        <StyledColorTitleDiv>
+          <ColorInput label='Color' value={plan.color} disabled />
+          <StyledTitleDiv>
+            <StyledTitleH2>{plan.title}</StyledTitleH2>
+          </StyledTitleDiv>
+        </StyledColorTitleDiv>
         {plan.start}
         {plan.end}
-        {plan.location}
-        {plan.description}
+        <div>{plan.location}</div>
+        <div>{plan.description}</div>
       </Card>
     </Body>
   );

@@ -1,4 +1,4 @@
-import {ChangeEvent, FC, FocusEvent, useRef} from 'react';
+import {FC, useRef} from 'react';
 import tw, {css, styled} from 'twin.macro';
 
 /*
@@ -13,7 +13,7 @@ interface TextAreaInputProps extends React.HTMLProps<HTMLTextAreaElement> {
   label: string;
 }
 
-interface StyledColorSpanProps {
+interface StyledColorDivProps {
   backgroundColor: string;
 }
 
@@ -99,9 +99,9 @@ const StyledTextArea = styled.textarea`
   ${textAreaLabelTransitionCss}
 `;
 
-const StyledColorDiv = styled.div.attrs<StyledColorSpanProps>(({backgroundColor}) => ({
+const StyledColorDiv = styled.div.attrs<StyledColorDivProps>(({backgroundColor}) => ({
   style: {backgroundColor}
-}))<StyledColorSpanProps>`
+}))<StyledColorDivProps>`
   ${tw`
     rounded-full
     w-10
@@ -151,11 +151,14 @@ export const DateInput: FC<InputProps> = ({label, value, onChange, min}) => (
 );
 
 export const ColorInput: FC<InputProps> = props => {
-  const {label, value, onChange, className} = props;
+  const {label, value, onChange, className, disabled} = props;
+
   const inputRef = useRef<HTMLInputElement>(null);
   const onSpanClick = () => inputRef.current.click();
 
   const backgroundColor = typeof value === 'string' ? value : '';
+
+  if (disabled) return <StyledColorDiv backgroundColor={backgroundColor} className={className} />;
 
   return (
     <StyledColorDiv onClick={onSpanClick} backgroundColor={backgroundColor} className={className}>

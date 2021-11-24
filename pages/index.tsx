@@ -41,7 +41,7 @@ const StyledGroupDiv = tw.div`
   mb-2
 `;
 
-const StyledNameColorGroupDiv = tw(StyledGroupDiv)`
+const StyledColorTitleGroupDiv = tw(StyledGroupDiv)`
   flex
   flex-row
 `;
@@ -149,10 +149,10 @@ const LandingForm: FC = () => {
 
   return (
     <form>
-      <StyledNameColorGroupDiv>
+      <StyledColorTitleGroupDiv>
         <ColorInputWithTooltip value={color} onChange={onChangeColor} />
         <TextInput label='Title' value={title} onChange={onChangeTitle} />
-      </StyledNameColorGroupDiv>
+      </StyledColorTitleGroupDiv>
 
       <StyledGroupDiv>
         <DateInput label='Start' value={start} onChange={onChangeStart} min={minimumDate} />
