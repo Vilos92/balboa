@@ -38,5 +38,5 @@ export async function savePlan(planDraft: PlanDraft) {
 
   const {data: plans, error} = await supabase.from<PlanModel>('plan').insert(planDraft);
 
-  return {plans, error};
+  return {plan: plans[0], error};
 }

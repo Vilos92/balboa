@@ -1,12 +1,13 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 
 import {PlanDraft, PlanModel, savePlan} from '../../../models/plan';
+import {netPost} from '../../../utils/net';
 
 /*
  * Constants.
  */
 
-export const plansUrl = '/api/plans';
+const plansUrl = '/api/plans';
 
 /*
  * Request handler.
@@ -30,8 +31,16 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<PlanModel>)
 
   const planDraft: PlanDraft = {title, color, start, end, location, description};
 
-  const {data, error} = await savePlan(planDraft);
-  if (!data || data.length === 0 || error) throw error;
+  const {plan, error} = await savePlan(planDraft);
+  if (!plan || error) throw error;
 
-  res.status(200).json(data[0]);
+  res.status(200).json(plan);
+}
+
+/*
+ * Client.
+ */
+
+export function postPlan(planDraft: PlanDraft) {
+  return netPost<PlanDraft, PlanModel>(plansUrl, planDraft);
 }

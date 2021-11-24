@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 
-import {Geolocation, getPositionStack} from '../../externalApi/geocoder';
-import {NetResponse} from '../../utils/net';
+import {Geolocation, getPositionStack} from '../../../externalApi/geocoder';
+import {NetResponse} from '../../../utils/net';
 
 /*
  * Types.
