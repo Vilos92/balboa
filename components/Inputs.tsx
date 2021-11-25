@@ -150,6 +150,13 @@ export const DateInput: FC<InputProps> = ({label, value, onChange, min}) => (
   </StyledInputGroupDiv>
 );
 
+export const TimeInput: FC<InputProps> = ({label, value, onChange}) => (
+  <StyledInputGroupDiv>
+    <StyledTextInput id={label} type='time' placeholder=' ' value={value} onChange={onChange} />
+    <StyledLabel htmlFor={label}>{label}</StyledLabel>
+  </StyledInputGroupDiv>
+);
+
 export const ColorInput: FC<InputProps> = props => {
   const {label, value, onChange, className, disabled} = props;
 

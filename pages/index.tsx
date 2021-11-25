@@ -4,7 +4,7 @@ import {ChangeEvent, FC, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Body, Card} from '../components/Commons';
-import {ColorInput, DateInput, TextAreaInput, TextInput} from '../components/Inputs';
+import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
 import {postPlan} from './api/plans';
 
@@ -103,8 +103,10 @@ const LandingForm: FC = () => {
     const randColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
     setColor(randColor);
   }, []);
-  const [start, setStart] = useState('');
-  const [end, setEnd] = useState('');
+  const [startDate, setStartDate] = useState('');
+  const [startTime, setStartTime] = useState('14:00');
+  const [endDate, setEndDate] = useState('');
+  const [endTime, setEndTime] = useState('17:00');
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState('');
   const [hasLocationFocused, setHasLocationFocused] = useState(false);
@@ -112,20 +114,23 @@ const LandingForm: FC = () => {
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value);
   const onChangeColor = (event: ChangeEvent<HTMLInputElement>) => setColor(event.target.value);
 
-  const onChangeStart = (event: ChangeEvent<HTMLInputElement>) => {
-    const startDate = new Date(event.target.value);
-    const endDate = new Date(end);
+  const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
+    const start = new Date(event.target.value);
+    const end = new Date(endDate);
 
-    setStart(event.target.value);
-    if (startDate > endDate) setEnd(event.target.value);
+    setStartDate(event.target.value);
+    if (start > end) setEndDate(event.target.value);
   };
-  const onChangeEnd = (event: ChangeEvent<HTMLInputElement>) => {
-    const startDate = new Date(start);
-    const endDate = new Date(event.target.value);
+  const onChangeStartTime = (event: ChangeEvent<HTMLInputElement>) => setStartTime(event.target.value);
 
-    setEnd(event.target.value);
-    if (endDate < startDate) setStart(event.target.value);
+  const onChangeEndDate = (event: ChangeEvent<HTMLInputElement>) => {
+    const start = new Date(startDate);
+    const end = new Date(event.target.value);
+
+    setEndDate(event.target.value);
+    if (end < start) setStartDate(event.target.value);
   };
+  const onChangeEndTime = (event: ChangeEvent<HTMLInputElement>) => setEndTime(event.target.value);
 
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => setLocation(event.target.value);
   const onFocusLocation = () => setHasLocationFocused(true);
@@ -135,15 +140,15 @@ const LandingForm: FC = () => {
   // Initial date should only be set on the client (no SSR).
   useEffect(() => {
     const defaultDate = computeDefaultDate();
-    setStart(defaultDate);
-    setEnd(defaultDate);
+    setStartDate(defaultDate);
+    setEndDate(defaultDate);
   }, []);
 
   // Cannot select dates before today.
   const minimumDate = computeInputValueFromDate(new Date());
 
   const onClick = async () => {
-    const plan = await postPlan({title, color, start, end, location, description});
+    const plan = await postPlan({title, color, start: startDate, end: endDate, location, description});
     router.push(`plans/${plan.id}`);
   };
 
@@ -155,8 +160,10 @@ const LandingForm: FC = () => {
       </StyledColorTitleGroupDiv>
 
       <StyledGroupDiv>
-        <DateInput label='Start' value={start} onChange={onChangeStart} min={minimumDate} />
-        <DateInput label='End' value={end} onChange={onChangeEnd} min={minimumDate} />
+        <DateInput label='Start Date' value={startDate} onChange={onChangeStartDate} min={minimumDate} />
+        <TimeInput label='Start Time' value={startTime} onChange={onChangeStartTime} />
+        <DateInput label='End Date' value={endDate} onChange={onChangeEndDate} min={minimumDate} />
+        <TimeInput label='End Time' value={endTime} onChange={onChangeEndTime} />
       </StyledGroupDiv>
 
       <StyledGroupDiv>
