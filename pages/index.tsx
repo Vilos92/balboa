@@ -52,6 +52,12 @@ const StyledColorInput = tw(ColorInput)`
   mr-3
 `;
 
+const StyledDateTimeDiv = tw.div`
+  flex
+  flex-row
+  gap-1
+`;
+
 const StyledTextAreaInput = styled(TextAreaInput)`
   min-height: 72px;
 `;
@@ -170,10 +176,14 @@ const LandingForm: FC = () => {
       </StyledColorTitleGroupDiv>
 
       <StyledGroupDiv>
-        <DateInput label='Start Date' value={startDate} onChange={onChangeStartDate} min={minimumDate} />
-        <TimeInput label='Start Time' value={startTime} onChange={onChangeStartTime} />
-        <DateInput label='End Date' value={endDate} onChange={onChangeEndDate} min={minimumDate} />
-        <TimeInput label='End Time' value={endTime} onChange={onChangeEndTime} />
+        <StyledDateTimeDiv>
+          <DateInput label='Start Date' value={startDate} onChange={onChangeStartDate} min={minimumDate} />
+          <TimeInput label='Start Time' value={startTime} onChange={onChangeStartTime} />
+        </StyledDateTimeDiv>
+        <StyledDateTimeDiv>
+          <DateInput label='End Date' value={endDate} onChange={onChangeEndDate} min={minimumDate} />
+          <TimeInput label='End Time' value={endTime} onChange={onChangeEndTime} />
+        </StyledDateTimeDiv>
       </StyledGroupDiv>
 
       <StyledGroupDiv>
