@@ -69,8 +69,7 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => {
             <StyledTitleH2>{plan.title}</StyledTitleH2>
           </StyledTitleDiv>
         </StyledColorTitleDiv>
-        {plan.start}
-        {plan.end}
+        {plan.start} {plan.end}
         <div>{plan.location}</div>
         <div>{plan.description}</div>
       </Card>
