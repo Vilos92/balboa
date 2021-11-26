@@ -121,22 +121,46 @@ const LandingForm: FC = () => {
   const onChangeColor = (event: ChangeEvent<HTMLInputElement>) => setColor(event.target.value);
 
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
-    const start = new Date(event.target.value);
-    const end = new Date(endDate);
+    const start = computeDateTime(event.target.value, startTime);
+    const end = computeDateTime(endDate, endTime);
 
     setStartDate(event.target.value);
-    if (start > end) setEndDate(event.target.value);
+    if (start > end) {
+      setEndDate(event.target.value);
+      setEndTime(startTime);
+    }
   };
-  const onChangeStartTime = (event: ChangeEvent<HTMLInputElement>) => setStartTime(event.target.value);
+  const onChangeStartTime = (event: ChangeEvent<HTMLInputElement>) => {
+    const start = computeDateTime(startDate, event.target.value);
+    const end = computeDateTime(endDate, endTime);
+
+    setStartTime(event.target.value);
+    if (start > end) {
+      setEndDate(startDate);
+      setEndTime(event.target.value);
+    }
+  };
 
   const onChangeEndDate = (event: ChangeEvent<HTMLInputElement>) => {
-    const start = new Date(startDate);
-    const end = new Date(event.target.value);
+    const start = computeDateTime(startDate, startTime);
+    const end = computeDateTime(event.target.value, endTime);
 
     setEndDate(event.target.value);
-    if (end < start) setStartDate(event.target.value);
+    if (end < start) {
+      setStartDate(event.target.value);
+      setStartTime(endTime);
+    }
   };
-  const onChangeEndTime = (event: ChangeEvent<HTMLInputElement>) => setEndTime(event.target.value);
+  const onChangeEndTime = (event: ChangeEvent<HTMLInputElement>) => {
+    const start = computeDateTime(startDate, startTime);
+    const end = computeDateTime(endDate, event.target.value);
+
+    setEndTime(event.target.value);
+    if (end < start) {
+      setStartDate(endDate);
+      setStartTime(event.target.value);
+    }
+  };
 
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => setLocation(event.target.value);
   const onFocusLocation = () => setHasLocationFocused(true);
@@ -154,14 +178,14 @@ const LandingForm: FC = () => {
   const minimumDate = computeInputValueFromDate(new Date());
 
   const onClick = async () => {
-    const start = computeDateTime(startDate, startTime);
-    const end = computeDateTime(endDate, endTime);
+    const startDt = computeDateTime(startDate, startTime);
+    const endDt = computeDateTime(endDate, endTime);
 
     const plan = await postPlan({
       title,
       color,
-      start: start.toISOString(),
-      end: end.toISOString(),
+      start: startDt.toISOString(),
+      end: endDt.toISOString(),
       location,
       description
     });

@@ -13,6 +13,11 @@ interface PlanPageProps {
   plan: PlanModel;
 }
 
+interface PlanWhenProps {
+  start: string;
+  end: string;
+}
+
 /*
  * Styles.
  */
@@ -30,6 +35,10 @@ const StyledTitleDiv = tw.div`
 
 const StyledTitleH2 = tw.h2`
   text-lg
+  font-bold
+`;
+
+const StyledDateTimeH3 = tw.h3`
   font-bold
 `;
 
@@ -69,7 +78,7 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => {
             <StyledTitleH2>{plan.title}</StyledTitleH2>
           </StyledTitleDiv>
         </StyledColorTitleDiv>
-        {plan.start} {plan.end}
+        <PlanWhen start={plan.start} end={plan.end} />
         <div>{plan.location}</div>
         <div>{plan.description}</div>
       </Card>
@@ -78,3 +87,44 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => {
 };
 
 export default PlanPage;
+
+/*
+ * Components.
+ */
+
+const PlanWhen: FC<PlanWhenProps> = ({start, end}) => {
+  const startDt = new Date(start);
+  const endDt = new Date(end);
+
+  if (startDt.toDateString() === endDt.toDateString()) {
+    // Only need to render end date time, no date.
+  }
+
+  const startFormatted = startDt.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit'
+  });
+
+  const endFormatted =
+    startDt.toDateString() === endDt.toDateString()
+      ? endDt.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit'
+        })
+      : endDt.toLocaleString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: 'numeric',
+          minute: '2-digit'
+        });
+
+  return (
+    <StyledDateTimeH3>
+      {startFormatted} - {endFormatted}
+    </StyledDateTimeH3>
+  );
+};
