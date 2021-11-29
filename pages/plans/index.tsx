@@ -4,6 +4,7 @@ import tw from 'twin.macro';
 
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
+import {VisualPlan} from '../../components/plan/VisualPlan';
 import {PlanModel, findPlans} from '../../models/plan';
 
 /*
@@ -84,10 +85,13 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
   return (
     <StyledCard>
       <div onClick={onClickCard}>
-        <StyledTitleH2>{plan.title}</StyledTitleH2>
+        <StyledTitleH2>
+          <VisualPlan plan={plan} />
+        </StyledTitleH2>
         <StyledDateTimeRangeH3>
           <DateTimeRange start={plan.start} end={plan.end} />
         </StyledDateTimeRangeH3>
+        <div>{plan.location}</div>
       </div>
     </StyledCard>
   );

@@ -4,22 +4,18 @@ import {FC} from 'react';
  * Types.
  */
 
-interface DateRangeProps {
+interface DateTimeRangeProps {
   start: string;
   end: string;
 }
 
 /*
- * Component
+ * Component.
  */
 
-export const DateTimeRange: FC<DateRangeProps> = ({start, end}) => {
+export const DateTimeRange: FC<DateTimeRangeProps> = ({start, end}) => {
   const startDt = new Date(start);
   const endDt = new Date(end);
-
-  if (startDt.toDateString() === endDt.toDateString()) {
-    // Only need to render end date time, no date.
-  }
 
   const startFormatted = startDt.toLocaleString('en-US', {
     year: 'numeric',

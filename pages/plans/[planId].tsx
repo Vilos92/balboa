@@ -3,7 +3,7 @@ import tw from 'twin.macro';
 
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
-import {ColorInput} from '../../components/Inputs';
+import {VisualPlan} from '../../components/plan/VisualPlan';
 import {PlanModel, findPlan} from '../../models/plan';
 
 /*
@@ -14,28 +14,12 @@ interface PlanPageProps {
   plan: PlanModel;
 }
 
-interface PlanWhenProps {
-  start: string;
-  end: string;
-}
-
 /*
  * Styles.
  */
 
-const StyledColorTitleDiv = tw.div`
-  flex
-  flex-row
-  align-middle
-`;
-
-const StyledTitleDiv = tw.div`
-  pt-1.5
-  ml-3 
-`;
-
 const StyledTitleH2 = tw.h2`
-  text-lg
+  text-xl
 `;
 
 const StyledDateTimeRangeH3 = tw.h3`
@@ -74,13 +58,12 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => (
     <CenteredContent>
       <Logo />
       <Card>
-        <StyledColorTitleDiv>
-          <ColorInput label='Color' value={plan.color} disabled />
-          <StyledTitleDiv>
-            <StyledTitleH2>{plan.title}</StyledTitleH2>
-          </StyledTitleDiv>
-        </StyledColorTitleDiv>
-        <PlanDateRange start={plan.start} end={plan.end} />
+        <StyledTitleH2>
+          <VisualPlan plan={plan} />
+        </StyledTitleH2>
+        <StyledDateTimeRangeH3>
+          <DateTimeRange start={plan.start} end={plan.end} />
+        </StyledDateTimeRangeH3>
         <div>{plan.location}</div>
         <div>{plan.description}</div>
       </Card>
@@ -89,15 +72,3 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => (
 );
 
 export default PlanPage;
-
-/*
- * Components.
- */
-
-const PlanDateRange: FC<PlanWhenProps> = ({start, end}) => {
-  return (
-    <StyledDateTimeRangeH3>
-      <DateTimeRange start={start} end={end} />
-    </StyledDateTimeRangeH3>
-  );
-};

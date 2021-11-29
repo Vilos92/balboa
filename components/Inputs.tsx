@@ -158,14 +158,12 @@ export const TimeInput: FC<InputProps> = ({label, value, onChange}) => (
 );
 
 export const ColorInput: FC<InputProps> = props => {
-  const {label, value, onChange, className, disabled} = props;
+  const {label, value, onChange, className} = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
   const onSpanClick = () => inputRef.current.click();
 
   const backgroundColor = typeof value === 'string' ? value : '';
-
-  if (disabled) return <StyledColorDiv backgroundColor={backgroundColor} className={className} />;
 
   return (
     <StyledColorDiv onClick={onSpanClick} backgroundColor={backgroundColor} className={className}>
