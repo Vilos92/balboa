@@ -3,6 +3,7 @@ import {FC} from 'react';
 import tw from 'twin.macro';
 
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
+import {DateTimeRange} from '../../components/DateTimeRange';
 import {PlanModel, findPlans} from '../../models/plan';
 
 /*
@@ -23,6 +24,15 @@ interface PlanCardProps {
 
 const StyledCard = tw(Card)`
   mb-2
+`;
+
+const StyledTitleH2 = tw.h2`
+  text-lg
+`;
+
+const StyledDateTimeRangeH3 = tw.h3`
+  font-bold
+  text-sm
 `;
 
 /*
@@ -74,8 +84,10 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
   return (
     <StyledCard>
       <div onClick={onClickCard}>
-        {plan.start}
-        {plan.title}
+        <StyledTitleH2>{plan.title}</StyledTitleH2>
+        <StyledDateTimeRangeH3>
+          <DateTimeRange start={plan.start} end={plan.end} />
+        </StyledDateTimeRangeH3>
       </div>
     </StyledCard>
   );
