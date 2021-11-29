@@ -34,6 +34,8 @@ const StyledPopoverDiv = styled.div<StyledPopoverDivProps>`
     no-underline
     break-words
     rounded-lg
+    border-gray-400
+    border-2
     hidden
   `}
 
