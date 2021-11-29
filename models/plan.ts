@@ -27,6 +27,9 @@ const clientFields = 'id, title, color, start, end, location, description';
  * Database operations.
  */
 
+/**
+ * Select a single plan by id.
+ */
 export async function findPlan(planId: number) {
   const supabase = makeSupabaseClient();
 
@@ -39,12 +42,16 @@ export async function findPlan(planId: number) {
   return {plan: plans[0], error};
 }
 
+/**
+ * Select plans which have not yet started or ended.
+ */
 export async function findPlans() {
   const supabase = makeSupabaseClient();
 
   const {data: plans, error} = await supabase
     .from<PlanModel>('plan')
     .select(clientFields)
+    .filter('end', 'gte', new Date().toISOString())
     .order('start', {ascending: true})
     .limit(10);
 
