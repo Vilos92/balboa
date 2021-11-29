@@ -18,6 +18,12 @@ export interface PlanModel {
 export type PlanDraft = Pick<PlanModel, 'title' | 'color' | 'start' | 'end' | 'location' | 'description'>;
 
 /*
+ * Constants.
+ */
+
+const clientFields = 'id, title, color, start, end, location, description';
+
+/*
  * Database operations.
  */
 
@@ -26,11 +32,23 @@ export async function findPlan(planId: number) {
 
   const {data: plans, error} = await supabase
     .from<PlanModel>('plan')
-    .select('title, color, start, end, location, description')
+    .select(clientFields)
     .filter('id', 'eq', planId)
     .limit(1);
 
   return {plan: plans[0], error};
+}
+
+export async function findPlans() {
+  const supabase = makeSupabaseClient();
+
+  const {data: plans, error} = await supabase
+    .from<PlanModel>('plan')
+    .select(clientFields)
+    .order('start', {ascending: true})
+    .limit(10);
+
+  return {plans, error};
 }
 
 export async function savePlan(planDraft: PlanDraft) {

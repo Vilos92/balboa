@@ -9,7 +9,7 @@ const StyledBodyDiv = tw.div`
   bg-gray-800
 `;
 
-const StyledCardContainerDiv = tw.div`
+const StyledCenteredContentDiv = tw.div`
   flex
   flex-col
   items-center
@@ -40,11 +40,12 @@ const StyledLogoH1 = tw.h1`
 
 export const Body: FC = ({children}) => <StyledBodyDiv>{children}</StyledBodyDiv>;
 
+export const Logo: FC = () => <StyledLogoH1>Grueplan</StyledLogoH1>;
+
+export const CenteredContent: FC = ({children}) => {
+  return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;
+};
+
 export const Card: FC = ({children}) => {
-  return (
-    <StyledCardContainerDiv>
-      <StyledLogoH1>Grueplan</StyledLogoH1>
-      <StyledCardDiv>{children}</StyledCardDiv>
-    </StyledCardContainerDiv>
-  );
+  return <StyledCardDiv>{children}</StyledCardDiv>;
 };

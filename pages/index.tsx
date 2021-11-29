@@ -3,7 +3,7 @@ import {useRouter} from 'next/router';
 import {ChangeEvent, FC, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
-import {Body, Card} from '../components/Commons';
+import {Body, Card, CenteredContent, Logo} from '../components/Commons';
 import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
 import {postPlan} from './api/plans';
@@ -83,16 +83,17 @@ const LandingFormButton = styled.button.attrs<LandingFormButtonProps>(({backgrou
  * Page.
  */
 
-const LandingPage: FC = () => {
-  return (
-    <Body>
+const LandingPage: FC = () => (
+  <Body>
+    <CenteredContent>
+      <Logo />
       <Card>
         <StyledLandingH2>Enter your event details here</StyledLandingH2>
         <LandingForm />
       </Card>
-    </Body>
-  );
-};
+    </CenteredContent>
+  </Body>
+);
 
 export default LandingPage;
 

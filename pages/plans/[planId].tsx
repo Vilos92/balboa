@@ -1,7 +1,7 @@
 import {FC} from 'react';
 import tw from 'twin.macro';
 
-import {Body, Card} from '../../components/Commons';
+import {Body, Card, CenteredContent} from '../../components/Commons';
 import {ColorInput} from '../../components/Inputs';
 import {PlanModel, findPlan} from '../../models/plan';
 
@@ -68,9 +68,9 @@ export async function getServerSideProps({query}) {
  * Page.
  */
 
-const PlanPage: FC<PlanPageProps> = ({plan}) => {
-  return (
-    <Body>
+const PlanPage: FC<PlanPageProps> = ({plan}) => (
+  <Body>
+    <CenteredContent>
       <Card>
         <StyledColorTitleDiv>
           <ColorInput label='Color' value={plan.color} disabled />
@@ -82,9 +82,9 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => {
         <div>{plan.location}</div>
         <div>{plan.description}</div>
       </Card>
-    </Body>
-  );
-};
+    </CenteredContent>
+  </Body>
+);
 
 export default PlanPage;
 
