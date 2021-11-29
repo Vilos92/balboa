@@ -24,13 +24,12 @@ interface PlanCardProps {
  */
 
 const StyledCard = tw(Card)`
-  mb-2
-`;
-
-const StyledLayoutDiv = tw.div`
   flex
   flex-row
   items-center 
+  mb-2
+  hover:cursor-pointer
+  hover:bg-gray-200
 `;
 
 const StyledTitleH2 = tw.h2`
@@ -51,6 +50,8 @@ const StyledRightDiv = tw.div`
 
 const StyledDaysUntilDiv = tw.div`
   text-xs
+  text-gray-400
+  font-light
 `;
 
 /*
@@ -103,23 +104,23 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
   const differenceMs = startDt.getTime() - new Date().getTime();
   const daysUntil = Math.ceil(differenceMs / 1000 / 3600 / 24);
 
+  const daysUntilString = daysUntil === 1 ? 'day' : 'days';
+
   return (
-    <StyledCard>
-      <StyledLayoutDiv onClick={onClickCard}>
-        <div>
-          <StyledTitleH2>
-            <VisualPlan plan={plan} />
-          </StyledTitleH2>
-          <StyledDateTimeRangeH3>
-            <DateTimeRange start={plan.start} end={plan.end} />
-          </StyledDateTimeRangeH3>
-          <div>{plan.location}</div>
-        </div>
-        <StyledRightDiv>
-          {daysUntil}
-          <StyledDaysUntilDiv>days away</StyledDaysUntilDiv>
-        </StyledRightDiv>
-      </StyledLayoutDiv>
+    <StyledCard onClick={onClickCard}>
+      <div>
+        <StyledTitleH2>
+          <VisualPlan plan={plan} />
+        </StyledTitleH2>
+        <StyledDateTimeRangeH3>
+          <DateTimeRange start={plan.start} end={plan.end} />
+        </StyledDateTimeRangeH3>
+        <div>{plan.location}</div>
+      </div>
+      <StyledRightDiv>
+        {daysUntil}
+        <StyledDaysUntilDiv>{daysUntilString} away</StyledDaysUntilDiv>
+      </StyledRightDiv>
     </StyledCard>
   );
 };

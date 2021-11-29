@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, MouseEvent} from 'react';
 import tw from 'twin.macro';
 
 /*
@@ -7,6 +7,7 @@ import tw from 'twin.macro';
 
 interface CardProps {
   className?: string;
+  onClick?: (event: MouseEvent<HTMLDivElement>) => void;
 }
 
 /*
@@ -54,6 +55,10 @@ export const CenteredContent: FC = ({children}) => {
   return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;
 };
 
-export const Card: FC<CardProps> = ({children, className}) => {
-  return <StyledCardDiv className={className}>{children}</StyledCardDiv>;
+export const Card: FC<CardProps> = ({children, className, onClick}) => {
+  return (
+    <StyledCardDiv className={className} onClick={onClick}>
+      {children}
+    </StyledCardDiv>
+  );
 };
