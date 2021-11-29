@@ -39,7 +39,7 @@ export async function findPlan(planId: number) {
     .filter('id', 'eq', planId)
     .limit(1);
 
-  return {plan: plans[0], error};
+  return {plan: plans?.[0], error};
 }
 
 /**
@@ -63,5 +63,5 @@ export async function savePlan(planDraft: PlanDraft) {
 
   const {data: plans, error} = await supabase.from<PlanModel>('plan').insert(planDraft);
 
-  return {plan: plans[0], error};
+  return {plan: plans?.[0], error};
 }

@@ -30,6 +30,7 @@ specifiers:
   twin.macro: ^2.8.1
   typescript: ^4.4.4
   yargs: ^17.2.1
+  zod: ^3.11.6
 
 dependencies:
   '@popperjs/core': 2.10.2
@@ -44,6 +45,7 @@ dependencies:
   react-popper: 2.2.5_838acf1c84808345430cf17171f87518
   styled-components: 5.3.3_281a4fa50a045c9112baf635f3bc27a7
   swr: 1.0.1_react@17.0.2
+  zod: 3.11.6
 
 devDependencies:
   '@trivago/prettier-plugin-sort-imports': 3.1.1_prettier@2.4.1
@@ -4626,4 +4628,8 @@ packages:
   /yocto-queue/0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+    dev: false
+
+  /zod/3.11.6:
+    resolution: {integrity: sha512-daZ80A81I3/9lIydI44motWe6n59kRBfNzTuS2bfzVh1nAXi667TOTWWtatxyG+fwgNUiagSj/CWZwRRbevJIg==}
     dev: false

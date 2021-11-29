@@ -6,7 +6,7 @@ import tw, {styled} from 'twin.macro';
 import {Body, Card, CenteredContent, Logo} from '../components/Commons';
 import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
-import {postPlan} from './api/plans';
+import {encodePostPlan, postPlan} from './api/plans';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <p>Loading map</p>,
@@ -182,14 +182,22 @@ const LandingForm: FC = () => {
     const startDt = computeDateTime(startDate, startTime);
     const endDt = computeDateTime(endDate, endTime);
 
-    const plan = await postPlan({
+    const planBlob = {
       title,
       color,
       start: startDt.toISOString(),
       end: endDt.toISOString(),
       location,
       description
-    });
+    };
+
+    const {data: planDraft, error} = encodePostPlan(planBlob);
+    if (!planDraft || error) {
+      console.error(error);
+      return;
+    }
+
+    const plan = await postPlan(planDraft);
     router.push(`plans/${plan.id}`);
   };
 
