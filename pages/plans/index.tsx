@@ -1,6 +1,8 @@
+import {useRouter} from 'next/router';
 import {FC} from 'react';
+import tw from 'twin.macro';
 
-import {Body, Card, CenteredContent} from '../../components/Commons';
+import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {PlanModel, findPlans} from '../../models/plan';
 
 /*
@@ -16,14 +18,19 @@ interface PlanCardProps {
 }
 
 /*
+ * Styles.
+ */
+
+const StyledCard = tw(Card)`
+  mb-2
+`;
+
+/*
  * Server-side props.
  */
 
 export async function getServerSideProps() {
   const {plans, error} = await findPlans();
-
-  console.log('plans', plans);
-  console.log('error', error);
 
   if (!plans || error) {
     return {
@@ -45,6 +52,7 @@ export async function getServerSideProps() {
 const PlansPage: FC<PlansPageProps> = ({plans}) => (
   <Body>
     <CenteredContent>
+      <Logo />
       {plans.map(plan => (
         <PlanCard key={plan.id} plan={plan} />
       ))}
@@ -59,10 +67,16 @@ export default PlansPage;
  */
 
 const PlanCard: FC<PlanCardProps> = ({plan}) => {
+  const router = useRouter();
+
+  const onClickCard = () => router.push(`plans/${plan.id}`);
+
   return (
-    <Card>
-      {plan.start}
-      {plan.title}
-    </Card>
+    <StyledCard>
+      <div onClick={onClickCard}>
+        {plan.start}
+        {plan.title}
+      </div>
+    </StyledCard>
   );
 };

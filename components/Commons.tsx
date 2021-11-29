@@ -2,6 +2,14 @@ import {FC} from 'react';
 import tw from 'twin.macro';
 
 /*
+ * Types.
+ */
+
+interface CardProps {
+  className?: string;
+}
+
+/*
  * Styles.
  */
 
@@ -46,6 +54,6 @@ export const CenteredContent: FC = ({children}) => {
   return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;
 };
 
-export const Card: FC = ({children}) => {
-  return <StyledCardDiv>{children}</StyledCardDiv>;
+export const Card: FC<CardProps> = ({children, className}) => {
+  return <StyledCardDiv className={className}>{children}</StyledCardDiv>;
 };
