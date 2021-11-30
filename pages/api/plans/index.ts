@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {ZodError, z} from 'zod';
 
-import {PlanModel, savePlan} from '../../../models/plan';
+import {PlanModel, planDraftSchema, savePlan} from '../../../models/plan';
 import {netPost} from '../../../utils/net';
 
 /*
@@ -11,14 +11,7 @@ import {netPost} from '../../../utils/net';
 const plansUrl = '/api/plans';
 
 // Schema used to validate plans posted to this endpoint.
-const postPlanSchema = z.object({
-  title: z.string().min(3).max(30),
-  color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
-  start: z.string().min(13).max(30),
-  end: z.string().min(13).max(30),
-  location: z.string().min(3).max(30),
-  description: z.string().max(300)
-});
+const postPlanSchema = planDraftSchema.extend({});
 
 /*
  * Types.

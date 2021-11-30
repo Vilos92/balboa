@@ -21,6 +21,17 @@ const dbPlanSchema = z.object({
 // Schema for plans used by the server and client.
 const planSchema = dbPlanSchema.omit({created_at: true}).extend({createdAt: z.string()});
 
+// Schema for plan drafts. This has stricter requirements
+// as it is used to validate data received from the API.
+export const planDraftSchema = z.object({
+  title: z.string().min(3).max(30),
+  color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
+  start: z.string().min(13).max(30),
+  end: z.string().min(13).max(30),
+  location: z.string().min(3).max(30),
+  description: z.string().max(300)
+});
+
 // Fields in the DB which can be returned to the client.
 const clientFields = 'id, created_at, title, color, start, end, location, description';
 
@@ -30,7 +41,7 @@ const clientFields = 'id, created_at, title, color, start, end, location, descri
 
 type DbPlanModel = z.infer<typeof dbPlanSchema>;
 export type PlanModel = z.infer<typeof planSchema>;
-type PlanDraft = Pick<PlanModel, 'title' | 'color' | 'start' | 'end' | 'location' | 'description'>;
+type PlanDraft = z.infer<typeof planDraftSchema>;
 
 /*
  * Database operations.
