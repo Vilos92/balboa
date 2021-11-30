@@ -10,6 +10,7 @@ import {netPost} from '../../../utils/net';
 
 const plansUrl = '/api/plans';
 
+// Schema used to validate plans posted to this endpoint.
 const postPlanSchema = z.object({
   title: z.string().min(3).max(30),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
@@ -18,6 +19,10 @@ const postPlanSchema = z.object({
   location: z.string().min(3).max(30),
   description: z.string().max(300)
 });
+
+/*
+ * Types.
+ */
 
 type PostPlanSchema = z.infer<typeof postPlanSchema>;
 

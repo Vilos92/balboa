@@ -1,32 +1,15 @@
-import {ZodError, z} from 'zod';
+import {z} from 'zod';
 
 import {makeSupabaseClient} from '../utils/supabase';
-
-/*
- * Types.
- */
-
-export interface PlanModel {
-  id: number;
-  created_at: string;
-  title: string;
-  color: string;
-  start: string;
-  end: string;
-  location: string;
-  description: string;
-}
-
-export type PlanDraft = Pick<PlanModel, 'title' | 'color' | 'start' | 'end' | 'location' | 'description'>;
 
 /*
  * Constants.
  */
 
-const clientFields = 'id, title, color, start, end, location, description';
-
+// Schema for plans in the database.
 const dbPlanSchema = z.object({
   id: z.number(),
+  created_at: z.string(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
   start: z.string(),
@@ -35,7 +18,19 @@ const dbPlanSchema = z.object({
   description: z.string()
 });
 
+// Schema for plans used by the server and client.
+const planSchema = dbPlanSchema.omit({created_at: true}).extend({createdAt: z.string()});
+
+// Fields in the DB which can be returned to the client.
+const clientFields = 'id, created_at, title, color, start, end, location, description';
+
+/*
+ * Types.
+ */
+
 type DbPlanModel = z.infer<typeof dbPlanSchema>;
+export type PlanModel = z.infer<typeof planSchema>;
+type PlanDraft = Pick<PlanModel, 'title' | 'color' | 'start' | 'end' | 'location' | 'description'>;
 
 /*
  * Database operations.
@@ -47,13 +42,14 @@ type DbPlanModel = z.infer<typeof dbPlanSchema>;
 export async function findPlan(planId: number) {
   const supabase = makeSupabaseClient();
 
-  const {data: plans, error} = await supabase
+  const {data, error} = await supabase
     .from<DbPlanModel>('plan')
     .select(clientFields)
     .filter('id', 'eq', planId)
     .limit(1);
 
-  const plan = decodeDbPlan(plans?.[0]);
+  const dbPlan = decodeDbPlan(data?.[0]);
+  const plan = encodePlan(dbPlan);
 
   return {plan, error};
 }
@@ -71,7 +67,8 @@ export async function findPlans() {
     .order('start', {ascending: true})
     .limit(10);
 
-  const plans = decodeDbPlans(data);
+  const dbPlans = decodeDbPlans(data);
+  const plans = encodePlans(dbPlans);
 
   return {plans, error};
 }
@@ -79,9 +76,10 @@ export async function findPlans() {
 export async function savePlan(planDraft: PlanDraft) {
   const supabase = makeSupabaseClient();
 
-  const {data: plans, error} = await supabase.from<PlanModel>('plan').insert(planDraft);
+  const {data, error} = await supabase.from<PlanModel>('plan').insert(planDraft);
 
-  const plan = decodeDbPlan(plans?.[0]);
+  const dbPlan = decodeDbPlan(data?.[0]);
+  const plan = encodePlan(dbPlan);
 
   return {plan, error};
 }
@@ -104,4 +102,31 @@ function decodeDbPlan(planRow: unknown): DbPlanModel {
  */
 function decodeDbPlans(planRows: unknown): readonly DbPlanModel[] {
   return z.array(dbPlanSchema).parse(planRows);
+}
+
+/**
+ * Used by the server to encode a plan from
+ * the database to be sent to the client.
+ */
+function encodePlan(planRow: DbPlanModel): PlanModel {
+  const planBlob = {
+    id: planRow.id,
+    createdAt: planRow.created_at,
+    title: planRow.title,
+    color: planRow.color,
+    start: planRow.start,
+    end: planRow.end,
+    location: planRow.location,
+    description: planRow.description
+  };
+
+  return planSchema.parse(planBlob);
+}
+
+/*
+ * Used by the server to encode an array of plans
+ * from the database to be sent to the client.
+ */
+function encodePlans(planRows: readonly DbPlanModel[]): readonly PlanModel[] {
+  return planRows.map(encodePlan);
 }
