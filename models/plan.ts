@@ -18,11 +18,14 @@ const dbPlanSchema = z.object({
   description: z.string()
 });
 
+// Fields in the DB which can be returned to the client.
+const clientFields = 'id, created_at, title, color, start, end, location, description';
+
 // Schema for plans used by the server and client.
 const planSchema = dbPlanSchema.omit({created_at: true}).extend({createdAt: z.string()});
 
-// Schema for plan drafts. This has stricter requirements
-// as it is used to validate data received from the API.
+// Schema for plan drafts. This is used to validate data
+// received from the API, and has stricter requirements.
 export const planDraftSchema = z.object({
   title: z.string().min(3).max(30),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
@@ -31,9 +34,6 @@ export const planDraftSchema = z.object({
   location: z.string().min(3).max(30),
   description: z.string().max(300)
 });
-
-// Fields in the DB which can be returned to the client.
-const clientFields = 'id, created_at, title, color, start, end, location, description';
 
 /*
  * Types.
@@ -96,7 +96,7 @@ export async function savePlan(planDraft: PlanDraft) {
 }
 
 /*
- * Helpers.
+ * Runtime decoding/encoding.
  */
 
 /**
