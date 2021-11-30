@@ -17,13 +17,7 @@ export const DateTimeRange: FC<DateTimeRangeProps> = ({start, end}) => {
   const startDt = new Date(start);
   const endDt = new Date(end);
 
-  const startFormatted = startDt.toLocaleString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit'
-  });
+  const startFormatted = formatLocaleString(startDt);
 
   const endFormatted =
     startDt.toDateString() === endDt.toDateString()
@@ -31,13 +25,7 @@ export const DateTimeRange: FC<DateTimeRangeProps> = ({start, end}) => {
           hour: 'numeric',
           minute: '2-digit'
         })
-      : endDt.toLocaleString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit'
-        });
+      : formatLocaleString(endDt);
 
   return (
     <>
@@ -45,3 +33,22 @@ export const DateTimeRange: FC<DateTimeRangeProps> = ({start, end}) => {
     </>
   );
 };
+
+/*
+ * Helpers.
+ */
+
+function formatLocaleString(date: Date) {
+  const dateString = date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const timeString = date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit'
+  });
+
+  return `${dateString} at ${timeString}`;
+}
