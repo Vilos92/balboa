@@ -54,8 +54,8 @@ async function postHandler(req: NextApiRequest, res: NextApiResponse<PlanModel>)
  * Client.
  */
 
-export function postPlan(planDraft: PostPlanSchema) {
-  return netPost<PostPlanSchema, PlanModel>(plansUrl, planDraft);
+export function postPlan(planBlob: PostPlanSchema) {
+  return netPost<PostPlanSchema, PlanModel>(plansUrl, planBlob);
 }
 
 /*
@@ -66,19 +66,19 @@ export function postPlan(planDraft: PostPlanSchema) {
  * Used by the server to decode a plan from the client.
  * Does not handle any exceptions thrown by the parser.
  */
-function decodePostPlan(planBlob: any): PostPlanSchema {
+function decodePostPlan(planBlob: unknown): PostPlanSchema {
   return postPlanSchema.parse(planBlob);
 }
 
 /**
- * Used by the client to encode data for the server.
- * Captures the exception for use in the UI.
+ * Used by the client to validate a plan before submission.
+ * If any errors are encountered they are returned.
  */
-export function encodePostPlan(planBlob: any): {data?: PostPlanSchema; error?: ZodError<PostPlanSchema>} {
+export function validatePostPlan(planBlob: PostPlanSchema): ZodError<PostPlanSchema> | undefined {
   try {
-    const data = postPlanSchema.parse(planBlob);
-    return {data};
+    postPlanSchema.parse(planBlob);
+    return undefined;
   } catch (error) {
-    return {error};
+    return error;
   }
 }
