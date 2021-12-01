@@ -41,7 +41,7 @@ export const planDraftSchema = z.object({
 
 type DbPlanModel = z.infer<typeof dbPlanSchema>;
 export type PlanModel = z.infer<typeof planSchema>;
-type PlanDraft = z.infer<typeof planDraftSchema>;
+export type PlanDraft = z.infer<typeof planDraftSchema>;
 
 /*
  * Database operations.

@@ -6,6 +6,7 @@ import tw, {styled} from 'twin.macro';
 import {Body, Card, CenteredContent, Logo} from '../components/Commons';
 import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
+import {PlanDraft} from '../models/plan';
 import {postPlan, validatePostPlan} from './api/plans';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
@@ -24,6 +25,24 @@ interface ColorInputWithTooltipProps {
 
 interface LandingFormButtonProps {
   backgroundColor: string;
+}
+
+enum LandingStagesEnum {
+  PLAN = 'plan',
+  ACCOUNT = 'account'
+}
+
+interface PlanStageProps {
+  createPlan: (planDraft: PlanDraft) => void;
+}
+
+interface AccountStageProps {
+  planDraft: PlanDraft;
+  createPlan: () => void;
+}
+
+interface PlanFormProps {
+  createPlan: (planDraft: PlanDraft) => void;
 }
 
 /*
@@ -87,10 +106,7 @@ const LandingPage: FC = () => (
   <Body>
     <CenteredContent>
       <Logo />
-      <Card>
-        <StyledLandingH2>Enter your event details here</StyledLandingH2>
-        <LandingForm />
-      </Card>
+      <LandingStage />
     </CenteredContent>
   </Body>
 );
@@ -101,9 +117,61 @@ export default LandingPage;
  * Components.
  */
 
-const LandingForm: FC = () => {
+const LandingStage: FC = () => {
   const router = useRouter();
 
+  const [landingStage, setLandingStage] = useState<LandingStagesEnum>(LandingStagesEnum.PLAN);
+  const [planDraft, setPlanDraft] = useState<PlanDraft>();
+
+  const attemptCreatePlan = async (planDraft: PlanDraft) => {
+    setPlanDraft(planDraft);
+    setLandingStage(LandingStagesEnum.ACCOUNT);
+
+    // TODO: If already signed in, create plan and move ahead.
+  };
+
+  const createPlan = async () => {
+    if (!planDraft) return;
+
+    const plan = await postPlan(planDraft);
+    router.push(`plans/${plan.id}`);
+  };
+
+  switch (landingStage) {
+    case LandingStagesEnum.PLAN:
+      return <PlanStage createPlan={attemptCreatePlan} />;
+    case LandingStagesEnum.ACCOUNT: {
+      if (!planDraft) throw new Error('Should not reach account stage without a plan draft');
+
+      return <AccountStage planDraft={planDraft} createPlan={createPlan} />;
+    }
+    default:
+      return null;
+  }
+};
+
+const PlanStage: FC<PlanStageProps> = ({createPlan}) => (
+  <Card>
+    <StyledLandingH2>Enter your event details here</StyledLandingH2>
+    <PlanForm createPlan={createPlan} />
+  </Card>
+);
+
+const AccountStage: FC<AccountStageProps> = ({planDraft, createPlan}) => {
+  const onClick = () => createPlan();
+
+  return (
+    <Card>
+      <StyledLandingH2>Almost there!</StyledLandingH2>
+      <p>Create an account to create your event.</p>
+      <LandingFormButton type='button' backgroundColor={planDraft.color} onClick={onClick}>
+        Go time!
+      </LandingFormButton>
+    </Card>
+  );
+};
+
+const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
   const [title, setTitle] = useState('');
   const [color, setColor] = useState('#ffffff');
   useEffect(() => {
@@ -182,7 +250,7 @@ const LandingForm: FC = () => {
     const startDt = computeDateTime(startDate, startTime);
     const endDt = computeDateTime(endDate, endTime);
 
-    const planBlob = {
+    const planDraft = {
       title,
       color,
       start: startDt.toISOString(),
@@ -191,14 +259,14 @@ const LandingForm: FC = () => {
       description
     };
 
-    const error = validatePostPlan(planBlob);
+    // Handle client-side validation errors in this form.
+    const error = validatePostPlan(planDraft);
     if (error) {
       console.error(error);
       return;
     }
 
-    const plan = await postPlan(planBlob);
-    router.push(`plans/${plan.id}`);
+    createPlan(planDraft);
   };
 
   return (
