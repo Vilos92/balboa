@@ -1,4 +1,4 @@
-import {FC, findDOMNode, useCallback, useEffect, useRef, useState} from 'react';
+import {FC, useCallback, useEffect, useRef, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Button} from './Button';
@@ -75,7 +75,7 @@ const StyledFooterButton = tw(Button)`
 `;
 
 const StyledOverlayDiv = styled.div`
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.2);
 
   ${tw`
     fixed
@@ -87,6 +87,7 @@ const StyledOverlayDiv = styled.div`
     flex
     items-center
     justify-center
+    backdrop-blur-sm
   `};
 `;
 
