@@ -88,8 +88,8 @@ const LandingPage: FC = () => (
     <CenteredContent>
       <Logo />
       <LandingStage />
+      <AccountFooter />
     </CenteredContent>
-    <AccountFooter />
   </Body>
 );
 

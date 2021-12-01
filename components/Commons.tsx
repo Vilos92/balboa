@@ -22,7 +22,7 @@ const StyledCenteredContentDiv = tw.div`
   flex
   flex-col
   items-center
-  justify-center
+  justify-between
   min-h-screen
   py-2
 `;
@@ -40,6 +40,7 @@ const StyledLogoH1 = tw.h1`
   text-white
   text-3xl
   text-center
+  mt-6
   mb-6
 `;
 

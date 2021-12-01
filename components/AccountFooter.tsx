@@ -8,14 +8,16 @@ import {Button} from './Button';
  */
 
 const StyledFooterDiv = styled.div`
-  margin-top: -4.5rem;
-  height: 4.5rem;
+  margin-bottom: -0.5rem;
 
   ${tw`
     bg-purple-900
     text-gray-100
     flex
     justify-center
+    h-16
+    w-full
+    mt-6
   `}
 `;
 
