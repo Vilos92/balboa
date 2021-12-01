@@ -1,4 +1,4 @@
-import {FC, MouseEvent} from 'react';
+import {FC, MouseEvent, PropsWithChildren, forwardRef} from 'react';
 import tw from 'twin.macro';
 
 /*
@@ -56,10 +56,12 @@ export const CenteredContent: FC = ({children}) => {
   return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;
 };
 
-export const Card: FC<CardProps> = ({children, className, onClick}) => {
-  return (
-    <StyledCardDiv className={className} onClick={onClick}>
-      {children}
-    </StyledCardDiv>
-  );
-};
+export const Card = forwardRef<HTMLDivElement, PropsWithChildren<CardProps>>(
+  ({children, className, onClick}, ref) => {
+    return (
+      <StyledCardDiv className={className} onClick={onClick} ref={ref}>
+        {children}
+      </StyledCardDiv>
+    );
+  }
+);
