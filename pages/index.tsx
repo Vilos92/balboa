@@ -3,6 +3,8 @@ import {useRouter} from 'next/router';
 import {ChangeEvent, FC, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
+import {AccountFooter} from '../components/AccountFooter';
+import {Button} from '../components/Button';
 import {Body, Card, CenteredContent, Logo} from '../components/Commons';
 import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
@@ -21,10 +23,6 @@ const LocationVisualizer = dynamic(() => import('../components/LocationVisualize
 interface ColorInputWithTooltipProps {
   value: string;
   onChange: (event: ChangeEvent<HTMLInputElement>) => void;
-}
-
-interface LandingFormButtonProps {
-  backgroundColor: string;
 }
 
 enum LandingStagesEnum {
@@ -81,23 +79,6 @@ const StyledTextAreaInput = styled(TextAreaInput)`
   min-height: 72px;
 `;
 
-const LandingFormButton = styled.button.attrs<LandingFormButtonProps>(({backgroundColor}) => ({
-  style: {backgroundColor}
-}))<LandingFormButtonProps>`
-  ${tw`
-    hover:brightness-150
-    text-white
-    font-bold
-    py-2
-    px-4
-    rounded
-    focus:outline-none
-    focus:shadow
-  `}
-
-  text-shadow: 0 2px 4px rgba(0,0,0,0.10);
-`;
-
 /*
  * Page.
  */
@@ -108,6 +89,7 @@ const LandingPage: FC = () => (
       <Logo />
       <LandingStage />
     </CenteredContent>
+    <AccountFooter />
   </Body>
 );
 
@@ -164,9 +146,9 @@ const AccountStage: FC<AccountStageProps> = ({planDraft, createPlan}) => {
     <Card>
       <StyledLandingH2>Almost there!</StyledLandingH2>
       <p>Create an account to create your event.</p>
-      <LandingFormButton type='button' backgroundColor={planDraft.color} onClick={onClick}>
+      <Button backgroundColor={planDraft.color} onClick={onClick}>
         Go time!
-      </LandingFormButton>
+      </Button>
     </Card>
   );
 };
@@ -296,9 +278,9 @@ const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
         <StyledTextAreaInput label='Description' value={description} onChange={onChangeDescription} />
       </StyledGroupDiv>
 
-      <LandingFormButton type='button' backgroundColor={color} onClick={onClick}>
+      <Button backgroundColor={color} onClick={onClick}>
         Go time!
-      </LandingFormButton>
+      </Button>
     </form>
   );
 };
