@@ -22,7 +22,7 @@ const StyledCenteredContentDiv = tw.div`
   flex
   flex-col
   items-center
-  justify-between
+  sm:justify-between
   min-h-screen
   py-2
 `;
@@ -30,10 +30,10 @@ const StyledCenteredContentDiv = tw.div`
 const StyledCardDiv = tw.div`
   p-3
   bg-white
-  rounded-2xl
   shadow-md
   w-full
   sm:w-7/12
+  sm:rounded-2xl
 `;
 
 const StyledLogoH1 = tw.h1`

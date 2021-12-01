@@ -7,9 +7,14 @@ import {Button} from './Button';
  * Styles.
  */
 
-const StyledFooterDiv = styled.div`
-  margin-bottom: -0.5rem;
+const StyledFalseFooterDiv = tw.div`
+  invisible 
+  h-16
+  w-full
+  mt-6
+`;
 
+const StyledFooterDiv = styled.div`
   ${tw`
     bg-purple-900
     text-gray-100
@@ -17,13 +22,15 @@ const StyledFooterDiv = styled.div`
     justify-center
     h-16
     w-full
-    mt-6
+    fixed
+    bottom-0
   `}
 `;
 
 const StyledContentDiv = tw.div`
   flex
-  justify-between
+  justify-center
+  sm:justify-between
   items-center
   pl-8
   pr-8
@@ -32,7 +39,8 @@ const StyledContentDiv = tw.div`
 `;
 
 const StyledFooterBlurbDiv = tw.div`
-  flex
+  hidden
+  sm:flex
   flex-col
 `;
 
@@ -62,16 +70,19 @@ const StyledFooterButton = tw(Button)`
  */
 
 export const AccountFooter: FC = () => (
-  <StyledFooterDiv>
-    <StyledContentDiv>
-      <StyledFooterBlurbDiv>
-        <StyledFooterH2>Stay on top of plans</StyledFooterH2>
-        <StyledFooterH3>People on Grueplan stay coordinated</StyledFooterH3>
-      </StyledFooterBlurbDiv>
-      <StyledFooterButtonDiv>
-        <StyledFooterButton>Log in</StyledFooterButton>
-        <StyledFooterButton>Sign up</StyledFooterButton>
-      </StyledFooterButtonDiv>
-    </StyledContentDiv>
-  </StyledFooterDiv>
+  <>
+    <StyledFalseFooterDiv />
+    <StyledFooterDiv>
+      <StyledContentDiv>
+        <StyledFooterBlurbDiv>
+          <StyledFooterH2>Stay on top of plans</StyledFooterH2>
+          <StyledFooterH3>People on Grueplan stay coordinated</StyledFooterH3>
+        </StyledFooterBlurbDiv>
+        <StyledFooterButtonDiv>
+          <StyledFooterButton>Log in</StyledFooterButton>
+          <StyledFooterButton>Sign up</StyledFooterButton>
+        </StyledFooterButtonDiv>
+      </StyledContentDiv>
+    </StyledFooterDiv>
+  </>
 );
