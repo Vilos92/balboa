@@ -8,6 +8,13 @@ import tw, {css, styled} from 'twin.macro';
 interface InputProps extends React.HTMLProps<HTMLInputElement> {
   label: string;
 }
+type TypedInput = Omit<InputProps, 'type'>;
+
+type TextInputProps = TypedInput;
+type EmailInputProps = TypedInput;
+type PasswordInputProps = TypedInput;
+type DateInputProps = TypedInput;
+type TimeInputProps = TypedInput;
 
 interface TextAreaInputProps extends React.HTMLProps<HTMLTextAreaElement> {
   label: string;
@@ -122,19 +129,39 @@ const StyledColorInput = tw.input`
  * Components.
  */
 
-export const TextInput: FC<InputProps> = ({label, value, onChange, onFocus, className}) => (
+const Input: FC<InputProps> = ({type, label, value, min, onChange, onFocus, className}) => (
   <StyledInputGroupDiv>
     <StyledTextInput
       id={label}
-      type='text'
+      type={type}
       placeholder=' '
       value={value}
+      min={min}
       onChange={onChange}
       onFocus={onFocus}
       className={className}
     />
     <StyledLabel htmlFor={label}>{label}</StyledLabel>
   </StyledInputGroupDiv>
+);
+
+export const TextInput: FC<TextInputProps> = ({label, value, onChange, onFocus, className}) => (
+  <Input
+    type='text'
+    label={label}
+    value={value}
+    onChange={onChange}
+    onFocus={onFocus}
+    className={className}
+  />
+);
+
+export const EmailInput: FC<EmailInputProps> = ({label, value, onChange, className}) => (
+  <Input type='email' label={label} value={value} onChange={onChange} className={className} />
+);
+
+export const PasswordInput: FC<PasswordInputProps> = ({label, value, onChange, className}) => (
+  <Input type='password' label={label} value={value} onChange={onChange} className={className} />
 );
 
 export const TextAreaInput: FC<TextAreaInputProps> = ({label, value, onChange, className}) => (
@@ -144,18 +171,12 @@ export const TextAreaInput: FC<TextAreaInputProps> = ({label, value, onChange, c
   </StyledInputGroupDiv>
 );
 
-export const DateInput: FC<InputProps> = ({label, value, onChange, min}) => (
-  <StyledInputGroupDiv>
-    <StyledTextInput id={label} type='date' placeholder=' ' value={value} onChange={onChange} min={min} />
-    <StyledLabel htmlFor={label}>{label}</StyledLabel>
-  </StyledInputGroupDiv>
+export const DateInput: FC<DateInputProps> = ({label, value, onChange, min}) => (
+  <Input type='date' label={label} value={value} onChange={onChange} min={min} />
 );
 
-export const TimeInput: FC<InputProps> = ({label, value, onChange}) => (
-  <StyledInputGroupDiv>
-    <StyledTextInput id={label} type='time' placeholder=' ' value={value} onChange={onChange} />
-    <StyledLabel htmlFor={label}>{label}</StyledLabel>
-  </StyledInputGroupDiv>
+export const TimeInput: FC<TimeInputProps> = ({label, value, onChange}) => (
+  <Input type='time' label={label} value={value} onChange={onChange} />
 );
 
 export const ColorInput: FC<InputProps> = props => {

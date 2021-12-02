@@ -4,7 +4,7 @@ import tw, {styled} from 'twin.macro';
 import {Button} from './Button';
 import {ChromelessButton} from './ChromelessButton';
 import {Card} from './Commons';
-import {TextInput} from './Inputs';
+import {EmailInput, PasswordInput, TextInput} from './Inputs';
 import {Modal} from './Modal';
 
 /*
@@ -100,7 +100,15 @@ const StyledModalButton = tw(Button)`
 `;
 
 const StyledModalTextInput = tw(TextInput)`
-  mb-4
+  mb-2
+`;
+
+const StyledModalEmailInput = tw(EmailInput)`
+  mb-2
+`;
+
+const StyledModalPasswordInput = tw(PasswordInput)`
+  mb-2
 `;
 
 const StyledModalFooterP = tw.p`
@@ -169,8 +177,8 @@ const SignUpModal: FC<SignUpModalProps> = ({closeModal, openLoginModal}) => {
     <Modal closeModal={closeModal}>
       <StyledCard>
         <StyledCardH1>Create your account</StyledCardH1>
-        <StyledModalTextInput label='Email'></StyledModalTextInput>
-        <StyledModalTextInput label='Password'></StyledModalTextInput>
+        <StyledModalEmailInput label='Email'></StyledModalEmailInput>
+        <StyledModalPasswordInput label='Password'></StyledModalPasswordInput>
         <StyledModalButton>Next</StyledModalButton>
         <StyledModalFooterP>
           Already have an account? <ChromelessButton onClick={openLoginModal}>Log in</ChromelessButton>
