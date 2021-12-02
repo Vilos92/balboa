@@ -122,7 +122,7 @@ const StyledColorInput = tw.input`
  * Components.
  */
 
-export const TextInput: FC<InputProps> = ({label, value, onChange, onFocus}) => (
+export const TextInput: FC<InputProps> = ({label, value, onChange, onFocus, className}) => (
   <StyledInputGroupDiv>
     <StyledTextInput
       id={label}
@@ -131,6 +131,7 @@ export const TextInput: FC<InputProps> = ({label, value, onChange, onFocus}) => 
       value={value}
       onChange={onChange}
       onFocus={onFocus}
+      className={className}
     />
     <StyledLabel htmlFor={label}>{label}</StyledLabel>
   </StyledInputGroupDiv>
@@ -161,7 +162,10 @@ export const ColorInput: FC<InputProps> = props => {
   const {label, value, onChange, className} = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const onSpanClick = () => inputRef.current.click();
+  const onSpanClick = () => {
+    if (!inputRef.current) return;
+    inputRef.current.click();
+  };
 
   const backgroundColor = typeof value === 'string' ? value : '';
 
