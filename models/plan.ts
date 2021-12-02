@@ -89,6 +89,8 @@ export async function savePlan(planDraft: PlanDraft) {
 
   const {data, error} = await supabase.from<PlanModel>('plan').insert(planDraft);
 
+  if (error) return {error};
+
   const dbPlan = decodeDbPlan(data?.[0]);
   const plan = encodePlan(dbPlan);
 

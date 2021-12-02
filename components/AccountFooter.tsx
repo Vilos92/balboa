@@ -1,6 +1,7 @@
 import {FC, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
+import {postUser, validatePostUser} from '../pages/api/auth/signup';
 import {Button} from './Button';
 import {ChromelessButton} from './ChromelessButton';
 import {Card} from './Commons';
@@ -173,13 +174,26 @@ const LoginModal: FC<LoginModalProps> = ({closeModal, openSignUpModal}) => {
 };
 
 const SignUpModal: FC<SignUpModalProps> = ({closeModal, openLoginModal}) => {
+  const signUp = async () => {
+    const user = {email: 'linscheid.greg@gmail.com', password: 'taaaafasfdae'};
+    const error = validatePostUser(user);
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    const postError = await postUser(user);
+    if (postError) throw postError;
+  };
+
   return (
     <Modal closeModal={closeModal}>
       <StyledCard>
         <StyledCardH1>Create your account</StyledCardH1>
         <StyledModalEmailInput label='Email'></StyledModalEmailInput>
         <StyledModalPasswordInput label='Password'></StyledModalPasswordInput>
-        <StyledModalButton>Next</StyledModalButton>
+        <StyledModalButton onClick={signUp}>Next</StyledModalButton>
         <StyledModalFooterP>
           Already have an account? <ChromelessButton onClick={openLoginModal}>Log in</ChromelessButton>
         </StyledModalFooterP>
