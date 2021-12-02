@@ -1,3 +1,4 @@
+import {GetServerSideProps} from 'next';
 import {FC} from 'react';
 import tw from 'twin.macro';
 
@@ -31,15 +32,15 @@ const StyledDateTimeRangeH3 = tw.h3`
  * Server-side props.
  */
 
-export async function getServerSideProps({query}) {
+export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({query}) => {
   const {planId} = query;
+  if (!planId) return {notFound: true};
 
-  const {plan, error} = await findPlan(parseInt(planId));
+  const planIdInt = parseInt(parseFirstQueryParam(planId));
 
+  const {plan, error} = await findPlan(planIdInt);
   if (!plan || error) {
-    return {
-      notFound: true
-    };
+    return {notFound: true};
   }
 
   return {
@@ -47,7 +48,7 @@ export async function getServerSideProps({query}) {
       plan
     }
   };
-}
+};
 
 /*
  * Page.
@@ -72,3 +73,16 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => (
 );
 
 export default PlanPage;
+
+/*
+ * Helpers.
+ */
+
+/**
+ * Retrieve the first occurrence of a query parameter.
+ */
+function parseFirstQueryParam(param: string | readonly string[]): string {
+  if (typeof param === 'string') return param;
+
+  return param[0];
+}
