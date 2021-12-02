@@ -30,9 +30,8 @@ const StyledCenteredContentDiv = tw.div`
 const StyledCardDiv = tw.div`
   p-3
   bg-white
-  shadow-md
   w-full
-  sm:w-7/12
+  sm:shadow-md
   sm:rounded-2xl
 `;
 

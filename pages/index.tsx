@@ -47,6 +47,10 @@ interface PlanFormProps {
  * Styles.
  */
 
+const StyledCard = tw(Card)`
+  sm:w-7/12
+`;
+
 const StyledLandingH2 = tw.h2`
   text-lg
   text-center
@@ -133,10 +137,10 @@ const LandingStage: FC = () => {
 };
 
 const PlanStage: FC<PlanStageProps> = ({createPlan}) => (
-  <Card>
+  <StyledCard>
     <StyledLandingH2>Enter your event details here</StyledLandingH2>
     <PlanForm createPlan={createPlan} />
-  </Card>
+  </StyledCard>
 );
 
 const AccountStage: FC<AccountStageProps> = ({planDraft, createPlan}) => {

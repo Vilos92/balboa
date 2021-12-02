@@ -55,6 +55,7 @@ const StyledFooterBlurbDiv = tw.div`
 
 const StyledFooterH2 = tw.h2`
   font-bold
+  text-lg
 `;
 
 const StyledFooterH3 = tw.h3`
@@ -87,8 +88,14 @@ const StyledOverlayDiv = styled.div`
     flex
     items-center
     justify-center
-    backdrop-blur-sm
+    bg-white
+    sm:bg-transparent
+    sm:backdrop-blur-sm
   `};
+`;
+
+const StyledCard = tw(Card)`
+  sm:max-w-md
 `;
 
 /*
@@ -144,10 +151,10 @@ const LoginModal: FC<LoginModalProps> = ({closeModal}) => {
 
   return (
     <StyledOverlayDiv>
-      <Card ref={modalRef}>
+      <StyledCard ref={modalRef}>
         <h2>Sign in to Grueplan</h2> <button>Sign in with Google</button> <div>or</div>{' '}
         <input placeholder='email'></input> <button>next</button>
-      </Card>
+      </StyledCard>
     </StyledOverlayDiv>
   );
 };
