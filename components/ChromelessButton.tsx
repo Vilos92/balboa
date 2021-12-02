@@ -19,8 +19,9 @@ const StyledButton = tw.button`
 `;
 
 /*
- *
+ * Component.
  */
+
 export const ChromelessButton: FC<ChromelessButtonProps> = ({children, onClick}) => (
   <StyledButton onClick={onClick}>{children}</StyledButton>
 );

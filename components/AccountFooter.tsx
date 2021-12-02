@@ -1,10 +1,11 @@
-import {FC, useCallback, useEffect, useRef, useState} from 'react';
+import {FC, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Button} from './Button';
 import {ChromelessButton} from './ChromelessButton';
 import {Card} from './Commons';
 import {TextInput} from './Inputs';
+import {Modal} from './Modal';
 
 /*
  * Types
@@ -83,21 +84,6 @@ const StyledFooterButton = tw(Button)`
   h-10
 `;
 
-const StyledOverlayDiv = tw.div`
-  fixed
-  top-0
-  left-0
-  w-screen
-  h-screen
-  z-50
-  flex
-  items-center
-  justify-center
-  bg-white
-  sm:bg-transparent
-  sm:backdrop-blur-sm
-`;
-
 const StyledCard = tw(Card)`
   sm:max-w-md
   p-20
@@ -164,29 +150,9 @@ export const AccountFooter: FC = () => {
 };
 
 const LoginModal: FC<LoginModalProps> = ({closeModal, openSignUpModal}) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  const onClickWindow = useCallback(
-    (event: globalThis.MouseEvent) => {
-      // We must cast the target to Node as per official rec:
-      // https://github.com/Microsoft/TypeScript/issues/15394#issuecomment-297495746
-      if (modalRef.current?.contains(event.target as Node)) return;
-      closeModal();
-    },
-    [closeModal]
-  );
-
-  useEffect(() => {
-    window.addEventListener('click', onClickWindow);
-
-    return () => {
-      window.removeEventListener('click', onClickWindow);
-    };
-  }, [onClickWindow]);
-
   return (
-    <StyledOverlayDiv>
-      <StyledCard ref={modalRef}>
+    <Modal closeModal={closeModal}>
+      <StyledCard>
         <StyledCardH1>Sign in to Grueplan</StyledCardH1>
         <StyledModalTextInput label='Email'></StyledModalTextInput>
         <StyledModalButton>Next</StyledModalButton>
@@ -194,34 +160,14 @@ const LoginModal: FC<LoginModalProps> = ({closeModal, openSignUpModal}) => {
           Don't have an account? <ChromelessButton onClick={openSignUpModal}>Sign up</ChromelessButton>
         </StyledModalFooterP>
       </StyledCard>
-    </StyledOverlayDiv>
+    </Modal>
   );
 };
 
 const SignUpModal: FC<SignUpModalProps> = ({closeModal, openLoginModal}) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  const onClickWindow = useCallback(
-    (event: globalThis.MouseEvent) => {
-      // We must cast the target to Node as per official rec:
-      // https://github.com/Microsoft/TypeScript/issues/15394#issuecomment-297495746
-      if (modalRef.current?.contains(event.target as Node)) return;
-      closeModal();
-    },
-    [closeModal]
-  );
-
-  useEffect(() => {
-    window.addEventListener('click', onClickWindow);
-
-    return () => {
-      window.removeEventListener('click', onClickWindow);
-    };
-  }, [onClickWindow]);
-
   return (
-    <StyledOverlayDiv>
-      <StyledCard ref={modalRef}>
+    <Modal closeModal={closeModal}>
+      <StyledCard>
         <StyledCardH1>Create your account</StyledCardH1>
         <StyledModalTextInput label='Email'></StyledModalTextInput>
         <StyledModalTextInput label='Password'></StyledModalTextInput>
@@ -230,6 +176,6 @@ const SignUpModal: FC<SignUpModalProps> = ({closeModal, openLoginModal}) => {
           Already have an account? <ChromelessButton onClick={openLoginModal}>Log in</ChromelessButton>
         </StyledModalFooterP>
       </StyledCard>
-    </StyledOverlayDiv>
+    </Modal>
   );
 };
