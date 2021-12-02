@@ -1,6 +1,14 @@
 import {GetServerSideProps, NextPage} from 'next';
 import {BuiltInProviderType} from 'next-auth/providers';
-import {ClientSafeProvider, LiteralUnion, getProviders, signIn} from 'next-auth/react';
+import {
+  ClientSafeProvider,
+  LiteralUnion,
+  SessionProvider,
+  getProviders,
+  signIn,
+  useSession
+} from 'next-auth/react';
+import {FC} from 'react';
 
 /*
  * Types.
@@ -29,6 +37,13 @@ export const getServerSideProps: GetServerSideProps<SignInProps> = async () => {
  */
 
 const SignIn: NextPage<SignInProps> = ({providers}) => {
+  const {data: session} = useSession();
+  console.log('session', session);
+
+  return <SignInView providers={providers} />;
+};
+
+const SignInView: FC<SignInProps> = ({providers}) => {
   if (!providers) return null;
 
   return (
