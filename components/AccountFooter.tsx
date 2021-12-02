@@ -221,7 +221,7 @@ const SignUpModal: FC<SignUpModalProps> = ({closeModal, openLoginModal}) => {
   return (
     <StyledOverlayDiv>
       <StyledCard ref={modalRef}>
-        <StyledCardH1>Sign up for Grueplan</StyledCardH1>
+        <StyledCardH1>Create your account</StyledCardH1>
         <StyledModalTextInput label='Email'></StyledModalTextInput>
         <StyledModalTextInput label='Password'></StyledModalTextInput>
         <StyledModalButton>Next</StyledModalButton>
