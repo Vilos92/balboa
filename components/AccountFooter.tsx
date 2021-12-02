@@ -2,6 +2,7 @@ import {FC, useCallback, useEffect, useRef, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Button} from './Button';
+import {ChromelessButton} from './ChromelessButton';
 import {Card} from './Commons';
 import {TextInput} from './Inputs';
 
@@ -190,7 +191,7 @@ const LoginModal: FC<LoginModalProps> = ({closeModal, openSignUpModal}) => {
         <StyledModalTextInput label='Email'></StyledModalTextInput>
         <StyledModalButton>Next</StyledModalButton>
         <StyledModalFooterP>
-          Don't have an account? <button onClick={openSignUpModal}>Sign up</button>
+          Don't have an account? <ChromelessButton onClick={openSignUpModal}>Sign up</ChromelessButton>
         </StyledModalFooterP>
       </StyledCard>
     </StyledOverlayDiv>
@@ -226,7 +227,7 @@ const SignUpModal: FC<SignUpModalProps> = ({closeModal, openLoginModal}) => {
         <StyledModalTextInput label='Password'></StyledModalTextInput>
         <StyledModalButton>Next</StyledModalButton>
         <StyledModalFooterP>
-          Already have an account? <button onClick={openLoginModal}>Log in</button>
+          Already have an account? <ChromelessButton onClick={openLoginModal}>Log in</ChromelessButton>
         </StyledModalFooterP>
       </StyledCard>
     </StyledOverlayDiv>
