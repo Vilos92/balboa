@@ -37,8 +37,8 @@ export const getServerSideProps: GetServerSideProps<SignInProps> = async () => {
  */
 
 const SignIn: NextPage<SignInProps> = ({providers}) => {
-  const {data: session} = useSession();
-  console.log('session', session);
+  const {data: session, status} = useSession();
+  console.log('session', session, status);
 
   return <SignInView providers={providers} />;
 };
