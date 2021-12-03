@@ -10,8 +10,8 @@ import {Body, Card, CenteredContent, Logo} from '../components/Commons';
 import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
 import {PlanDraft} from '../models/plan';
+import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 import {postPlan, validatePostPlan} from './api/plans';
-import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from './utils/auth';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <p>Loading map</p>,

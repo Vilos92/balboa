@@ -7,7 +7,7 @@ import {styled} from 'twin.macro';
 import {GetGeolocationResponse, geolocationApi} from '../pages/api/geolocation';
 import MapStyle from '../styles/map-style-basic-v8.json';
 import {useDebounce} from '../utils/hooks';
-import {useNetGet} from '../utils/hooks';
+import {useNetGet} from '../utils/net';
 
 /*
  * Types.

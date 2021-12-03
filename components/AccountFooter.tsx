@@ -2,7 +2,7 @@ import {FC, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {postUser, validatePostUser} from '../pages/api/auth/signupOld';
-import {Providers, signInWithProvider} from '../pages/utils/auth';
+import {Providers, signInWithProvider} from '../utils/auth';
 import {Button} from './Button';
 import {ChromelessButton} from './ChromelessButton';
 import {Card} from './Commons';
