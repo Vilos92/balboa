@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
-import {VisualPlan} from '../../components/plan/VisualPlan';
+import {VisualPlan} from '../../components/VisualPlan';
 import {PlanModel, findPlans} from '../../models/plan';
 
 /*

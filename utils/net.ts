@@ -6,8 +6,6 @@ import useSWR, {SWRResponse} from 'swr';
  * Types.
  */
 
-type NetGet<T> = (url: string) => Promise<T>;
-
 export interface NetResponse {
   message: string;
 }

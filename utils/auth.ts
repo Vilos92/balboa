@@ -39,7 +39,6 @@ export function useAuthSession(): {session?: Session; status: SessionStatusesEnu
   if (!isSessionStatusesEnum(status)) throw new Error(`Not a valid session status: ${status}`);
 
   const session = data ?? undefined;
-
   return {session, status};
 }
 
