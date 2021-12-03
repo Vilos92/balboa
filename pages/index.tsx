@@ -1,4 +1,5 @@
 import {GetServerSideProps, NextPage} from 'next';
+import {useSession} from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import {useRouter} from 'next/router';
 import {ChangeEvent, FC, useEffect, useState} from 'react';
@@ -105,15 +106,22 @@ export const getServerSideProps: GetServerSideProps<LandingPageProps> = async ()
  * Page.
  */
 
-const LandingPage: NextPage<LandingPageProps> = ({providers}) => (
-  <Body>
-    <CenteredContent>
-      <Logo />
-      <LandingStage />
-      <AccountFooter providers={providers} />
-    </CenteredContent>
-  </Body>
-);
+const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
+  console.log('providers', providers);
+  const {data: session, status} = useSession();
+  console.log('session', status, session);
+  if (status === 'loading') return null;
+
+  return (
+    <Body>
+      <CenteredContent>
+        <Logo />
+        <LandingStage />
+        <AccountFooter providers={providers} />
+      </CenteredContent>
+    </Body>
+  );
+};
 
 export default LandingPage;
 

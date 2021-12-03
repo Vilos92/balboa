@@ -5,14 +5,14 @@ import {ClientSafeProvider, LiteralUnion, getProviders, signIn} from 'next-auth/
  * Types.
  */
 
-export type Providers = Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider>;
+export type Providers = Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | [];
 export type ProviderId = LiteralUnion<BuiltInProviderType, string>;
 
 /*
  * Utilities.
  */
 
-export async function getAuthProviders() {
+export async function getAuthProviders(): Promise<Providers> {
   const providers = await getProviders();
 
   return providers ?? [];
