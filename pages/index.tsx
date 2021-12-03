@@ -1,18 +1,17 @@
 import {GetServerSideProps, NextPage} from 'next';
-import {useSession} from 'next-auth/react';
 import dynamic from 'next/dynamic';
 import {useRouter} from 'next/router';
 import {ChangeEvent, FC, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
-import {AccountFooter} from '../components/AccountFooter';
+import {AccountFooter, FalseAccountFooter} from '../components/AccountFooter';
 import {Button} from '../components/Button';
 import {Body, Card, CenteredContent, Logo} from '../components/Commons';
 import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
 import {PlanDraft} from '../models/plan';
 import {postPlan, validatePostPlan} from './api/plans';
-import {Providers, getAuthProviders} from './utils/auth';
+import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from './utils/auth';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <p>Loading map</p>,
@@ -107,17 +106,17 @@ export const getServerSideProps: GetServerSideProps<LandingPageProps> = async ()
  */
 
 const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
-  console.log('providers', providers);
-  const {data: session, status} = useSession();
-  console.log('session', status, session);
-  if (status === 'loading') return null;
+  const {session, status} = useAuthSession();
+  if (status === SessionStatusesEnum.LOADING) return null;
+
+  const isAuthenticated = status === SessionStatusesEnum.AUTHENTICATED && Boolean(session);
 
   return (
     <Body>
       <CenteredContent>
         <Logo />
         <LandingStage />
-        <AccountFooter providers={providers} />
+        {isAuthenticated ? <FalseAccountFooter /> : <AccountFooter providers={providers} />}
       </CenteredContent>
     </Body>
   );

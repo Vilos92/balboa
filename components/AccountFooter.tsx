@@ -1,4 +1,3 @@
-import {useSession} from 'next-auth/react';
 import {FC, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
@@ -129,13 +128,8 @@ const StyledModalFooterP = tw.p`
  */
 
 export const AccountFooter: FC<AccountFooterProps> = ({providers}) => {
-  // TODO: This logic should be handled in a container or outside this component.
-  const {data: session, status} = useSession();
-
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const [isSignUpModalVisible, setIsSignUpModalVisible] = useState(false);
-
-  if (session) return null;
 
   const openLoginModal = () => {
     setIsSignUpModalVisible(false);
@@ -151,7 +145,7 @@ export const AccountFooter: FC<AccountFooterProps> = ({providers}) => {
 
   return (
     <>
-      <StyledFalseFooterDiv />
+      <FalseAccountFooter />
       <StyledFooterDiv>
         <StyledContentDiv>
           <StyledFooterBlurbDiv>
@@ -221,3 +215,9 @@ const SignUpModal: FC<SignUpModalProps> = ({providers, closeModal, openLoginModa
     </Modal>
   );
 };
+
+/**
+ * Invisible footer which is rendered alongside the fixed real footer, to
+ * ensure its dimensions are still represented in the DOM.
+ */
+export const FalseAccountFooter: FC = () => <StyledFalseFooterDiv />;
