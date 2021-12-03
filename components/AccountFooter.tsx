@@ -1,7 +1,9 @@
+import {useSession} from 'next-auth/react';
 import {FC, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {postUser, validatePostUser} from '../pages/api/auth/signupOld';
+import {Providers, signInWithProvider} from '../pages/utils/auth';
 import {Button} from './Button';
 import {ChromelessButton} from './ChromelessButton';
 import {Card} from './Commons';
@@ -12,12 +14,17 @@ import {Modal} from './Modal';
  * Types
  */
 
+interface AccountFooterProps {
+  providers: Providers;
+}
+
 interface LoginModalProps {
   closeModal: () => void;
   openSignUpModal: () => void;
 }
 
 interface SignUpModalProps {
+  providers: Providers;
   closeModal: () => void;
   openLoginModal: () => void;
 }
@@ -121,9 +128,14 @@ const StyledModalFooterP = tw.p`
  * Components.
  */
 
-export const AccountFooter: FC = () => {
+export const AccountFooter: FC<AccountFooterProps> = ({providers}) => {
+  // TODO: This logic should be handled in a container or outside this component.
+  const {data: session, status} = useSession();
+
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const [isSignUpModalVisible, setIsSignUpModalVisible] = useState(false);
+
+  if (session) return null;
 
   const openLoginModal = () => {
     setIsSignUpModalVisible(false);
@@ -153,7 +165,9 @@ export const AccountFooter: FC = () => {
         </StyledContentDiv>
       </StyledFooterDiv>
       {isLoginModalVisible && <LoginModal closeModal={closeLoginModal} openSignUpModal={openSignUpModal} />}
-      {isSignUpModalVisible && <SignUpModal closeModal={closeSignUpModal} openLoginModal={openLoginModal} />}
+      {isSignUpModalVisible && (
+        <SignUpModal providers={providers} closeModal={closeSignUpModal} openLoginModal={openLoginModal} />
+      )}
     </>
   );
 };
@@ -173,7 +187,7 @@ const LoginModal: FC<LoginModalProps> = ({closeModal, openSignUpModal}) => {
   );
 };
 
-const SignUpModal: FC<SignUpModalProps> = ({closeModal, openLoginModal}) => {
+const SignUpModal: FC<SignUpModalProps> = ({providers, closeModal, openLoginModal}) => {
   const signUp = async () => {
     const user = {email: 'linscheid.greg@gmail.com', password: 'taaaafasfdae'};
     const error = validatePostUser(user);
@@ -194,6 +208,12 @@ const SignUpModal: FC<SignUpModalProps> = ({closeModal, openLoginModal}) => {
         <StyledModalEmailInput label='Email'></StyledModalEmailInput>
         <StyledModalPasswordInput label='Password'></StyledModalPasswordInput>
         <StyledModalButton onClick={signUp}>Next</StyledModalButton>
+        or
+        {Object.values(providers).map(provider => (
+          <div key={provider.name}>
+            <button onClick={() => signInWithProvider(provider.id)}>Sign in with {provider.name}</button>
+          </div>
+        ))}
         <StyledModalFooterP>
           Already have an account? <ChromelessButton onClick={openLoginModal}>Log in</ChromelessButton>
         </StyledModalFooterP>

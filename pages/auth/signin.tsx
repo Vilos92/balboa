@@ -1,20 +1,12 @@
 import {GetServerSideProps, NextPage} from 'next';
-import {BuiltInProviderType} from 'next-auth/providers';
-import {
-  ClientSafeProvider,
-  LiteralUnion,
-  SessionProvider,
-  getProviders,
-  signIn,
-  useSession
-} from 'next-auth/react';
+import {signIn, useSession} from 'next-auth/react';
 import {FC} from 'react';
+
+import {Providers, getAuthProviders} from '../utils/auth';
 
 /*
  * Types.
  */
-
-type Providers = Record<LiteralUnion<BuiltInProviderType, string>, ClientSafeProvider> | null;
 
 interface SignInProps {
   providers: Providers;
@@ -25,7 +17,7 @@ interface SignInProps {
  */
 
 export const getServerSideProps: GetServerSideProps<SignInProps> = async () => {
-  const providers = await getProviders();
+  const providers = await getAuthProviders();
 
   return {
     props: {providers}

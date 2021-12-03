@@ -1,3 +1,4 @@
+import {GetServerSideProps, NextPage} from 'next';
 import dynamic from 'next/dynamic';
 import {useRouter} from 'next/router';
 import {ChangeEvent, FC, useEffect, useState} from 'react';
@@ -10,6 +11,7 @@ import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../com
 import {Tooltip} from '../components/Tooltip';
 import {PlanDraft} from '../models/plan';
 import {postPlan, validatePostPlan} from './api/plans';
+import {Providers, getAuthProviders} from './utils/auth';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <p>Loading map</p>,
@@ -19,6 +21,10 @@ const LocationVisualizer = dynamic(() => import('../components/LocationVisualize
 /*
  * Types.
  */
+
+interface LandingPageProps {
+  providers: Providers;
+}
 
 interface ColorInputWithTooltipProps {
   value: string;
@@ -84,15 +90,27 @@ const StyledTextAreaInput = styled(TextAreaInput)`
 `;
 
 /*
+ * Server-side props.
+ */
+
+export const getServerSideProps: GetServerSideProps<LandingPageProps> = async () => {
+  const providers = await getAuthProviders();
+
+  return {
+    props: {providers}
+  };
+};
+
+/*
  * Page.
  */
 
-const LandingPage: FC = () => (
+const LandingPage: NextPage<LandingPageProps> = ({providers}) => (
   <Body>
     <CenteredContent>
       <Logo />
       <LandingStage />
-      <AccountFooter />
+      <AccountFooter providers={providers} />
     </CenteredContent>
   </Body>
 );
