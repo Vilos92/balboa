@@ -1,5 +1,8 @@
+import Image from 'next/image';
 import {FC, MouseEvent, PropsWithChildren, forwardRef} from 'react';
-import tw from 'twin.macro';
+import tw, {styled} from 'twin.macro';
+
+import grueSvg from '../public/partyhat-grue_blocky.svg';
 
 /*
  * Types.
@@ -35,12 +38,18 @@ const StyledCardDiv = tw.div`
   sm:rounded-2xl
 `;
 
+const StyledLogoDiv = tw.div`
+  flex
+  flex-row
+  items-center
+  mb-6
+`;
+
 const StyledLogoH1 = tw.h1`
+  inline-block
   text-white
   text-3xl
   text-center
-  mt-6
-  mb-6
 `;
 
 /*
@@ -49,7 +58,12 @@ const StyledLogoH1 = tw.h1`
 
 export const Body: FC = ({children}) => <StyledBodyDiv>{children}</StyledBodyDiv>;
 
-export const Logo: FC = () => <StyledLogoH1>Grueplan</StyledLogoH1>;
+export const Logo: FC = () => (
+  <StyledLogoDiv>
+    <Image src={grueSvg} />
+    <StyledLogoH1>Grueplan</StyledLogoH1>
+  </StyledLogoDiv>
+);
 
 export const CenteredContent: FC = ({children}) => {
   return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;
