@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import {FC, MouseEvent, PropsWithChildren, forwardRef} from 'react';
-import tw, {styled} from 'twin.macro';
+import tw from 'twin.macro';
 
 import grueSvg from '../public/partyhat-grue_blocky.svg';
 
