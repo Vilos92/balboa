@@ -1,8 +1,9 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import {ZodError, ZodIssue, z} from 'zod';
+import {ZodIssue, z} from 'zod';
 
 import {PlanModel, planDraftSchema, savePlan} from '../../../models/plan';
 import {netPost} from '../../../utils/net';
+import {validateSchema} from '../../../utils/schema';
 
 /*
  * Constants.
@@ -75,14 +76,5 @@ function decodePostPlan(planBlob: unknown): PostPlanSchema {
  * If any errors are encountered they are returned.
  */
 export function validatePostPlan(planBlob: PostPlanSchema): readonly ZodIssue[] | undefined {
-  try {
-    postPlanSchema.parse(planBlob);
-    return undefined;
-  } catch (error) {
-    if (error instanceof ZodError) {
-      return error.errors;
-    }
-
-    throw error;
-  }
+  return validateSchema(postPlanSchema, planBlob);
 }
