@@ -27,7 +27,6 @@ const StyledCenteredContentDiv = tw.div`
   items-center
   sm:justify-between
   min-h-screen
-  py-2
 `;
 
 const StyledCardDiv = tw.div`

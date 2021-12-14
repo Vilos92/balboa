@@ -1,11 +1,9 @@
-import {FC, useState} from 'react';
+import {FC} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Providers, signInWithProvider} from '../utils/auth';
 import {Button} from './Button';
-import {ChromelessButton} from './ChromelessButton';
 import {Card} from './Commons';
-import {EmailInput, PasswordInput, TextInput} from './Inputs';
 import {Modal} from './Modal';
 
 /*
@@ -14,17 +12,13 @@ import {Modal} from './Modal';
 
 interface AccountFooterProps {
   providers: Providers;
+  isLoginModalVisible: boolean;
+  setIsLoginModalVisible: (isVisible: boolean) => void;
 }
 
 interface LoginModalProps {
-  closeModal: () => void;
-  openSignUpModal: () => void;
-}
-
-interface SignUpModalProps {
   providers: Providers;
   closeModal: () => void;
-  openLoginModal: () => void;
 }
 
 /*
@@ -100,47 +94,19 @@ const StyledCardH1 = tw.h1`
   mb-8
 `;
 
-const StyledModalButton = tw(Button)`
-  bg-purple-900
-  w-full
-`;
-
-const StyledModalTextInput = tw(TextInput)`
-  mb-2
-`;
-
-const StyledModalEmailInput = tw(EmailInput)`
-  mb-2
-`;
-
-const StyledModalPasswordInput = tw(PasswordInput)`
-  mb-2
-`;
-
-const StyledModalFooterP = tw.p`
-  mt-8
-  text-sm
-`;
-
 /*
  * Components.
  */
 
-export const AccountFooter: FC<AccountFooterProps> = ({providers}) => {
-  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
-  const [isSignUpModalVisible, setIsSignUpModalVisible] = useState(false);
-
+export const AccountFooter: FC<AccountFooterProps> = ({
+  providers,
+  isLoginModalVisible,
+  setIsLoginModalVisible
+}) => {
   const openLoginModal = () => {
-    setIsSignUpModalVisible(false);
     setIsLoginModalVisible(true);
   };
   const closeLoginModal = () => setIsLoginModalVisible(false);
-
-  const openSignUpModal = () => {
-    setIsLoginModalVisible(false);
-    setIsSignUpModalVisible(true);
-  };
-  const closeSignUpModal = () => setIsSignUpModalVisible(false);
 
   return (
     <>
@@ -153,34 +119,15 @@ export const AccountFooter: FC<AccountFooterProps> = ({providers}) => {
           </StyledFooterBlurbDiv>
           <StyledFooterButtonDiv>
             <StyledFooterButton onClick={openLoginModal}>Log in</StyledFooterButton>
-            <StyledFooterButton onClick={openSignUpModal}>Sign up</StyledFooterButton>
           </StyledFooterButtonDiv>
         </StyledContentDiv>
       </StyledFooterDiv>
-      {isLoginModalVisible && <LoginModal closeModal={closeLoginModal} openSignUpModal={openSignUpModal} />}
-      {isSignUpModalVisible && (
-        <SignUpModal providers={providers} closeModal={closeSignUpModal} openLoginModal={openLoginModal} />
-      )}
+      {isLoginModalVisible && <LoginModal providers={providers} closeModal={closeLoginModal} />}
     </>
   );
 };
 
-const LoginModal: FC<LoginModalProps> = ({closeModal, openSignUpModal}) => {
-  return (
-    <Modal closeModal={closeModal}>
-      <StyledCard>
-        <StyledCardH1>Sign in to Grueplan</StyledCardH1>
-        <StyledModalTextInput label='Email'></StyledModalTextInput>
-        <StyledModalButton>Next</StyledModalButton>
-        <StyledModalFooterP>
-          Don't have an account? <ChromelessButton onClick={openSignUpModal}>Sign up</ChromelessButton>
-        </StyledModalFooterP>
-      </StyledCard>
-    </Modal>
-  );
-};
-
-const SignUpModal: FC<SignUpModalProps> = ({providers, closeModal, openLoginModal}) => (
+const LoginModal: FC<LoginModalProps> = ({providers, closeModal}) => (
   <Modal closeModal={closeModal}>
     <StyledCard>
       <StyledCardH1>Create your account</StyledCardH1>
@@ -189,9 +136,6 @@ const SignUpModal: FC<SignUpModalProps> = ({providers, closeModal, openLoginModa
           <button onClick={() => signInWithProvider(provider.id)}>Sign in with {provider.name}</button>
         </div>
       ))}
-      <StyledModalFooterP>
-        Already have an account? <ChromelessButton onClick={openLoginModal}>Log in</ChromelessButton>
-      </StyledModalFooterP>
     </StyledCard>
   </Modal>
 );

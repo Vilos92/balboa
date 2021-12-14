@@ -1,5 +1,6 @@
 import {GetServerSideProps, NextPage} from 'next';
 import {useRouter} from 'next/router';
+import {useState} from 'react';
 import tw from 'twin.macro';
 
 import {AccountFooter, FalseAccountFooter} from '../components/AccountFooter';
@@ -51,16 +52,22 @@ export const getServerSideProps: GetServerSideProps<LandingPageProps> = async ()
 const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   const router = useRouter();
 
-  const {session, status} = useAuthSession();
+  const {user, status} = useAuthSession();
+
+  // For the modal located in the AccountFooter.
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+
   if (status === SessionStatusesEnum.LOADING) return null;
 
-  const isAuthenticated = status === SessionStatusesEnum.AUTHENTICATED && Boolean(session);
+  const isAuthenticated = status === SessionStatusesEnum.AUTHENTICATED && Boolean(user);
 
   const createPlan = async (planDraft: PlanDraft) => {
     if (!planDraft) return;
 
-    // TODO: If already signed in, create plan and move ahead.
-    // If not, open modal for authentication.
+    if (!isAuthenticated) {
+      setIsLoginModalVisible(true);
+      return;
+    }
 
     const plan = await postPlan(planDraft);
     router.push(`plans/${plan.id}`);
@@ -74,7 +81,15 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
           <StyledLandingH2>Enter your event details here</StyledLandingH2>
           <PlanForm createPlan={createPlan} />
         </StyledCard>
-        {isAuthenticated ? <FalseAccountFooter /> : <AccountFooter providers={providers} />}
+        {isAuthenticated ? (
+          <FalseAccountFooter />
+        ) : (
+          <AccountFooter
+            providers={providers}
+            isLoginModalVisible={isLoginModalVisible}
+            setIsLoginModalVisible={setIsLoginModalVisible}
+          />
+        )}
       </CenteredContent>
     </Body>
   );

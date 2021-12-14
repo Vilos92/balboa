@@ -19,6 +19,18 @@ interface PlanPageProps {
  * Styles.
  */
 
+const StyledContentDiv = tw.div`
+  flex-grow
+  flex
+  items-center
+  sm:justify-center
+  w-full
+`;
+
+const StyledCard = tw(Card)`
+  sm:w-7/12
+`;
+
 const StyledTitleH2 = tw.h2`
   text-xl
 `;
@@ -58,16 +70,18 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => (
   <Body>
     <CenteredContent>
       <Logo />
-      <Card>
-        <StyledTitleH2>
-          <VisualPlan plan={plan} />
-        </StyledTitleH2>
-        <StyledDateTimeRangeH3>
-          <DateTimeRange start={plan.start} end={plan.end} />
-        </StyledDateTimeRangeH3>
-        <div>{plan.location}</div>
-        <div>{plan.description}</div>
-      </Card>
+      <StyledContentDiv>
+        <StyledCard>
+          <StyledTitleH2>
+            <VisualPlan plan={plan} />
+          </StyledTitleH2>
+          <StyledDateTimeRangeH3>
+            <DateTimeRange start={plan.start} end={plan.end} />
+          </StyledDateTimeRangeH3>
+          <div>{plan.location}</div>
+          <div>{plan.description}</div>
+        </StyledCard>
+      </StyledContentDiv>
     </CenteredContent>
   </Body>
 );

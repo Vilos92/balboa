@@ -7,7 +7,6 @@ import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../com
 import {Tooltip} from '../components/Tooltip';
 import {PlanDraft} from '../models/plan';
 import {validatePostPlan} from '../pages/api/plans';
-import {Providers} from '../utils/auth';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <p>Loading map</p>,
