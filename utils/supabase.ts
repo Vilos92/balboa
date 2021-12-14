@@ -13,8 +13,8 @@ export interface SupabaseConfig {
  * Constants.
  */
 
-const envUrl = process.env.PUBLIC_SUPABASE_URL;
-const envAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY;
+const envUrl = process.env.PUBLIC_SUPABASE_URL ?? '';
+const envAnonKey = process.env.PUBLIC_SUPABASE_ANON_KEY ?? '';
 
 /*
  * Client.

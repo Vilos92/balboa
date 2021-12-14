@@ -1,5 +1,5 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import {ZodError, z} from 'zod';
+import {ZodError, ZodIssue, z} from 'zod';
 
 import {PlanModel, planDraftSchema, savePlan} from '../../../models/plan';
 import {netPost} from '../../../utils/net';
@@ -17,13 +17,15 @@ const postPlanSchema = planDraftSchema.extend({});
  * Types.
  */
 
+type ApiResponse = NextApiResponse<PlanModel | {error: unknown}>;
+
 type PostPlanSchema = z.infer<typeof postPlanSchema>;
 
 /*
  * Request handler.
  */
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<PlanModel>) {
+export default async function handler(req: NextApiRequest, res: ApiResponse) {
   try {
     switch (req.method) {
       case 'POST':
@@ -32,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         res.status(404);
     }
   } catch (error) {
-    res.status(500).json(error);
+    res.status(500).json({error});
   }
 }
 
@@ -72,11 +74,15 @@ function decodePostPlan(planBlob: unknown): PostPlanSchema {
  * Used by the client to validate a plan before submission.
  * If any errors are encountered they are returned.
  */
-export function validatePostPlan(planBlob: PostPlanSchema): ZodError<PostPlanSchema> | undefined {
+export function validatePostPlan(planBlob: PostPlanSchema): readonly ZodIssue[] | undefined {
   try {
     postPlanSchema.parse(planBlob);
     return undefined;
   } catch (error) {
-    return error;
+    if (error instanceof ZodError) {
+      return error.errors;
+    }
+
+    throw error;
   }
 }
