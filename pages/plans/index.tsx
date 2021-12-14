@@ -23,7 +23,15 @@ interface PlanCardProps {
  * Styles.
  */
 
+const StyledContentDiv = tw.div`
+  flex
+  flex-col
+  items-center
+  w-full
+`;
+
 const StyledCard = tw(Card)`
+  sm:w-7/12
   flex
   flex-row
   items-center 
@@ -81,10 +89,12 @@ export async function getServerSideProps() {
 const PlansPage: FC<PlansPageProps> = ({plans}) => (
   <Body>
     <CenteredContent>
-      <Logo />
-      {plans.map(plan => (
-        <PlanCard key={plan.id} plan={plan} />
-      ))}
+      <StyledContentDiv>
+        <Logo />
+        {plans.map(plan => (
+          <PlanCard key={plan.id} plan={plan} />
+        ))}
+      </StyledContentDiv>
     </CenteredContent>
   </Body>
 );
