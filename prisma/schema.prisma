@@ -38,6 +38,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  Plan          Plan[]
 
   @@map("user")
 }
@@ -64,6 +65,7 @@ model VerificationToken {
 // Base resources.
 
 model Plan {
+  hostUserId  String
   id          Int       @id @default(autoincrement())
   createdAt   DateTime  @map("created_at") @default(now())
   title       String
@@ -71,7 +73,8 @@ model Plan {
   start       DateTime
   end         DateTime
   location    String
-description String
+  description String
+  User        User      @relation(fields: [hostUserId], references: [id])
 
   @@map("plan")
 }

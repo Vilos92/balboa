@@ -8,6 +8,7 @@ import {makePrismaClient} from '../utils/prisma';
 
 // Schema for plans retrieved from the database using prisma.
 const dbPlanSchema = z.object({
+  hostUserId: z.string(),
   id: z.number(),
   createdAt: z.date(),
   title: z.string(),
@@ -20,6 +21,7 @@ const dbPlanSchema = z.object({
 
 // Schema for plans used by the server and client.
 const planSchema = z.object({
+  hostUserId: z.string(),
   id: z.number(),
   createdAt: z.string(),
   title: z.string(),
@@ -31,12 +33,22 @@ const planSchema = z.object({
 });
 
 // Fields in the DB which can be returned to the client.
-const clientFields = ['id', 'createdAt', 'title', 'color', 'start', 'end', 'location', 'description'];
-const clientFieldsSelect = clientFields.reduce<{[key: string]: boolean}>((m, v) => ((m[v] = true), m), {});
+const planFields = [
+  'hostUserId',
+  'id',
+  'createdAt',
+  'title',
+  'color',
+  'start',
+  'end',
+  'location',
+  'description'
+];
+const planSelect = planFields.reduce<{[key: string]: boolean}>((m, v) => ((m[v] = true), m), {});
 
-// Schema for plan drafts. This is used to validate data
-// received from the API, and has stricter requirements.
+// Schema for plan drafts. This is used to validate data which will be sent to the DB.
 export const planDraftSchema = z.object({
+  hostUserId: z.string().max(25),
   title: z.string().min(3).max(30),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
   start: z.string().min(13).max(30),
@@ -67,7 +79,7 @@ export async function findPlan(planId: number) {
     where: {
       id: planId
     },
-    select: clientFieldsSelect
+    select: planSelect
   });
 
   const dbPlan = decodeDbPlan(data);
@@ -81,7 +93,7 @@ export async function findPlans() {
   const prisma = makePrismaClient();
 
   const data = await prisma.plan.findMany({
-    select: clientFieldsSelect
+    select: planSelect
   });
 
   const dbPlans = decodeDbPlans(data);
@@ -92,7 +104,8 @@ export async function savePlan(planDraft: PlanDraft) {
   const prisma = makePrismaClient();
 
   const data = await prisma.plan.create({
-    data: planDraft
+    data: planDraft,
+    select: planSelect
   });
 
   const dbPlan = decodeDbPlan(data);
@@ -102,6 +115,14 @@ export async function savePlan(planDraft: PlanDraft) {
 /*
  * Runtime decoding/encoding.
  */
+
+/**
+ * Used by the server to encode a plan from the client for the database.
+ * Does not handle any exceptions thrown by the parser.
+ */
+export function encodeDraftPlan(planBlob: unknown): PlanDraft {
+  return planDraftSchema.parse(planBlob);
+}
 
 /**
  * Used by the server to decode a plan from the database.
@@ -125,6 +146,7 @@ function decodeDbPlans(planRows: readonly unknown[]): readonly DbPlanModel[] {
  */
 function encodePlan(planRow: DbPlanModel): PlanModel {
   const planBlob = {
+    hostUserId: planRow.hostUserId,
     id: planRow.id,
     createdAt: planRow.createdAt.toISOString(),
     title: planRow.title,

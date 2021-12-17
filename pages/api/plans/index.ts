@@ -1,8 +1,8 @@
 import {NextApiRequest, NextApiResponse} from 'next';
-import {getSession} from 'next-auth/react';
 import {ZodIssue, z} from 'zod';
 
-import {PlanModel, planDraftSchema, savePlan} from '../../../models/plan';
+import {PlanModel, encodeDraftPlan, planDraftSchema, savePlan} from '../../../models/plan';
+import {getSessionUser} from '../../../utils/auth';
 import {NetResponse, netPost} from '../../../utils/net';
 import {validateSchema} from '../../../utils/schema';
 
@@ -13,7 +13,7 @@ import {validateSchema} from '../../../utils/schema';
 const plansUrl = '/api/plans';
 
 // Schema used to validate plans posted to this endpoint.
-const postPlanSchema = planDraftSchema.extend({});
+const postPlanSchema = planDraftSchema.omit({hostUserId: true});
 
 /*
  * Types.
@@ -41,20 +41,19 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
 }
 
 async function postHandler(req: NextApiRequest, res: NetResponse<PlanModel>) {
-  const session = await getSession({req});
-  console.log('session', session);
+  const user = await getSessionUser(req);
 
-  if (!session) {
+  if (!user) {
     res.status(401).send({error: 'Unauthorized'});
     return;
   }
-
   const {title, color, start, end, location, description} = req.body;
 
-  const planBlob = {title, color, start, end, location, description};
-  const planDraft = decodePostPlan(planBlob);
+  const planBlob = {hostUserId: user.id, title, color, start, end, location, description};
+  const planDraft = encodeDraftPlan(planBlob);
 
   const plan = await savePlan(planDraft);
+
   res.status(200).json(plan);
 }
 
@@ -69,14 +68,6 @@ export function postPlan(planBlob: PostPlanSchema) {
 /*
  * Helpers.
  */
-
-/**
- * Used by the server to decode a plan from the client.
- * Does not handle any exceptions thrown by the parser.
- */
-function decodePostPlan(planBlob: unknown): PostPlanSchema {
-  return postPlanSchema.parse(planBlob);
-}
 
 /**
  * Used by the client to validate a plan before submission.
