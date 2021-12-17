@@ -10,7 +10,6 @@ export function validateSchema<T>(
 ): readonly ZodIssue[] | undefined {
   try {
     schema.parse(blob);
-    return undefined;
   } catch (error) {
     if (error instanceof ZodError) {
       return error.errors;
