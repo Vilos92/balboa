@@ -1,5 +1,6 @@
-import {PrismaClient} from '@prisma/client';
 import {z} from 'zod';
+
+import {makePrismaClient} from '../utils/prisma';
 
 /*
  * Constants.
@@ -60,7 +61,7 @@ export type PlanDraft = z.infer<typeof planDraftSchema>;
  * Select a single plan by id.
  */
 export async function findPlan(planId: number) {
-  const prisma = new PrismaClient();
+  const prisma = makePrismaClient();
 
   const data = await prisma.plan.findUnique({
     where: {
@@ -77,7 +78,7 @@ export async function findPlan(planId: number) {
  * Select plans which have not yet started or ended.
  */
 export async function findPlans() {
-  const prisma = new PrismaClient();
+  const prisma = makePrismaClient();
 
   const data = await prisma.plan.findMany({
     select: clientFieldsSelect
@@ -88,7 +89,7 @@ export async function findPlans() {
 }
 
 export async function savePlan(planDraft: PlanDraft) {
-  const prisma = new PrismaClient();
+  const prisma = makePrismaClient();
 
   const data = await prisma.plan.create({
     data: planDraft
