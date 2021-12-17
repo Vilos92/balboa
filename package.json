@@ -13,7 +13,6 @@
     "@next-auth/prisma-adapter": "^0.5.2-next.19",
     "@popperjs/core": "^2.10.2",
     "@prisma/client": "^3.6.0",
-    "@supabase/supabase-js": "^1.27.0",
     "@types/react-map-gl": "^6.1.1",
     "axios": "^0.24.0",
     "mapbox-gl": "^2.6.1",
