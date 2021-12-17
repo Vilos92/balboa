@@ -6,9 +6,8 @@ import tw from 'twin.macro';
 import {AccountFooter, FalseAccountFooter} from '../components/AccountFooter';
 import {Body, Card, CenteredContent, Logo} from '../components/Commons';
 import {PlanForm} from '../components/PlanForm';
-import {PlanDraft} from '../models/plan';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
-import {postPlan} from './api/plans';
+import {PostPlan, postPlan} from './api/plans';
 
 /*
  * Types.
@@ -61,7 +60,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
 
   const isAuthenticated = status === SessionStatusesEnum.AUTHENTICATED && Boolean(user);
 
-  const createPlan = async (planDraft: PlanDraft) => {
+  const createPlan = async (planDraft: PostPlan) => {
     if (!planDraft) return;
 
     if (!isAuthenticated) {

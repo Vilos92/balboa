@@ -5,8 +5,7 @@ import tw, {styled} from 'twin.macro';
 import {Button} from '../components/Button';
 import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
-import {PlanDraft} from '../models/plan';
-import {validatePostPlan} from '../pages/api/plans';
+import {PostPlan, validatePostPlan} from '../pages/api/plans';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <p>Loading map</p>,
@@ -18,7 +17,7 @@ const LocationVisualizer = dynamic(() => import('../components/LocationVisualize
  */
 
 interface PlanFormProps {
-  createPlan: (planDraft: PlanDraft) => void;
+  createPlan: (planDraft: PostPlan) => void;
 }
 
 interface ColorInputWithTooltipProps {

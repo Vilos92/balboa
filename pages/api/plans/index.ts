@@ -21,7 +21,7 @@ const postPlanSchema = planDraftSchema.omit({hostUserId: true});
 
 type ApiResponse = NextApiResponse<PlanModel | {error: unknown}>;
 
-type PostPlanSchema = z.infer<typeof postPlanSchema>;
+export type PostPlan = z.infer<typeof postPlanSchema>;
 
 /*
  * Request handler.
@@ -61,8 +61,8 @@ async function postHandler(req: NextApiRequest, res: NetResponse<PlanModel>) {
  * Client.
  */
 
-export function postPlan(planBlob: PostPlanSchema) {
-  return netPost<PostPlanSchema, PlanModel>(plansUrl, planBlob);
+export function postPlan(planBlob: PostPlan) {
+  return netPost<PostPlan, PlanModel>(plansUrl, planBlob);
 }
 
 /*
@@ -73,6 +73,6 @@ export function postPlan(planBlob: PostPlanSchema) {
  * Used by the client to validate a plan before submission.
  * If any errors are encountered they are returned.
  */
-export function validatePostPlan(planBlob: PostPlanSchema): readonly ZodIssue[] | undefined {
+export function validatePostPlan(planBlob: PostPlan): readonly ZodIssue[] | undefined {
   return validateSchema(postPlanSchema, planBlob);
 }
