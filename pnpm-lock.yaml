@@ -1,7 +1,9 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@next-auth/prisma-adapter': ^0.5.2-next.19
   '@popperjs/core': ^2.10.2
+  '@prisma/client': ^3.6.0
   '@supabase/supabase-js': ^1.27.0
   '@trivago/prettier-plugin-sort-imports': ^3.1.1
   '@types/react-map-gl': ^6.1.1
@@ -19,6 +21,7 @@ specifiers:
   next: 12.0.3
   next-auth: ^4.0.2
   prettier: ^2.4.1
+  prisma: ^3.6.0
   react: 17.0.2
   react-dom: 17.0.2
   react-is: ^17.0.2
@@ -32,7 +35,9 @@ specifiers:
   zod: ^3.11.6
 
 dependencies:
+  '@next-auth/prisma-adapter': 0.5.2-next.19_f26fdcf87df296c1294e2c3d19a07668
   '@popperjs/core': 2.10.2
+  '@prisma/client': 3.6.0_prisma@3.6.0
   '@supabase/supabase-js': 1.27.0
   '@types/react-map-gl': 6.1.1
   axios: 0.24.0
@@ -59,6 +64,7 @@ devDependencies:
   eslint-config-prettier: 8.3.0_eslint@7.32.0
   eslint-plugin-prettier: 4.0.0_6e975bd57c7acf028c1a9ddbbf60c898
   prettier: 2.4.1
+  prisma: 3.6.0
   react-is: 17.0.2
   tailwindcss: 2.2.19
   twin.macro: 2.8.1
@@ -499,6 +505,16 @@ packages:
     resolution: {integrity: sha512-jDJTpta+P4p1NZTFVLHJ/TLFVYVcOqv6l8xwOeBKNPMgY/zDYH/YH7SJbvrr/h1RcS9GzbPcLKGzpuK9cV56UA==}
     dev: false
 
+  /@next-auth/prisma-adapter/0.5.2-next.19_f26fdcf87df296c1294e2c3d19a07668:
+    resolution: {integrity: sha512-146DWE4PEbgVKF6W0CjJSxeP2rrw2T2s8zX1GQzbQsMK8trRSzheURJRphCn6ZGhVSpHJhU4NZe7F0kwRL5lwQ==}
+    peerDependencies:
+      '@prisma/client': '>=2.26.0'
+      next-auth: '>4 || 4.0.0-beta.1 - 4.0.0-beta.x'
+    dependencies:
+      '@prisma/client': 3.6.0_prisma@3.6.0
+      next-auth: 4.0.2_react-dom@17.0.2+react@17.0.2
+    dev: false
+
   /@next/env/12.0.3:
     resolution: {integrity: sha512-QcdlpcwIH9dYcVlNAU+gXaqHA/omskbRlb+R3vN7LlB2EgLt+9WQwbokcHOsNyt4pI7kDM67W4tr9l7dWnlGdQ==}
     dev: false
@@ -677,6 +693,29 @@ packages:
   /@popperjs/core/2.10.2:
     resolution: {integrity: sha512-IXf3XA7+XyN7CP9gGh/XB0UxVMlvARGEgGXLubFICsUMGz6Q+DU+i4gGlpOxTjKvXjkJDJC8YdqdKkDj9qZHEQ==}
     dev: false
+
+  /@prisma/client/3.6.0_prisma@3.6.0:
+    resolution: {integrity: sha512-ycSGY9EZGROtje0iCNsgC5Zqi/ttX2sO7BNMYaLsUMiTlf3F69ZPH+08pRo0hrDfkZzyimXYqeXJlaoYDH1w7A==}
+    engines: {node: '>=12.6'}
+    requiresBuild: true
+    peerDependencies:
+      prisma: '*'
+    peerDependenciesMeta:
+      prisma:
+        optional: true
+    dependencies:
+      '@prisma/engines-version': 3.6.0-24.dc520b92b1ebb2d28dc3161f9f82e875bd35d727
+      prisma: 3.6.0
+    dev: false
+
+  /@prisma/engines-version/3.6.0-24.dc520b92b1ebb2d28dc3161f9f82e875bd35d727:
+    resolution: {integrity: sha512-vtoO2ys6mSfc8ONTWdcYztKN3GBU1tcKBj0aXObyjzSuGwHFcM/pEA0xF+n1W4/0TAJgfoPX2khNEit6g0jtNA==}
+    dev: false
+
+  /@prisma/engines/3.6.0-24.dc520b92b1ebb2d28dc3161f9f82e875bd35d727:
+    resolution: {integrity: sha512-dRClHS7DsTVchDKzeG72OaEyeDskCv91pnZ72Fftn0mp4BkUvX2LvWup65hCNzwwQm5IDd6A88APldKDnMiEMA==}
+    requiresBuild: true
+    dev: true
 
   /@rushstack/eslint-patch/1.1.0:
     resolution: {integrity: sha512-JLo+Y592QzIE+q7Dl2pMUtt4q8SKYI5jDrZxrozEQxnGVOyYE+GWK9eLkwTaeN9DDctlaRAQ3TBmzZ1qdLE30A==}
@@ -3633,6 +3672,15 @@ packages:
   /pretty-hrtime/1.0.3:
     resolution: {integrity: sha1-t+PqQkNaTJsnWdmeDyAesZWALuE=}
     engines: {node: '>= 0.8'}
+    dev: true
+
+  /prisma/3.6.0:
+    resolution: {integrity: sha512-6SqgHS/5Rq6HtHjsWsTxlj+ySamGyCLBUQfotc2lStOjPv52IQuDVpp58GieNqc9VnfuFyHUvTZw7aQB+G2fvQ==}
+    engines: {node: '>=12.6'}
+    hasBin: true
+    requiresBuild: true
+    dependencies:
+      '@prisma/engines': 3.6.0-24.dc520b92b1ebb2d28dc3161f9f82e875bd35d727
     dev: true
 
   /process/0.11.10:

@@ -6,10 +6,13 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "getExternalShows": "ts-node scripts/getExternalShows.ts"
+    "prisma-generate-client": "npx prisma generate",
+    "prisma-migrate:dev": "dotenv -e .env.local -- npx prisma migrate dev --name postgres-init"
   },
   "dependencies": {
+    "@next-auth/prisma-adapter": "^0.5.2-next.19",
     "@popperjs/core": "^2.10.2",
+    "@prisma/client": "^3.6.0",
     "@supabase/supabase-js": "^1.27.0",
     "@types/react-map-gl": "^6.1.1",
     "axios": "^0.24.0",
@@ -36,6 +39,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "prettier": "^2.4.1",
+    "prisma": "^3.6.0",
     "react-is": "^17.0.2",
     "tailwindcss": "^2.2.19",
     "twin.macro": "^2.8.1",
