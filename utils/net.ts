@@ -1,14 +1,18 @@
 import axios from 'axios';
 import {AxiosError} from 'axios';
+import {NextApiResponse} from 'next';
 import useSWR, {SWRResponse} from 'swr';
 
 /*
  * Types.
  */
 
-export interface NetResponse {
-  message: string;
-}
+export type NetResponse<T> = NextApiResponse<
+  | T
+  | {
+      error: string;
+    }
+>;
 
 /*
  * Utilities.

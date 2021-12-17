@@ -50,10 +50,7 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({que
 
   const planIdInt = parseInt(parseFirstQueryParam(planId));
 
-  const {plan, error} = await findPlan(planIdInt);
-  if (!plan || error) {
-    return {notFound: true};
-  }
+  const plan = await findPlan(planIdInt);
 
   return {
     props: {

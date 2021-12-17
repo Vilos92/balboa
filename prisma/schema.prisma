@@ -1,12 +1,14 @@
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
 }
 
 generator client {
   provider        = "prisma-client-js"
 }
+
+// Auth resources.
 
 model Account {
   id                 String  @id @default(cuid())
@@ -25,6 +27,7 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@map("account")
 }
 
 model User {
@@ -35,6 +38,8 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+
+  @@map("user")
 }
 
 model Session {
@@ -43,6 +48,8 @@ model Session {
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("session")
 }
 
 model VerificationToken {
@@ -51,4 +58,20 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@map("verification_token")
+}
+
+// Base resources.
+
+model Plan {
+  id          Int       @id @default(autoincrement())
+  createdAt   DateTime  @map("created_at") @default(now())
+  title       String
+  color       String 
+  start       DateTime
+  end         DateTime
+  location    String
+description String
+
+  @@map("plan")
 }

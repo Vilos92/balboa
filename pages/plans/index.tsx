@@ -67,13 +67,7 @@ const StyledDaysUntilDiv = tw.div`
  */
 
 export async function getServerSideProps() {
-  const {plans, error} = await findPlans();
-
-  if (!plans || error) {
-    return {
-      notFound: true
-    };
-  }
+  const plans = await findPlans();
 
   return {
     props: {

@@ -1,8 +1,9 @@
 import {NextApiRequest, NextApiResponse} from 'next';
+import {getSession} from 'next-auth/react';
 import {ZodIssue, z} from 'zod';
 
 import {PlanModel, planDraftSchema, savePlan} from '../../../models/plan';
-import {netPost} from '../../../utils/net';
+import {NetResponse, netPost} from '../../../utils/net';
 import {validateSchema} from '../../../utils/schema';
 
 /*
@@ -39,15 +40,21 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
   }
 }
 
-async function postHandler(req: NextApiRequest, res: NextApiResponse<PlanModel>) {
+async function postHandler(req: NextApiRequest, res: NetResponse<PlanModel>) {
+  const session = await getSession({req});
+  console.log('session', session);
+
+  if (!session) {
+    res.status(401).send({error: 'Unauthorized'});
+    return;
+  }
+
   const {title, color, start, end, location, description} = req.body;
 
   const planBlob = {title, color, start, end, location, description};
   const planDraft = decodePostPlan(planBlob);
 
-  const {plan, error} = await savePlan(planDraft);
-  if (!plan || error) throw error;
-
+  const plan = await savePlan(planDraft);
   res.status(200).json(plan);
 }
 

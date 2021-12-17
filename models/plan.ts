@@ -1,15 +1,26 @@
+import {PrismaClient} from '@prisma/client';
 import {z} from 'zod';
-
-import {makeSupabaseClient} from '../utils/supabase';
 
 /*
  * Constants.
  */
 
-// Schema for plans in the database.
+// Schema for plans retrieved from the database using prisma.
 const dbPlanSchema = z.object({
   id: z.number(),
-  created_at: z.string(),
+  createdAt: z.date(),
+  title: z.string(),
+  color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
+  start: z.date(),
+  end: z.date(),
+  location: z.string(),
+  description: z.string()
+});
+
+// Schema for plans used by the server and client.
+const planSchema = z.object({
+  id: z.number(),
+  createdAt: z.string(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
   start: z.string(),
@@ -19,10 +30,8 @@ const dbPlanSchema = z.object({
 });
 
 // Fields in the DB which can be returned to the client.
-const clientFields = 'id, created_at, title, color, start, end, location, description';
-
-// Schema for plans used by the server and client.
-const planSchema = dbPlanSchema.omit({created_at: true}).extend({createdAt: z.string()});
+const clientFields = ['id', 'createdAt', 'title', 'color', 'start', 'end', 'location', 'description'];
+const clientFieldsSelect = clientFields.reduce<{[key: string]: boolean}>((m, v) => ((m[v] = true), m), {});
 
 // Schema for plan drafts. This is used to validate data
 // received from the API, and has stricter requirements.
@@ -39,7 +48,7 @@ export const planDraftSchema = z.object({
  * Types.
  */
 
-type DbPlanModel = z.infer<typeof dbPlanSchema>;
+export type DbPlanModel = z.infer<typeof dbPlanSchema>;
 export type PlanModel = z.infer<typeof planSchema>;
 export type PlanDraft = z.infer<typeof planDraftSchema>;
 
@@ -51,50 +60,42 @@ export type PlanDraft = z.infer<typeof planDraftSchema>;
  * Select a single plan by id.
  */
 export async function findPlan(planId: number) {
-  const supabase = makeSupabaseClient();
+  const prisma = new PrismaClient();
 
-  const {data, error} = await supabase
-    .from<DbPlanModel>('plan')
-    .select(clientFields)
-    .filter('id', 'eq', planId)
-    .limit(1);
+  const data = await prisma.plan.findUnique({
+    where: {
+      id: planId
+    },
+    select: clientFieldsSelect
+  });
 
-  const dbPlan = decodeDbPlan(data?.[0]);
-  const plan = encodePlan(dbPlan);
-
-  return {plan, error};
+  const dbPlan = decodeDbPlan(data);
+  return encodePlan(dbPlan);
 }
 
 /**
  * Select plans which have not yet started or ended.
  */
 export async function findPlans() {
-  const supabase = makeSupabaseClient();
+  const prisma = new PrismaClient();
 
-  const {data, error} = await supabase
-    .from<DbPlanModel>('plan')
-    .select(clientFields)
-    .filter('end', 'gte', new Date().toISOString())
-    .order('start', {ascending: true})
-    .limit(10);
+  const data = await prisma.plan.findMany({
+    select: clientFieldsSelect
+  });
 
   const dbPlans = decodeDbPlans(data);
-  const plans = encodePlans(dbPlans);
-
-  return {plans, error};
+  return encodePlans(dbPlans);
 }
 
 export async function savePlan(planDraft: PlanDraft) {
-  const supabase = makeSupabaseClient();
+  const prisma = new PrismaClient();
 
-  const {data, error} = await supabase.from<PlanModel>('plan').insert(planDraft);
+  const data = await prisma.plan.create({
+    data: planDraft
+  });
 
-  if (error) return {error};
-
-  const dbPlan = decodeDbPlan(data?.[0]);
-  const plan = encodePlan(dbPlan);
-
-  return {plan, error};
+  const dbPlan = decodeDbPlan(data);
+  return encodePlan(dbPlan);
 }
 
 /*
@@ -113,7 +114,7 @@ function decodeDbPlan(planRow: unknown): DbPlanModel {
  * Used by the server to decode an array of plans from the database.
  * Does not handle any exceptions thrown by the parser.
  */
-function decodeDbPlans(planRows: unknown): readonly DbPlanModel[] {
+function decodeDbPlans(planRows: readonly unknown[]): readonly DbPlanModel[] {
   return z.array(dbPlanSchema).parse(planRows);
 }
 
@@ -124,11 +125,11 @@ function decodeDbPlans(planRows: unknown): readonly DbPlanModel[] {
 function encodePlan(planRow: DbPlanModel): PlanModel {
   const planBlob = {
     id: planRow.id,
-    createdAt: planRow.created_at,
+    createdAt: planRow.createdAt.toISOString(),
     title: planRow.title,
     color: planRow.color,
-    start: planRow.start,
-    end: planRow.end,
+    start: planRow.start.toISOString(),
+    end: planRow.end.toISOString(),
     location: planRow.location,
     description: planRow.description
   };
