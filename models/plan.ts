@@ -1,6 +1,8 @@
 import {z} from 'zod';
 
 import {makePrismaClient} from '../utils/prisma';
+import {computeFieldsSelect} from '../utils/schema';
+import {userSchema, userSelect} from './user';
 
 /*
  * Constants.
@@ -16,12 +18,12 @@ const dbPlanSchema = z.object({
   start: z.date(),
   end: z.date(),
   location: z.string(),
-  description: z.string()
+  description: z.string(),
+  HostUser: userSchema
 });
 
 // Schema for plans used by the server and client.
 const planSchema = z.object({
-  hostUserId: z.string(),
   id: z.number(),
   createdAt: z.string(),
   title: z.string(),
@@ -29,7 +31,8 @@ const planSchema = z.object({
   start: z.string(),
   end: z.string(),
   location: z.string(),
-  description: z.string()
+  description: z.string(),
+  hostUser: userSchema
 });
 
 // Fields in the DB which can be returned to the client.
@@ -44,7 +47,10 @@ const planFields = [
   'location',
   'description'
 ];
-const planSelect = planFields.reduce<{[key: string]: boolean}>((m, v) => ((m[v] = true), m), {});
+const planSelect = {
+  ...computeFieldsSelect(planFields),
+  HostUser: {select: userSelect}
+};
 
 // Schema for plan drafts. This is used to validate data which will be sent to the DB.
 export const planDraftSchema = z.object({
@@ -146,7 +152,6 @@ function decodeDbPlans(planRows: readonly unknown[]): readonly DbPlanModel[] {
  */
 function encodePlan(planRow: DbPlanModel): PlanModel {
   const planBlob = {
-    hostUserId: planRow.hostUserId,
     id: planRow.id,
     createdAt: planRow.createdAt.toISOString(),
     title: planRow.title,
@@ -154,7 +159,8 @@ function encodePlan(planRow: DbPlanModel): PlanModel {
     start: planRow.start.toISOString(),
     end: planRow.end.toISOString(),
     location: planRow.location,
-    description: planRow.description
+    description: planRow.description,
+    hostUser: planRow.HostUser
   };
 
   return planSchema.parse(planBlob);

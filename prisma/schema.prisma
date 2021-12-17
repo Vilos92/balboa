@@ -74,7 +74,7 @@ model Plan {
   end         DateTime
   location    String
   description String
-  User        User      @relation(fields: [hostUserId], references: [id])
+  HostUser    User      @relation(fields: [hostUserId], references: [id])
 
   @@map("plan")
 }

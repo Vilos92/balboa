@@ -63,25 +63,32 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({que
  * Page.
  */
 
-const PlanPage: FC<PlanPageProps> = ({plan}) => (
-  <Body>
-    <CenteredContent>
-      <Logo />
-      <StyledContentDiv>
-        <StyledCard>
-          <StyledTitleH2>
-            <VisualPlan plan={plan} />
-          </StyledTitleH2>
-          <StyledDateTimeRangeH3>
-            <DateTimeRange start={plan.start} end={plan.end} />
-          </StyledDateTimeRangeH3>
-          <div>{plan.location}</div>
-          <div>{plan.description}</div>
-        </StyledCard>
-      </StyledContentDiv>
-    </CenteredContent>
-  </Body>
-);
+const PlanPage: FC<PlanPageProps> = ({plan}) => {
+  const {hostUser} = plan;
+
+  return (
+    <Body>
+      <CenteredContent>
+        <Logo />
+        <StyledContentDiv>
+          <StyledCard>
+            <StyledTitleH2>
+              <VisualPlan plan={plan} />
+            </StyledTitleH2>
+            <StyledDateTimeRangeH3>
+              <DateTimeRange start={plan.start} end={plan.end} />
+            </StyledDateTimeRangeH3>
+            <div>{plan.location}</div>
+            <div>{plan.description}</div>
+            <div>
+              {hostUser.name} - {hostUser.email}
+            </div>
+          </StyledCard>
+        </StyledContentDiv>
+      </CenteredContent>
+    </Body>
+  );
+};
 
 export default PlanPage;
 

@@ -110,6 +110,8 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
 
   const daysUntilString = daysUntil === 1 ? 'day' : 'days';
 
+  const {hostUser} = plan;
+
   return (
     <StyledCard onClick={onClickCard}>
       <div>
@@ -120,6 +122,9 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
           <DateTimeRange start={plan.start} end={plan.end} />
         </StyledDateTimeRangeH3>
         <div>{plan.location}</div>
+        <div>
+          {hostUser.name} - {hostUser.email}
+        </div>
       </div>
       <StyledRightDiv>
         {daysUntil}

@@ -18,3 +18,7 @@ export function validateSchema<T>(
     throw error;
   }
 }
+
+export function computeFieldsSelect(fields: readonly string[]): Record<string, boolean> {
+  return fields.reduce<Record<string, boolean>>((select, field) => ((select[field] = true), select), {});
+}
