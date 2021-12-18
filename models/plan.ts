@@ -123,14 +123,6 @@ export async function savePlan(planDraft: PlanDraft) {
  */
 
 /**
- * Used by the server to encode a plan from the client for the database.
- * Does not handle any exceptions thrown by the parser.
- */
-export function encodeDraftPlan(planBlob: unknown): PlanDraft {
-  return planDraftSchema.parse(planBlob);
-}
-
-/**
  * Used by the server to decode a plan from the database.
  * Does not handle any exceptions thrown by the parser.
  */
@@ -172,4 +164,12 @@ function encodePlan(planRow: DbPlan): Plan {
  */
 function encodePlans(planRows: readonly DbPlan[]): readonly Plan[] {
   return planRows.map(encodePlan);
+}
+
+/**
+ * Used by the server to encode a plan from the client for the database.
+ * Does not handle any exceptions thrown by the parser.
+ */
+export function encodeDraftPlan(planBlob: unknown): PlanDraft {
+  return planDraftSchema.parse(planBlob);
 }
