@@ -1,14 +1,14 @@
 import {FC} from 'react';
 import tw, {styled} from 'twin.macro';
 
-import {PlanModel} from '../../models/plan';
+import {Plan} from '../models/plan';
 
 /*
  * Types.
  */
 
 interface VisualPlanProps {
-  plan: PlanModel;
+  plan: Plan;
 }
 
 /*
