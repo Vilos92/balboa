@@ -14,16 +14,11 @@ export const userSchema = z.object({
 });
 
 // Fields in the DB which can be returned to the client.
-const userFields = ['id', 'email', 'name', 'image'];
+const userFields: readonly string[] = ['id', 'email', 'name', 'image'];
 export const userSelect = computeFieldsSelect(userFields);
 
 /*
  * Types.
  */
 
-export interface UserModel {
-  id: string;
-  email: string;
-  name: string;
-  image: string;
-}
+export type User = z.infer<typeof userSchema>;

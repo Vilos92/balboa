@@ -36,7 +36,7 @@ const planSchema = z.object({
 });
 
 // Fields in the DB which can be returned to the client.
-const planFields = [
+const planFields: readonly string[] = [
   'hostUserId',
   'id',
   'createdAt',
@@ -67,8 +67,8 @@ export const planDraftSchema = z.object({
  * Types.
  */
 
-export type DbPlanModel = z.infer<typeof dbPlanSchema>;
-export type PlanModel = z.infer<typeof planSchema>;
+type DbPlan = z.infer<typeof dbPlanSchema>;
+export type Plan = z.infer<typeof planSchema>;
 export type PlanDraft = z.infer<typeof planDraftSchema>;
 
 /*
@@ -134,7 +134,7 @@ export function encodeDraftPlan(planBlob: unknown): PlanDraft {
  * Used by the server to decode a plan from the database.
  * Does not handle any exceptions thrown by the parser.
  */
-function decodeDbPlan(planRow: unknown): DbPlanModel {
+function decodeDbPlan(planRow: unknown): DbPlan {
   return dbPlanSchema.parse(planRow);
 }
 
@@ -142,7 +142,7 @@ function decodeDbPlan(planRow: unknown): DbPlanModel {
  * Used by the server to decode an array of plans from the database.
  * Does not handle any exceptions thrown by the parser.
  */
-function decodeDbPlans(planRows: readonly unknown[]): readonly DbPlanModel[] {
+function decodeDbPlans(planRows: readonly unknown[]): readonly DbPlan[] {
   return z.array(dbPlanSchema).parse(planRows);
 }
 
@@ -150,7 +150,7 @@ function decodeDbPlans(planRows: readonly unknown[]): readonly DbPlanModel[] {
  * Used by the server to encode a plan from
  * the database to be sent to the client.
  */
-function encodePlan(planRow: DbPlanModel): PlanModel {
+function encodePlan(planRow: DbPlan): Plan {
   const planBlob = {
     id: planRow.id,
     createdAt: planRow.createdAt.toISOString(),
@@ -170,6 +170,6 @@ function encodePlan(planRow: DbPlanModel): PlanModel {
  * Used by the server to encode an array of plans
  * from the database to be sent to the client.
  */
-function encodePlans(planRows: readonly DbPlanModel[]): readonly PlanModel[] {
+function encodePlans(planRows: readonly DbPlan[]): readonly Plan[] {
   return planRows.map(encodePlan);
 }

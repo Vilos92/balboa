@@ -10,7 +10,7 @@ import {
   useSession
 } from 'next-auth/react';
 
-import {UserModel} from '../models/user';
+import {User} from '../models/user';
 
 /*
  * Types.
@@ -53,7 +53,7 @@ export async function getSessionUser(req: NextApiRequest) {
  * Hooks.
  */
 
-export function useAuthSession(): {user?: UserModel; status: SessionStatusesEnum} {
+export function useAuthSession(): {user?: User; status: SessionStatusesEnum} {
   const {data, status} = useSession();
 
   if (!isSessionStatusesEnum(status)) throw new Error(`Not a valid session status: ${status}`);
@@ -74,7 +74,7 @@ function isSessionStatusesEnum(status: string): status is SessionStatusesEnum {
  * Retrieves the UserModel from a Session object, ensuring
  * that all fields are present.
  */
-function computeSessionUser(session: Session): UserModel {
+function computeSessionUser(session: Session): User {
   const user = session.user;
   if (!user) throw new Error('Session is missing user');
 

@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {ZodIssue, z} from 'zod';
 
-import {PlanModel, encodeDraftPlan, planDraftSchema, savePlan} from '../../../models/plan';
+import {Plan, encodeDraftPlan, planDraftSchema, savePlan} from '../../../models/plan';
 import {getSessionUser} from '../../../utils/auth';
 import {NetResponse, netPost} from '../../../utils/net';
 import {validateSchema} from '../../../utils/schema';
@@ -19,7 +19,7 @@ const postPlanSchema = planDraftSchema.omit({hostUserId: true});
  * Types.
  */
 
-type ApiResponse = NextApiResponse<PlanModel | {error: unknown}>;
+type ApiResponse = NextApiResponse<Plan | {error: unknown}>;
 
 export type PostPlan = z.infer<typeof postPlanSchema>;
 
@@ -40,7 +40,7 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
   }
 }
 
-async function postHandler(req: NextApiRequest, res: NetResponse<PlanModel>) {
+async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const user = await getSessionUser(req);
 
   if (!user) {
@@ -62,7 +62,7 @@ async function postHandler(req: NextApiRequest, res: NetResponse<PlanModel>) {
  */
 
 export function postPlan(planBlob: PostPlan) {
-  return netPost<PostPlan, PlanModel>(plansUrl, planBlob);
+  return netPost<PostPlan, Plan>(plansUrl, planBlob);
 }
 
 /*

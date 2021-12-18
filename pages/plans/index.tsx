@@ -5,18 +5,18 @@ import tw from 'twin.macro';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {VisualPlan} from '../../components/VisualPlan';
-import {PlanModel, findPlans} from '../../models/plan';
+import {Plan, findPlans} from '../../models/plan';
 
 /*
  * Types.
  */
 
 interface PlansPageProps {
-  plans: readonly PlanModel[];
+  plans: readonly Plan[];
 }
 
 interface PlanCardProps {
-  plan: PlanModel;
+  plan: Plan;
 }
 
 /*

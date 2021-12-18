@@ -19,6 +19,9 @@ export function validateSchema<T>(
   }
 }
 
+/**
+ * For an array of table fields, creates the select object used by prisma to retrieve those fields.
+ */
 export function computeFieldsSelect(fields: readonly string[]): Record<string, boolean> {
   return fields.reduce<Record<string, boolean>>((select, field) => ((select[field] = true), select), {});
 }
