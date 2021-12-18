@@ -40,7 +40,7 @@ model User {
   sessions      Session[]
   Plan          Plan[]
 
-  @@map("user")
+  @@map("rocky_user")
 }
 
 model Session {
