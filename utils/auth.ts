@@ -46,7 +46,7 @@ export async function getSessionUser(req: NextApiRequest) {
   const session = await getSession({req});
   if (!session || !session.user) return undefined;
 
-  return computeSessionUser(session);
+  return decodeSessionUser(session);
 }
 
 /*
@@ -58,28 +58,27 @@ export function useAuthSession(): {user?: User; status: SessionStatusesEnum} {
 
   if (!isSessionStatusesEnum(status)) throw new Error(`Not a valid session status: ${status}`);
 
-  const user = data ? computeSessionUser(data) : undefined;
+  const user = data ? decodeSessionUser(data) : undefined;
   return {user, status};
 }
 
 /*
- * Helpers.
+ * Runtime decoding/encoding.
  */
-
-function isSessionStatusesEnum(status: string): status is SessionStatusesEnum {
-  return Object.values(SessionStatusesEnum).includes(status as SessionStatusesEnum);
-}
 
 /**
- * Retrieves the UserModel from a Session object, ensuring
- * that all fields are present.
+ * Retrieves the User model from a next-auth Session object,
+ * ensuring that all fields are present. The next-auth user
+ * fields can be null or undefined, but we require them to
+ * be present for usage in both the server and client. This
+ * is why we decode to our User.
  */
-function computeSessionUser(session: Session): User {
+function decodeSessionUser(session: Session): User {
   const user = session.user;
   if (!user) throw new Error('Session is missing user');
 
   // @ts-ignore: id is injected from next-auth adapter.
-  if (!user.id) throw new Error('User is missing email');
+  if (!user.id) throw new Error('User is missing id');
   if (!user.email) throw new Error('User is missing email');
   if (!user.name) throw new Error('User is missing name');
   if (!user.image) throw new Error('User is missing image');
@@ -91,4 +90,12 @@ function computeSessionUser(session: Session): User {
     name: user.name,
     image: user.image
   };
+}
+
+/*
+ * Helpers.
+ */
+
+function isSessionStatusesEnum(status: string): status is SessionStatusesEnum {
+  return Object.values(SessionStatusesEnum).includes(status as SessionStatusesEnum);
 }
