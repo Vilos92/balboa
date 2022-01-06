@@ -106,7 +106,7 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
 
           <StyledCard>
             <StyledShareDiv>
-              <TextInput label='Share' value={shareUrl} />
+              <TextInput label='Share' value={shareUrl} onChange={() => undefined} />
               <CopyButton shareUrl={shareUrl} color={color} />
             </StyledShareDiv>
           </StyledCard>
