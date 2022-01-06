@@ -17,6 +17,9 @@ export const DateTimeRange: FC<DateTimeRangeProps> = ({start, end}) => {
   const startDt = new Date(start);
   const endDt = new Date(end);
 
+  // start should not be greater than end.
+  if (startDt > endDt) return null;
+
   const startFormatted = formatLocaleString(startDt);
 
   const endFormatted =
