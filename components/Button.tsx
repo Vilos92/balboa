@@ -26,7 +26,7 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
     font-bold
     py-2
     px-4
-    rounded
+    rounded-full
     focus:outline-none
     focus:shadow
   `}
