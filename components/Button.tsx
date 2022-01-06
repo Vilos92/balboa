@@ -10,15 +10,15 @@ interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
 }
 
 interface StyledColoredButtonProps {
-  backgroundColor?: string;
+  $backgroundColor?: string;
 }
 
 /*
  * Styles.
  */
 
-const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({backgroundColor}) => ({
-  style: {backgroundColor}
+const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$backgroundColor}) => ({
+  style: {backgroundColor: $backgroundColor}
 }))<StyledColoredButtonProps>`
   ${tw`
     hover:brightness-150
@@ -41,7 +41,7 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({back
 export const Button: FC<ButtonProps> = ({children, backgroundColor, onClick, className}) => (
   <StyledColoredButton
     type='button'
-    backgroundColor={backgroundColor}
+    $backgroundColor={backgroundColor}
     onClick={onClick}
     className={className}
   >

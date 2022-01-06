@@ -21,7 +21,7 @@ interface TextAreaInputProps extends React.HTMLProps<HTMLTextAreaElement> {
 }
 
 interface StyledColorDivProps {
-  backgroundColor: string;
+  $backgroundColor: string;
 }
 
 /*
@@ -106,8 +106,8 @@ const StyledTextArea = styled.textarea`
   ${textAreaLabelTransitionCss}
 `;
 
-const StyledColorDiv = styled.div.attrs<StyledColorDivProps>(({backgroundColor}) => ({
-  style: {backgroundColor}
+const StyledColorDiv = styled.div.attrs<StyledColorDivProps>(({$backgroundColor}) => ({
+  style: {backgroundColor: $backgroundColor}
 }))<StyledColorDivProps>`
   ${tw`
     rounded-full
@@ -191,7 +191,7 @@ export const ColorInput: FC<InputProps> = props => {
   const backgroundColor = typeof value === 'string' ? value : '';
 
   return (
-    <StyledColorDiv onClick={onSpanClick} backgroundColor={backgroundColor} className={className}>
+    <StyledColorDiv onClick={onSpanClick} $backgroundColor={backgroundColor} className={className}>
       <StyledColorInput ref={inputRef} aria-label={label} type='color' value={value} onChange={onChange} />
     </StyledColorDiv>
   );
