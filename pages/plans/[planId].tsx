@@ -10,6 +10,7 @@ import {Tooltip} from '../../components/Tooltip';
 import {VisualPlan} from '../../components/VisualPlan';
 import {TextInput} from '../../components/inputs/TextInput';
 import {Plan, findPlan} from '../../models/plan';
+import {useTimeout} from '../../utils/hooks';
 
 /*
  * Types.
@@ -138,16 +139,12 @@ export default PlanPage;
 
 const CopyButton: FC<CopyButtonProps> = ({shareUrl, color}) => {
   const [isCopyTooltipVisible, setIsCopyTooltipVisible] = useState(false);
-
-  // Todo: Extract this useRef and useEffect pattern into a useTimeout hook.
-  const visibleTimeoutRef = useRef<number>();
-  useEffect(() => () => clearTimeout(visibleTimeoutRef.current), []);
+  const [setTimeout] = useTimeout();
 
   const onCopyShareUrl = async () => {
     await navigator.clipboard.writeText(shareUrl);
-    clearTimeout(visibleTimeoutRef.current);
     setIsCopyTooltipVisible(true);
-    visibleTimeoutRef.current = window.setTimeout(() => setIsCopyTooltipVisible(false), 2000);
+    setTimeout(() => setIsCopyTooltipVisible(false), 2000);
   };
 
   return (
