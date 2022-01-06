@@ -3,6 +3,7 @@ import {ChangeEvent, FC, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Button} from '../components/Button';
+import {LocationVisualizerMock} from '../components/LocationVisualizer';
 import {Tooltip} from '../components/Tooltip';
 import {PostPlan, validatePostPlan} from '../pages/api/plans';
 import {ColorInput} from './inputs/ColorInput';
@@ -12,7 +13,7 @@ import {TextInput} from './inputs/TextInput';
 import {TimeInput} from './inputs/TimeInput';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
-  loading: () => <p>Loading map</p>,
+  loading: () => <LocationVisualizerMock />,
   ssr: false
 });
 
@@ -180,7 +181,11 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
 
       <StyledGroupDiv>
         <TextInput label='Location' value={location} onChange={onChangeLocation} onFocus={onFocusLocation} />
-        {(hasLocationFocused || location.length > 0) && <LocationVisualizer location={location} />}
+        {hasLocationFocused || location.length > 0 ? (
+          <LocationVisualizer location={location} />
+        ) : (
+          <LocationVisualizerMock />
+        )}
       </StyledGroupDiv>
 
       <StyledGroupDiv>

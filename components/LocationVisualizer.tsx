@@ -1,8 +1,8 @@
 import {AxiosError} from 'axios';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {FC, useState} from 'react';
-import ReactMapGL, {Marker} from 'react-map-gl';
-import {styled} from 'twin.macro';
+import ReactMapGL, {Marker, ViewportProps} from 'react-map-gl';
+import tw, {styled} from 'twin.macro';
 
 import {GetGeolocationResponse, geolocationApi} from '../pages/api/geolocation';
 import MapStyle from '../styles/map-style-basic-v8.json';
@@ -32,6 +32,12 @@ const StyledMapDiv = styled.div`
   position: relative;
 `;
 
+const StyledMockDiv = tw.div`
+  h-full
+  w-full
+  bg-blue-300
+`;
+
 /*
  * Component.
  */
@@ -41,14 +47,16 @@ const StyledMapDiv = styled.div`
  * Cannot be rendered with SRR, and should be loaded dynamically.
  */
 const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
-  const debouncedLocation = useDebounce(location, 1000);
+  const [zoom, setZoom] = useState(13);
+  const onViewportChange = (viewport: ViewportProps) => viewport.zoom && setZoom(viewport.zoom);
 
-  const geolocationUrl = computeGeolocationUrl(debouncedLocation);
+  const debouncedLocation = useDebounce(location, 1000);
+  const geolocationUrl = computeGeolocationUrl(debouncedLocation) ?? '';
 
   const {data, error} = useNetGet<GetGeolocationResponse>(geolocationUrl);
-  const [latitude, longitude] = computeLatLongFromResponse(data, error);
+  if (!data || error) return <LocationVisualizerMock />;
 
-  const [zoom, setZoom] = useState(13);
+  const [latitude, longitude] = computeLatLongFromResponse(data);
 
   return (
     <StyledMapDiv>
@@ -60,7 +68,7 @@ const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
         width='100%'
         height='100%'
         mapStyle={MapStyle}
-        onViewportChange={viewport => setZoom(viewport.zoom)}
+        onViewportChange={onViewportChange}
       >
         <Marker latitude={latitude} longitude={longitude} offsetLeft={-20} offsetTop={-10}>
           <span role='img' aria-label='push-pin'>
@@ -73,6 +81,14 @@ const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
 };
 
 export default LocationVisualizer;
+
+export const LocationVisualizerMock: FC = () => {
+  return (
+    <StyledMapDiv>
+      <StyledMockDiv />
+    </StyledMapDiv>
+  );
+};
 
 /*
  * Helpers.
@@ -88,8 +104,8 @@ function computeGeolocationUrl(location: string): string | null {
   return url.href;
 }
 
-function computeLatLongFromResponse(data: GetGeolocationResponse, error: AxiosError): [number, number] {
-  if (!data || data.length === 0 || error) return [45.41, -122.66];
+function computeLatLongFromResponse(data: GetGeolocationResponse): [number, number] {
+  if (!data || data.length === 0) return [45.41, -122.66];
 
   const {latitude, longitude} = data[0];
   return [latitude, longitude];
