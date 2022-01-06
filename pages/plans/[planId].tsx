@@ -1,10 +1,14 @@
 import {GetServerSideProps} from 'next';
-import {FC} from 'react';
+import {useRouter} from 'next/router';
+import {FC, useEffect, useRef, useState} from 'react';
 import tw from 'twin.macro';
 
+import {Button} from '../../components/Button';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
+import {Tooltip} from '../../components/Tooltip';
 import {VisualPlan} from '../../components/VisualPlan';
+import {TextInput} from '../../components/inputs/TextInput';
 import {Plan, findPlan} from '../../models/plan';
 
 /*
@@ -12,7 +16,13 @@ import {Plan, findPlan} from '../../models/plan';
  */
 
 interface PlanPageProps {
+  host: string;
   plan: Plan;
+}
+
+interface CopyButtonProps {
+  shareUrl: string;
+  color: string;
 }
 
 /*
@@ -20,15 +30,31 @@ interface PlanPageProps {
  */
 
 const StyledContentDiv = tw.div`
-  flex-grow
   flex
+  flex-col
   items-center
-  sm:justify-center
   w-full
 `;
 
 const StyledCard = tw(Card)`
   sm:w-7/12
+  mb-5
+`;
+
+const StyledShareDiv = tw.div`
+  flex
+  flex-row
+`;
+
+const StyledShareTooltipDiv = tw.div`
+  relative
+`;
+
+const StyledShareButton = tw(Button)`
+  w-14
+  h-8
+  mt-4
+  ml-2
 `;
 
 const StyledTitleH2 = tw.h2`
@@ -44,7 +70,9 @@ const StyledDateTimeRangeH3 = tw.h3`
  * Server-side props.
  */
 
-export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({query}) => {
+export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req, query}) => {
+  const host = req.headers.host ?? '';
+
   const {planId} = query;
   if (!planId) return {notFound: true};
 
@@ -54,6 +82,7 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({que
 
   return {
     props: {
+      host,
       plan
     }
   };
@@ -63,14 +92,25 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({que
  * Page.
  */
 
-const PlanPage: FC<PlanPageProps> = ({plan}) => {
-  const {hostUser} = plan;
+const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
+  const {hostUser, color} = plan;
+
+  const router = useRouter();
+  const shareUrl = `${host}${router.asPath}`;
 
   return (
     <Body>
       <CenteredContent>
-        <Logo />
         <StyledContentDiv>
+          <Logo />
+
+          <StyledCard>
+            <StyledShareDiv>
+              <TextInput label='Share' value={shareUrl} />
+              <CopyButton shareUrl={shareUrl} color={color} />
+            </StyledShareDiv>
+          </StyledCard>
+
           <StyledCard>
             <StyledTitleH2>
               <VisualPlan plan={plan} />
@@ -91,6 +131,35 @@ const PlanPage: FC<PlanPageProps> = ({plan}) => {
 };
 
 export default PlanPage;
+
+/**
+ * Components
+ */
+
+const CopyButton: FC<CopyButtonProps> = ({shareUrl, color}) => {
+  const [isCopyTooltipVisible, setIsCopyTooltipVisible] = useState(false);
+
+  // Todo: Extract this useRef and useEffect pattern into a useTimeout hook.
+  const visibleTimeoutRef = useRef<number>();
+  useEffect(() => () => clearTimeout(visibleTimeoutRef.current), []);
+
+  const onCopyShareUrl = async () => {
+    await navigator.clipboard.writeText(shareUrl);
+    clearTimeout(visibleTimeoutRef.current);
+    setIsCopyTooltipVisible(true);
+    visibleTimeoutRef.current = window.setTimeout(() => setIsCopyTooltipVisible(false), 2000);
+  };
+
+  return (
+    <StyledShareTooltipDiv>
+      <Tooltip text='Copied!' isVisible={isCopyTooltipVisible} placement='right'>
+        <StyledShareButton backgroundColor={color} onClick={onCopyShareUrl}>
+          Copy
+        </StyledShareButton>
+      </Tooltip>
+    </StyledShareTooltipDiv>
+  );
+};
 
 /*
  * Helpers.

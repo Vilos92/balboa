@@ -21,6 +21,9 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
   style: {backgroundColor: $backgroundColor}
 }))<StyledColoredButtonProps>`
   ${tw`
+    flex
+    items-center
+    justify-center
     hover:brightness-150
     text-white
     font-bold
