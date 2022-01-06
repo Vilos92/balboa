@@ -3,9 +3,13 @@ import {ChangeEvent, FC, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Button} from '../components/Button';
-import {ColorInput, DateInput, TextAreaInput, TextInput, TimeInput} from '../components/Inputs';
 import {Tooltip} from '../components/Tooltip';
 import {PostPlan, validatePostPlan} from '../pages/api/plans';
+import {ColorInput} from './inputs/ColorInput';
+import {DateInput} from './inputs/DateInput';
+import {TextAreaInput} from './inputs/TextAreaInput';
+import {TextInput} from './inputs/TextInput';
+import {TimeInput} from './inputs/TimeInput';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <p>Loading map</p>,
