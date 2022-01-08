@@ -6,7 +6,7 @@ import tw from 'twin.macro';
 import {ChromelessButton} from '../../components/ChromelessButton';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
-import {Tooltip} from '../../components/Tooltip';
+import {HoverTooltip} from '../../components/Tooltip';
 import {VisualPlan} from '../../components/VisualPlan';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
 import {Plan, findPlan} from '../../models/plan';
@@ -134,17 +134,17 @@ export default PlanPage;
 const HostUser: FC<HostUserProps> = ({hostUser}) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
 
-  const onMouseEnter = () => setIsTooltipVisible(true);
-  const onMouseLeave = () => setIsTooltipVisible(false);
-
   return (
     <StyledHostH4>
       Hosted by{' '}
-      <Tooltip text={hostUser.email} isVisible={isTooltipVisible}>
-        <ChromelessButton onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
-          {hostUser.name}
-        </ChromelessButton>
-      </Tooltip>
+      <HoverTooltip
+        text={hostUser.email}
+        isVisible={isTooltipVisible}
+        setIsVisible={setIsTooltipVisible}
+        shouldAllowMouseEnter
+      >
+        <ChromelessButton>{hostUser.name}</ChromelessButton>
+      </HoverTooltip>
     </StyledHostH4>
   );
 };

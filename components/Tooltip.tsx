@@ -1,4 +1,4 @@
-import {FC, MouseEventHandler, useRef} from 'react';
+import {FC, MouseEventHandler, useRef, useState} from 'react';
 import {usePopper} from 'react-popper';
 import tw, {styled} from 'twin.macro';
 
@@ -11,7 +11,11 @@ interface TooltipProps {
   isVisible: boolean;
   placement?: 'auto' | 'top' | 'right' | 'bottom' | 'left';
   onClick?: MouseEventHandler<HTMLDivElement>;
+  onMouseEnter?: () => void;
+  onMouseLeave?: () => void;
 }
+
+type HoverTooltipProps = Omit<TooltipProps, 'isVisible' | 'onMouseEnter' | 'onMouseLeave'>;
 
 interface StyledPopoverDivProps {
   isVisible: boolean;
@@ -54,7 +58,25 @@ const StyledArrowDiv = tw.div`
  * Component.
  */
 
-export const Tooltip: FC<TooltipProps> = ({children, text, isVisible, placement, onClick}) => {
+export const HoverTooltip: FC<HoverTooltipProps> = props => {
+  const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
+
+  const onMouseEnter = () => setIsTooltipVisible(true);
+  const onMouseLeave = () => setIsTooltipVisible(false);
+
+  return (
+    <Tooltip
+      {...props}
+      isVisible={isTooltipVisible}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    />
+  );
+};
+
+export const Tooltip: FC<TooltipProps> = props => {
+  const {children, text, isVisible, placement, onClick, onMouseEnter, onMouseLeave} = props;
+
   const containerRef = useRef<HTMLSpanElement>(null);
   const popperRef = useRef<HTMLDivElement>(null);
   // TODO: style and actually use arrow.
@@ -67,7 +89,9 @@ export const Tooltip: FC<TooltipProps> = ({children, text, isVisible, placement,
 
   return (
     <>
-      <span ref={containerRef}>{children}</span>
+      <span ref={containerRef} onMouseEnter={onMouseEnter}>
+        {children}
+      </span>
 
       <StyledPopoverDiv
         ref={popperRef}
@@ -75,6 +99,7 @@ export const Tooltip: FC<TooltipProps> = ({children, text, isVisible, placement,
         {...attributes.popper}
         isVisible={isVisible}
         onClick={onClick}
+        onMouseLeave={onMouseLeave}
       >
         <StyledTextDiv>{text}</StyledTextDiv>
         <StyledArrowDiv ref={arrowRef} style={styles.arrow} {...attributes.arrow} />
