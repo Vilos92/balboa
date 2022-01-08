@@ -27,11 +27,9 @@ export function useTimeout(): [SetTimeout, ClearTimeout] {
 
 export function useDebounce(value: string, delay: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
-  const [setDebounceTimeout, clearDebounceTimeout] = useTimeout();
+  const [setDebounceTimeout] = useTimeout();
 
   useEffect(() => {
-    clearDebounceTimeout();
-
     setDebounceTimeout(() => {
       setDebouncedValue(value);
     }, delay);

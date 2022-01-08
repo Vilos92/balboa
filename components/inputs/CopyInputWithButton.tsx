@@ -18,6 +18,12 @@ interface CopyButtonProps {
 }
 
 /*
+ * Constants.
+ */
+
+const tooltipVisibilityDuration = 2000; // 2000 ms.
+
+/*
  * Styles.
  */
 
@@ -58,12 +64,14 @@ export const CopyInputWithButton: FC<CopyInputProps> = ({label, value, onChange,
 
 const CopyButton: FC<CopyButtonProps> = ({copyValue}) => {
   const [isCopyTooltipVisible, setIsCopyTooltipVisible] = useState(false);
-  const [setTimeout] = useTimeout();
+  const [setCopyTimeout] = useTimeout();
 
   const onCopyValue = async () => {
+    setIsCopyTooltipVisible(false);
     await navigator.clipboard.writeText(copyValue);
+
     setIsCopyTooltipVisible(true);
-    setTimeout(() => setIsCopyTooltipVisible(false), 2000);
+    setCopyTimeout(() => setIsCopyTooltipVisible(false), tooltipVisibilityDuration);
   };
 
   return (

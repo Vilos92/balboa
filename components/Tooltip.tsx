@@ -1,3 +1,4 @@
+import {Placement} from '@popperjs/core';
 import {FC, MouseEventHandler, useRef} from 'react';
 import {usePopper} from 'react-popper';
 import tw, {styled} from 'twin.macro';
@@ -9,7 +10,7 @@ import tw, {styled} from 'twin.macro';
 interface TooltipProps {
   text: string;
   isVisible: boolean;
-  placement?: 'auto' | 'top' | 'right' | 'bottom' | 'left';
+  placement?: Placement;
   onClick?: MouseEventHandler<HTMLDivElement>;
   onMouseEnter?: () => void;
   onMouseLeave?: () => void;
@@ -18,7 +19,7 @@ interface TooltipProps {
 export type HoverTooltipProps = Omit<TooltipProps, 'isVisible' | 'onMouseEnter' | 'onMouseLeave'>;
 
 interface StyledPopoverDivProps {
-  isVisible: boolean;
+  $isVisible: boolean;
 }
 
 /*
@@ -43,7 +44,7 @@ const StyledPopoverDiv = styled.div<StyledPopoverDivProps>`
     hidden
   `}
 
-  ${({isVisible}) => isVisible && tw`block`}
+  ${({$isVisible}) => $isVisible && tw`block`}
 `;
 
 const StyledTextDiv = tw.div`
@@ -67,7 +68,10 @@ export const Tooltip: FC<TooltipProps> = props => {
   const arrowRef = useRef<HTMLDivElement>(null);
 
   const {styles, attributes} = usePopper(containerRef.current, popperRef.current, {
-    modifiers: [{name: 'arrow', options: {element: arrowRef.current}}],
+    modifiers: [
+      {name: 'arrow', options: {element: arrowRef.current}},
+      {name: 'offset', options: {offset: [0, 2]}}
+    ],
     placement
   });
 
@@ -81,7 +85,7 @@ export const Tooltip: FC<TooltipProps> = props => {
         ref={popperRef}
         style={styles.popper}
         {...attributes.popper}
-        isVisible={isVisible}
+        $isVisible={isVisible}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
