@@ -3,16 +3,14 @@ import {useRouter} from 'next/router';
 import {FC, useState} from 'react';
 import tw from 'twin.macro';
 
-import {Button} from '../../components/Button';
 import {ChromelessButton} from '../../components/ChromelessButton';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Tooltip} from '../../components/Tooltip';
 import {VisualPlan} from '../../components/VisualPlan';
-import {CopyInput} from '../../components/inputs/CopyInput';
+import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
-import {useTimeout} from '../../utils/hooks';
 
 /*
  * Types.
@@ -21,10 +19,6 @@ import {useTimeout} from '../../utils/hooks';
 interface PlanPageProps {
   host: string;
   plan: Plan;
-}
-
-interface CopyButtonProps {
-  shareUrl: string;
 }
 
 interface HostUserProps {
@@ -45,23 +39,6 @@ const StyledContentDiv = tw.div`
 const StyledCard = tw(Card)`
   sm:w-7/12
   mb-5
-`;
-
-const StyledShareDiv = tw.div`
-  flex
-  flex-row
-`;
-
-const StyledShareTooltipDiv = tw.div`
-  relative
-`;
-
-const StyledShareButton = tw(Button)`
-  bg-purple-900
-  w-14
-  h-9
-  mt-4
-  ml-2
 `;
 
 const StyledTitleH2 = tw.h2`
@@ -128,10 +105,7 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
           <Logo />
 
           <StyledCard>
-            <StyledShareDiv>
-              <CopyInput label='Share' value={shareUrl} />
-              <CopyButton shareUrl={shareUrl} />
-            </StyledShareDiv>
+            <CopyInputWithButton label='Share' value={shareUrl} />
           </StyledCard>
 
           <StyledCard>
@@ -141,7 +115,7 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
             <StyledDateTimeRangeH3>
               <DateTimeRange start={plan.start} end={plan.end} />
             </StyledDateTimeRangeH3>
-            <StyledLocationH3>{plan.location}</StyledLocationH3>
+            <StyledLocationH3>@ {plan.location}</StyledLocationH3>
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
             <HostUser hostUser={hostUser} />
           </StyledCard>
@@ -156,25 +130,6 @@ export default PlanPage;
 /**
  * Components
  */
-
-const CopyButton: FC<CopyButtonProps> = ({shareUrl}) => {
-  const [isCopyTooltipVisible, setIsCopyTooltipVisible] = useState(false);
-  const [setTimeout] = useTimeout();
-
-  const onCopyShareUrl = async () => {
-    await navigator.clipboard.writeText(shareUrl);
-    setIsCopyTooltipVisible(true);
-    setTimeout(() => setIsCopyTooltipVisible(false), 2000);
-  };
-
-  return (
-    <StyledShareTooltipDiv>
-      <Tooltip text='Copied!' isVisible={isCopyTooltipVisible} placement='right'>
-        <StyledShareButton onClick={onCopyShareUrl}>Copy</StyledShareButton>
-      </Tooltip>
-    </StyledShareTooltipDiv>
-  );
-};
 
 const HostUser: FC<HostUserProps> = ({hostUser}) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
