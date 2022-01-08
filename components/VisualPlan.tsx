@@ -19,7 +19,7 @@ const StyledPlanDiv = tw.div`
   flex
   flex-row
   items-center
-  gap-1
+  gap-2
 `;
 
 const StyledColorSvg = styled.svg`

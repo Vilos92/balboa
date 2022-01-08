@@ -33,7 +33,7 @@ const StyledPopoverDiv = styled.div<StyledPopoverDivProps>`
     text-left
     no-underline
     break-words
-    rounded-lg
+    rounded-2xl
     border-gray-400
     border-2
     hidden
@@ -42,8 +42,8 @@ const StyledPopoverDiv = styled.div<StyledPopoverDivProps>`
   ${({isVisible}) => isVisible && tw`block`}
 `;
 
-const StyledTextSpan = tw.span`
-  p-2
+const StyledTextSpan = tw.div`
+  p-1.5
 `;
 
 const StyledArrowDiv = tw.div`
