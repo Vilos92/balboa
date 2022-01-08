@@ -6,6 +6,7 @@ import {Button} from '../components/Button';
 import {LocationVisualizerMock} from '../components/LocationVisualizer';
 import {Tooltip} from '../components/Tooltip';
 import {PostPlan, validatePostPlan} from '../pages/api/plans';
+import {swatchColors} from '../utils/color';
 import {ColorInput} from './inputs/ColorInput';
 import {DateInput} from './inputs/DateInput';
 import {TextAreaInput} from './inputs/TextAreaInput';
@@ -67,7 +68,7 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
   const [title, setTitle] = useState('');
   const [color, setColor] = useState('#ffffff');
   useEffect(() => {
-    const randColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+    const randColor = swatchColors[Math.floor(Math.random() * swatchColors.length)];
     setColor(randColor);
   }, []);
   const [startDate, setStartDate] = useState('');

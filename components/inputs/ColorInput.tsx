@@ -3,6 +3,7 @@ import {HexColorPicker} from 'react-colorful';
 import tw, {styled} from 'twin.macro';
 
 import {Handler} from '../../types/common';
+import {swatchColors} from '../../utils/color';
 import {useClickWindow} from '../../utils/hooks';
 import {Popover} from '../Popover';
 import {StaticTypeInputProps} from './Input';
@@ -31,25 +32,6 @@ interface ColorPickerProps {
 interface StyledColorSwatchDivProps {
   $backgroundColor: string;
 }
-
-/*
- * Constants.
- */
-
-const colors = [
-  '#001219',
-  '#4c1d95',
-  '#005f73',
-  '#0a9396',
-  '#94d2bd',
-  '#e9d8a6',
-  '#ee9b00',
-  '#ca6702',
-  '#bb3e03',
-  '#ae2012',
-  '#9b2226',
-  '#f15bb5'
-];
 
 /*
  * Styles.
@@ -127,8 +109,12 @@ const ColorPicker: FC<ColorPickerProps> = ({label, color, onChange, onClose}) =>
 
   const onClickSwatch = (color: string) => onChange?.(color);
 
-  const colorSwatches = colors.map(color => (
-    <StyledColorSwatchDiv key={color} $backgroundColor={color} onClick={() => onClickSwatch(color)} />
+  const colorSwatches = swatchColors.map(swatchColor => (
+    <StyledColorSwatchDiv
+      key={swatchColor}
+      $backgroundColor={swatchColor}
+      onClick={() => onClickSwatch(swatchColor)}
+    />
   ));
 
   return (
