@@ -4,7 +4,6 @@ import tw, {styled} from 'twin.macro';
 
 import {Button} from '../components/Button';
 import {LocationVisualizerMock} from '../components/LocationVisualizer';
-import {Tooltip} from '../components/Tooltip';
 import {PostPlan, validatePostPlan} from '../pages/api/plans';
 import {swatchColors} from '../utils/color';
 import {ColorInput} from './inputs/ColorInput';
@@ -12,6 +11,7 @@ import {DateInput} from './inputs/DateInput';
 import {TextAreaInput} from './inputs/TextAreaInput';
 import {TextInput} from './inputs/TextInput';
 import {TimeInput} from './inputs/TimeInput';
+import {Tooltip} from './popovers/Tooltip';
 
 const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
   loading: () => <LocationVisualizerMock />,

@@ -6,9 +6,9 @@ import tw from 'twin.macro';
 import {ChromelessButton} from '../../components/ChromelessButton';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
-import {HoverTooltip} from '../../components/HoverTooltip';
 import {VisualPlan} from '../../components/VisualPlan';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
+import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 

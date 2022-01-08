@@ -1,6 +1,6 @@
 import {FC, useState} from 'react';
 
-import {useTimeout} from '../utils/hooks';
+import {useTimeout} from '../../utils/hooks';
 import {Tooltip, TooltipProps} from './Tooltip';
 
 /*

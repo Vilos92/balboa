@@ -3,7 +3,7 @@ import tw from 'twin.macro';
 
 import {useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
-import {Tooltip} from '../Tooltip';
+import {Tooltip} from '../popovers/Tooltip';
 import {StaticTypeInputProps} from './Input';
 import {TextInput} from './TextInput';
 

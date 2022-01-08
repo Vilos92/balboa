@@ -3,7 +3,7 @@ import {FC, MouseEventHandler, ReactNode, useRef} from 'react';
 import {usePopper} from 'react-popper';
 import tw, {styled} from 'twin.macro';
 
-import {Handler} from '../types/common';
+import {Handler} from '../../types/common';
 
 /*
  * Types.
