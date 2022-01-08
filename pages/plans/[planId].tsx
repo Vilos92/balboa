@@ -1,12 +1,12 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
-import {FC, useState} from 'react';
+import {FC} from 'react';
 import tw from 'twin.macro';
 
 import {ChromelessButton} from '../../components/ChromelessButton';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
-import {HoverTooltip} from '../../components/Tooltip';
+import {HoverTooltip} from '../../components/HoverTooltip';
 import {VisualPlan} from '../../components/VisualPlan';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
 import {Plan, findPlan} from '../../models/plan';
@@ -131,23 +131,14 @@ export default PlanPage;
  * Components
  */
 
-const HostUser: FC<HostUserProps> = ({hostUser}) => {
-  const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
-
-  return (
-    <StyledHostH4>
-      Hosted by{' '}
-      <HoverTooltip
-        text={hostUser.email}
-        isVisible={isTooltipVisible}
-        setIsVisible={setIsTooltipVisible}
-        shouldAllowMouseEnter
-      >
-        <ChromelessButton>{hostUser.name}</ChromelessButton>
-      </HoverTooltip>
-    </StyledHostH4>
-  );
-};
+const HostUser: FC<HostUserProps> = ({hostUser}) => (
+  <StyledHostH4>
+    Hosted by{' '}
+    <HoverTooltip text={hostUser.email}>
+      <ChromelessButton>{hostUser.name}</ChromelessButton>
+    </HoverTooltip>
+  </StyledHostH4>
+);
 
 /*
  * Helpers.

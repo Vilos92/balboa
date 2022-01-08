@@ -35,8 +35,6 @@ export function useDebounce(value: string, delay: number) {
     setDebounceTimeout(() => {
       setDebouncedValue(value);
     }, delay);
-
-    return () => clearDebounceTimeout();
   }, [value, delay]);
 
   return debouncedValue;
