@@ -1,6 +1,6 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
-import {FC, useEffect, useRef, useState} from 'react';
+import {FC, useState} from 'react';
 import tw from 'twin.macro';
 
 import {Button} from '../../components/Button';
@@ -23,7 +23,6 @@ interface PlanPageProps {
 
 interface CopyButtonProps {
   shareUrl: string;
-  color: string;
 }
 
 /*
@@ -52,8 +51,9 @@ const StyledShareTooltipDiv = tw.div`
 `;
 
 const StyledShareButton = tw(Button)`
+  bg-purple-900
   w-14
-  h-8
+  h-9
   mt-4
   ml-2
 `;
@@ -94,7 +94,7 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req
  */
 
 const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
-  const {hostUser, color} = plan;
+  const {hostUser} = plan;
 
   const router = useRouter();
   const shareUrl = `${host}${router.asPath}`;
@@ -108,7 +108,7 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
           <StyledCard>
             <StyledShareDiv>
               <TextInput label='Share' value={shareUrl} onChange={() => undefined} />
-              <CopyButton shareUrl={shareUrl} color={color} />
+              <CopyButton shareUrl={shareUrl} />
             </StyledShareDiv>
           </StyledCard>
 
@@ -137,7 +137,7 @@ export default PlanPage;
  * Components
  */
 
-const CopyButton: FC<CopyButtonProps> = ({shareUrl, color}) => {
+const CopyButton: FC<CopyButtonProps> = ({shareUrl}) => {
   const [isCopyTooltipVisible, setIsCopyTooltipVisible] = useState(false);
   const [setTimeout] = useTimeout();
 
@@ -150,9 +150,7 @@ const CopyButton: FC<CopyButtonProps> = ({shareUrl, color}) => {
   return (
     <StyledShareTooltipDiv>
       <Tooltip text='Copied!' isVisible={isCopyTooltipVisible} placement='right'>
-        <StyledShareButton backgroundColor={color} onClick={onCopyShareUrl}>
-          Copy
-        </StyledShareButton>
+        <StyledShareButton onClick={onCopyShareUrl}>Copy</StyledShareButton>
       </Tooltip>
     </StyledShareTooltipDiv>
   );
