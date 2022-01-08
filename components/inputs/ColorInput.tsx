@@ -18,15 +18,19 @@ interface ColorInputProps extends Omit<StaticTypeInputProps, 'onChange'> {
   onChange?: onChangeColor;
 }
 
-interface StyledColorDivProps {
-  $backgroundColor: string;
-}
-
 interface ColorPickerProps {
   label: string;
   color: string;
   onClose: Handler;
   onChange?: onChangeColor;
+}
+
+interface ColorSwatchesProps {
+  onClickSwatch: onChangeColor;
+}
+
+interface StyledColorDivProps {
+  $backgroundColor: string;
 }
 
 interface StyledColorSwatchDivProps {
@@ -86,7 +90,7 @@ export const ColorInput: FC<ColorInputProps> = props => {
   const {label, value, onChange, className} = props;
   const color = typeof value === 'string' ? value : '';
 
-  const [isPickerVisible, setIsPickerVisible] = useState<boolean>(true);
+  const [isPickerVisible, setIsPickerVisible] = useState<boolean>(false);
 
   const onInputClick = () => setIsPickerVisible(!isPickerVisible);
   const closePicker = () => {
@@ -109,19 +113,25 @@ const ColorPicker: FC<ColorPickerProps> = ({label, color, onChange, onClose}) =>
 
   const onClickSwatch = (color: string) => onChange?.(color);
 
-  const colorSwatches = swatchColors.map(swatchColor => (
-    <StyledColorSwatchDiv
-      key={swatchColor}
-      $backgroundColor={swatchColor}
-      onClick={() => onClickSwatch(swatchColor)}
-    />
-  ));
-
   return (
     <span ref={popoverRef}>
       <HexColorPicker aria-label={label} color={color} onChange={onChange} />
 
-      <StyledColorSwatchesContainerDiv>{colorSwatches}</StyledColorSwatchesContainerDiv>
+      <StyledColorSwatchesContainerDiv>
+        <ColorSwatches onClickSwatch={onClickSwatch} />
+      </StyledColorSwatchesContainerDiv>
     </span>
   );
 };
+
+const ColorSwatches: FC<ColorSwatchesProps> = ({onClickSwatch}) => (
+  <>
+    {swatchColors.map(swatchColor => (
+      <StyledColorSwatchDiv
+        key={swatchColor}
+        $backgroundColor={swatchColor}
+        onClick={() => onClickSwatch(swatchColor)}
+      />
+    ))}
+  </>
+);
