@@ -4,12 +4,14 @@ import {FC, useState} from 'react';
 import tw from 'twin.macro';
 
 import {Button} from '../../components/Button';
+import {ChromelessButton} from '../../components/ChromelessButton';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Tooltip} from '../../components/Tooltip';
 import {VisualPlan} from '../../components/VisualPlan';
-import {TextInput} from '../../components/inputs/TextInput';
+import {CopyInput} from '../../components/inputs/CopyInput';
 import {Plan, findPlan} from '../../models/plan';
+import {User} from '../../models/user';
 import {useTimeout} from '../../utils/hooks';
 
 /*
@@ -23,6 +25,10 @@ interface PlanPageProps {
 
 interface CopyButtonProps {
   shareUrl: string;
+}
+
+interface HostUserProps {
+  hostUser: User;
 }
 
 /*
@@ -60,10 +66,26 @@ const StyledShareButton = tw(Button)`
 
 const StyledTitleH2 = tw.h2`
   text-xl
+  mb-1
 `;
 
 const StyledDateTimeRangeH3 = tw.h3`
   font-bold
+  text-sm
+  mb-1
+`;
+
+const StyledLocationH3 = tw.h3`
+  text-sm
+  mb-1.5
+`;
+
+const StyledDescriptionP = tw.p`
+  mb-1.5
+`;
+
+const StyledHostH4 = tw.h4`
+  italic
   text-sm
 `;
 
@@ -107,7 +129,7 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
 
           <StyledCard>
             <StyledShareDiv>
-              <TextInput label='Share' value={shareUrl} onChange={() => undefined} />
+              <CopyInput label='Share' value={shareUrl} />
               <CopyButton shareUrl={shareUrl} />
             </StyledShareDiv>
           </StyledCard>
@@ -119,11 +141,9 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
             <StyledDateTimeRangeH3>
               <DateTimeRange start={plan.start} end={plan.end} />
             </StyledDateTimeRangeH3>
-            <div>{plan.location}</div>
-            <div>{plan.description}</div>
-            <div>
-              {hostUser.name} - {hostUser.email}
-            </div>
+            <StyledLocationH3>{plan.location}</StyledLocationH3>
+            <StyledDescriptionP>{plan.description}</StyledDescriptionP>
+            <HostUser hostUser={hostUser} />
           </StyledCard>
         </StyledContentDiv>
       </CenteredContent>
@@ -153,6 +173,24 @@ const CopyButton: FC<CopyButtonProps> = ({shareUrl}) => {
         <StyledShareButton onClick={onCopyShareUrl}>Copy</StyledShareButton>
       </Tooltip>
     </StyledShareTooltipDiv>
+  );
+};
+
+const HostUser: FC<HostUserProps> = ({hostUser}) => {
+  const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
+
+  const onMouseEnter = () => setIsTooltipVisible(true);
+  const onMouseLeave = () => setIsTooltipVisible(false);
+
+  return (
+    <StyledHostH4>
+      Hosted by{' '}
+      <Tooltip text={hostUser.email} isVisible={isTooltipVisible}>
+        <ChromelessButton onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+          {hostUser.name}
+        </ChromelessButton>
+      </Tooltip>
+    </StyledHostH4>
   );
 };
 
