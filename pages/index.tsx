@@ -3,7 +3,7 @@ import {useRouter} from 'next/router';
 import {useState} from 'react';
 import tw from 'twin.macro';
 
-import {AccountFooter, FalseAccountFooter} from '../components/AccountFooter';
+import {AccountFooter, FooterSpacer} from '../components/AccountFooter';
 import {Body, Card, CenteredContent, Logo} from '../components/Commons';
 import {PlanForm} from '../components/PlanForm';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
@@ -81,7 +81,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
           <PlanForm createPlan={createPlan} />
         </StyledCard>
         {isAuthenticated ? (
-          <FalseAccountFooter />
+          <FooterSpacer />
         ) : (
           <AccountFooter
             providers={providers}

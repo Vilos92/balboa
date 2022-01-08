@@ -32,6 +32,12 @@ const StyledFalseFooterDiv = tw.div`
   mt-6
 `;
 
+const StyledFooterSpacerDiv = tw.div`
+  invisible 
+  h-6
+  w-full
+`;
+
 const StyledFooterDiv = styled.div`
   ${tw`
     bg-purple-900
@@ -145,3 +151,9 @@ const LoginModal: FC<LoginModalProps> = ({providers, closeModal}) => (
  * ensure its dimensions are still represented in the DOM.
  */
 export const FalseAccountFooter: FC = () => <StyledFalseFooterDiv />;
+
+/**
+ * Invisible footer to render when not authenticated, to provide a
+ * margin at the bottom of the page.
+ */
+export const FooterSpacer: FC = () => <StyledFooterSpacerDiv />;

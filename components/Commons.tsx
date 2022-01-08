@@ -41,7 +41,8 @@ const StyledLogoDiv = tw.div`
   flex
   flex-row
   items-center
-  mb-6
+  pt-6
+  pb-6
 `;
 
 const StyledLogoH1 = tw.h1`

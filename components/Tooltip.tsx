@@ -42,7 +42,7 @@ const StyledPopoverDiv = styled.div<StyledPopoverDivProps>`
   ${({isVisible}) => isVisible && tw`block`}
 `;
 
-const StyledTextSpan = tw.div`
+const StyledTextDiv = tw.div`
   p-1.5
 `;
 
@@ -76,7 +76,7 @@ export const Tooltip: FC<TooltipProps> = ({children, text, isVisible, placement,
         isVisible={isVisible}
         onClick={onClick}
       >
-        <StyledTextSpan>{text}</StyledTextSpan>
+        <StyledTextDiv>{text}</StyledTextDiv>
         <StyledArrowDiv ref={arrowRef} style={styles.arrow} {...attributes.arrow} />
       </StyledPopoverDiv>
     </>
