@@ -28,6 +28,29 @@ interface ColorPickerProps {
   onChange?: onChangeColor;
 }
 
+interface StyledColorSwatchDivProps {
+  $backgroundColor: string;
+}
+
+/*
+ * Constants.
+ */
+
+const colors = [
+  '#001219',
+  '#4c1d95',
+  '#005f73',
+  '#0a9396',
+  '#94d2bd',
+  '#e9d8a6',
+  '#ee9b00',
+  '#ca6702',
+  '#bb3e03',
+  '#ae2012',
+  '#9b2226',
+  '#f15bb5'
+];
+
 /*
  * Styles.
  */
@@ -39,8 +62,37 @@ const StyledColorDiv = styled.div.attrs<StyledColorDivProps>(({$backgroundColor}
     rounded-full
     w-10
     h-10
-    border-2
-    border-gray-300
+  `}
+`;
+
+const StyledPopover = styled(Popover)`
+  max-width: 204px;
+
+  ${tw`
+    bg-gray-100
+  `}
+`;
+
+const StyledColorSwatchesContainerDiv = tw.div`
+  flex
+  flex-wrap
+  justify-center
+  pt-1
+  pb-1
+`;
+
+const StyledColorSwatchDiv = styled.div.attrs<StyledColorSwatchDivProps>(({$backgroundColor}) => ({
+  style: {backgroundColor: $backgroundColor}
+}))<StyledColorSwatchDivProps>`
+  ${tw`
+    w-6
+    h-6
+    m-1
+    border-none
+    p-0
+    rounded
+    cursor-pointer
+    outline-none
   `}
 `;
 
@@ -52,7 +104,7 @@ export const ColorInput: FC<ColorInputProps> = props => {
   const {label, value, onChange, className} = props;
   const color = typeof value === 'string' ? value : '';
 
-  const [isPickerVisible, setIsPickerVisible] = useState<boolean>(false);
+  const [isPickerVisible, setIsPickerVisible] = useState<boolean>(true);
 
   const onInputClick = () => setIsPickerVisible(!isPickerVisible);
   const closePicker = () => {
@@ -64,18 +116,26 @@ export const ColorInput: FC<ColorInputProps> = props => {
   ) : null;
 
   return (
-    <Popover popoverChildren={colorPicker} isVisible={isPickerVisible}>
+    <StyledPopover popoverChildren={colorPicker} isVisible={isPickerVisible}>
       <StyledColorDiv $backgroundColor={color} onClick={onInputClick} className={className} />
-    </Popover>
+    </StyledPopover>
   );
 };
 
 const ColorPicker: FC<ColorPickerProps> = ({label, color, onChange, onClose}) => {
   const popoverRef = useClickWindow<HTMLSpanElement>(onClose);
 
+  const onClickSwatch = (color: string) => onChange?.(color);
+
+  const colorSwatches = colors.map(color => (
+    <StyledColorSwatchDiv key={color} $backgroundColor={color} onClick={() => onClickSwatch(color)} />
+  ));
+
   return (
     <span ref={popoverRef}>
       <HexColorPicker aria-label={label} color={color} onChange={onChange} />
+
+      <StyledColorSwatchesContainerDiv>{colorSwatches}</StyledColorSwatchesContainerDiv>
     </span>
   );
 };

@@ -15,8 +15,19 @@ export interface TooltipProps extends Omit<PopoverProps, 'popoverChildren'> {
  * Styles.
  */
 
+const StyledPopover = tw(Popover)`
+  bg-purple-900
+  text-gray-100
+`;
+
 const StyledTextDiv = tw.div`
-  p-1.5
+    font-normal
+    leading-normal
+    text-sm
+    no-underline
+    break-words
+
+    p-1.5
 `;
 
 /*
@@ -28,5 +39,5 @@ export const Tooltip: FC<TooltipProps> = props => {
 
   const popoverChildren = <StyledTextDiv>{text}</StyledTextDiv>;
 
-  return <Popover popoverChildren={popoverChildren} {...popoverProps} />;
+  return <StyledPopover popoverChildren={popoverChildren} {...popoverProps} />;
 };

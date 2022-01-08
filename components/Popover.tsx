@@ -18,6 +18,7 @@ export interface PopoverProps {
   onClick?: MouseEventHandler<HTMLDivElement>;
   onMouseEnter?: Handler;
   onMouseLeave?: Handler;
+  className?: string;
 }
 
 interface StyledPopoverDivProps {
@@ -30,19 +31,10 @@ interface StyledPopoverDivProps {
 
 const StyledPopoverDiv = styled.div<StyledPopoverDivProps>`
   ${tw`
-    bg-purple-900
-    text-gray-100
     z-50
-    font-normal
-    leading-normal
-    text-sm
     max-w-xs
     text-left
-    no-underline
-    break-words
     rounded-2xl
-    border-gray-400
-    border-2
     hidden
   `}
 
@@ -54,7 +46,8 @@ const StyledPopoverDiv = styled.div<StyledPopoverDivProps>`
  */
 
 export const Popover: FC<PopoverProps> = props => {
-  const {children, popoverChildren, isVisible, placement, onClick, onMouseEnter, onMouseLeave} = props;
+  const {children, popoverChildren, isVisible, placement, onClick, onMouseEnter, onMouseLeave, className} =
+    props;
 
   const containerRef = useRef<HTMLSpanElement>(null);
   const popperRef = useRef<HTMLDivElement>(null);
@@ -78,6 +71,7 @@ export const Popover: FC<PopoverProps> = props => {
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
+        className={className}
       >
         {popoverChildren}
       </StyledPopoverDiv>
