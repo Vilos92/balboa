@@ -2,6 +2,7 @@ import {FC, useState} from 'react';
 import {HexColorPicker} from 'react-colorful';
 import tw, {styled} from 'twin.macro';
 
+import {Handler} from '../../types/common';
 import {useClickWindow} from '../../utils/hooks';
 import {Popover} from '../Popover';
 import {StaticTypeInputProps} from './Input';
@@ -23,7 +24,7 @@ interface StyledColorDivProps {
 interface ColorPickerProps {
   label: string;
   color: string;
-  onClose: () => void;
+  onClose: Handler;
   onChange?: onChangeColor;
 }
 

@@ -1,6 +1,7 @@
 import {FC} from 'react';
 import tw from 'twin.macro';
 
+import {Handler} from '../types/common';
 import {useClickWindow} from '../utils/hooks';
 
 /*
@@ -8,7 +9,7 @@ import {useClickWindow} from '../utils/hooks';
  */
 
 interface ModalProps {
-  closeModal: () => void;
+  closeModal: Handler;
 }
 
 /*

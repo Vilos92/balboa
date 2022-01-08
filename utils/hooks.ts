@@ -1,11 +1,13 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 
+import {Handler} from '../types/common';
+
 /*
  * Types.
  */
 
-type SetTimeout = (handler: () => void, timeout?: number) => void;
-type ClearTimeout = () => void;
+type SetTimeout = (handler: Handler, timeout?: number) => void;
+type ClearTimeout = Handler;
 
 /*
  * Hooks.

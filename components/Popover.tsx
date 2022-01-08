@@ -3,17 +3,21 @@ import {FC, MouseEventHandler, ReactNode, useRef} from 'react';
 import {usePopper} from 'react-popper';
 import tw, {styled} from 'twin.macro';
 
+import {Handler} from '../types/common';
+
 /*
  * Types.
  */
 
+type PopoverPlacement = Placement;
+
 export interface PopoverProps {
   popoverChildren: ReactNode;
   isVisible: boolean;
-  placement?: Placement;
+  placement?: PopoverPlacement;
   onClick?: MouseEventHandler<HTMLDivElement>;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
+  onMouseEnter?: Handler;
+  onMouseLeave?: Handler;
 }
 
 interface StyledPopoverDivProps {

@@ -1,6 +1,7 @@
 import {FC} from 'react';
 import tw, {styled} from 'twin.macro';
 
+import {Handler} from '../types/common';
 import {Providers, signInWithProvider} from '../utils/auth';
 import {Button} from './Button';
 import {Card} from './Commons';
@@ -18,7 +19,7 @@ interface AccountFooterProps {
 
 interface LoginModalProps {
   providers: Providers;
-  closeModal: () => void;
+  closeModal: Handler;
 }
 
 /*
