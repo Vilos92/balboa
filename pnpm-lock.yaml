@@ -29,6 +29,7 @@ specifiers:
   prettier: ^2.4.1
   prisma: ^3.6.0
   react: 17.0.2
+  react-colorful: ^5.5.1
   react-dom: 17.0.2
   react-is: ^17.0.2
   react-map-gl: ^6.1.17
@@ -50,6 +51,7 @@ dependencies:
   next: 12.0.3_react-dom@17.0.2+react@17.0.2
   next-auth: 4.0.2_react-dom@17.0.2+react@17.0.2
   react: 17.0.2
+  react-colorful: 5.5.1_react-dom@17.0.2+react@17.0.2
   react-dom: 17.0.2_react@17.0.2
   react-map-gl: 6.1.17_react@17.0.2
   react-popper: 2.2.5_838acf1c84808345430cf17171f87518
@@ -5652,6 +5654,16 @@ packages:
       http-errors: 1.7.3
       iconv-lite: 0.4.24
       unpipe: 1.0.0
+    dev: false
+
+  /react-colorful/5.5.1_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-M1TJH2X3RXEt12sWkpa6hLc/bbYS0H6F4rIqjQZ+RxNBstpY67d9TrFXtqdZwhpmBXcCwEi7stKqFue3ZRkiOg==}
+    peerDependencies:
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
     dev: false
 
   /react-dom/17.0.2_react@17.0.2:

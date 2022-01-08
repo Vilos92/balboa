@@ -1,7 +1,13 @@
 import {FC, useState} from 'react';
 
 import {useTimeout} from '../utils/hooks';
-import {HoverTooltipProps, Tooltip} from './Tooltip';
+import {Tooltip, TooltipProps} from './Tooltip';
+
+/*
+ * Types.
+ */
+
+type HoverTooltipProps = Omit<TooltipProps, 'isVisible' | 'onMouseEnter' | 'onMouseLeave'>;
 
 /*
  * Constants.

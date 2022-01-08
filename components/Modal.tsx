@@ -1,5 +1,7 @@
-import {FC, useCallback, useEffect, useRef, useState} from 'react';
+import {FC} from 'react';
 import tw from 'twin.macro';
+
+import {useClickWindow} from '../utils/hooks';
 
 /*
  * Types.
@@ -33,25 +35,7 @@ const StyledOverlayDiv = tw.div`
  */
 
 export const Modal: FC<ModalProps> = ({children, closeModal}) => {
-  const modalRef = useRef<HTMLDivElement>(null);
-
-  const onClickWindow = useCallback(
-    (event: globalThis.MouseEvent) => {
-      // We must cast the target to Node as per official rec:
-      // https://github.com/Microsoft/TypeScript/issues/15394#issuecomment-297495746
-      if (modalRef.current?.contains(event.target as Node)) return;
-      closeModal();
-    },
-    [closeModal]
-  );
-
-  useEffect(() => {
-    window.addEventListener('click', onClickWindow);
-
-    return () => {
-      window.removeEventListener('click', onClickWindow);
-    };
-  }, [onClickWindow]);
+  const modalRef = useClickWindow<HTMLSpanElement>(closeModal);
 
   return (
     <StyledOverlayDiv>

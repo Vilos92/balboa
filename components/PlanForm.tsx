@@ -79,7 +79,7 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
   const [hasLocationFocused, setHasLocationFocused] = useState(false);
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value);
-  const onChangeColor = (event: ChangeEvent<HTMLInputElement>) => setColor(event.target.value);
+  const onChangeColor = (newColor: string) => setColor(newColor);
 
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
     const start = computeDateTime(event.target.value, startTime);
