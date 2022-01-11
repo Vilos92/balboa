@@ -1,7 +1,6 @@
 import {z} from 'zod';
 
 import {makePrismaClient} from '../utils/prisma';
-import {computeFieldsSelect} from '../utils/schema';
 import {userSchema} from './user';
 
 /*
