@@ -39,7 +39,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Plan          Plan[]
-  users       UsersOnPlan[]  
+  users       UserOnPlan[]  
 
   @@map("rocky_user")
 }
@@ -67,27 +67,27 @@ model VerificationToken {
 
 model Plan {
   hostUserId  Int
-  id          Int       @id @default(autoincrement())
-  createdAt   DateTime  @map("created_at") @default(now())
+  id          Int           @id @default(autoincrement())
+  createdAt   DateTime      @map("created_at") @default(now())
   title       String
   color       String 
   start       DateTime
   end         DateTime
   location    String
   description String
-  HostUser    User      @relation(fields: [hostUserId], references: [id])
-  users       UsersOnPlan[]  
+  HostUser    User          @relation(fields: [hostUserId], references: [id])
+  users       UserOnPlan[]  
 
   @@map("plan")
 }
 
-model UsersOnPlan {
-  createdAt   DateTime  @map("created_at") @default(now())
-  plan       Plan     @relation(fields: [planId], references: [id])
+model UserOnPlan {
+  createdAt  DateTime  @map("created_at") @default(now())
+  plan       Plan      @relation(fields: [planId], references: [id])
   planId     Int
-  user       User @relation(fields: [userId], references: [id])
-  userId Int
+  user       User      @relation(fields: [userId], references: [id])
+  userId     Int
 
   @@id([planId, userId])
-  @@map("users_on_plan")
+  @@map("user_on_plan")
 }
