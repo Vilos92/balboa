@@ -28,7 +28,7 @@ interface PlanFormProps {
 
 interface ColorInputWithTooltipProps {
   value: string;
-  onChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onChange: (newColor: string) => void;
 }
 
 /*
@@ -203,9 +203,9 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
 const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({value, onChange}) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState(true);
 
-  const onChangeColor = (event: ChangeEvent<HTMLInputElement>) => {
+  const onChangeColor = (newColor: string) => {
     setIsTooltipVisible(false);
-    onChange(event);
+    onChange(newColor);
   };
 
   const onClickTooltip = () => setIsTooltipVisible(false);

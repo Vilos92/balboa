@@ -19,7 +19,7 @@ export interface GetPositionStackResponse {
  */
 
 const positionStackForwardApi = 'http://api.positionstack.com/v1/forward';
-const positionStackAccessKey = process.env.POSITIONSTACK_ACCESS_KEY;
+const positionStackAccessKey = process.env.POSITIONSTACK_ACCESS_KEY ?? '';
 
 /*
  * Network.
