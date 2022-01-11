@@ -2,7 +2,7 @@ import {z} from 'zod';
 
 import {makePrismaClient} from '../utils/prisma';
 import {computeFieldsSelect} from '../utils/schema';
-import {userSchema, userSelect} from './user';
+import {userSchema} from './user';
 
 /*
  * Constants.
@@ -11,17 +11,10 @@ import {userSchema, userSelect} from './user';
 // Schema for user on plan retrieved from the database using prisma.
 const dbUserOnPlanSchema = z.object({
   createdAt: z.date(),
-  userId: z.number()
+  planId: z.number(),
+  userId: z.number(),
+  user: userSchema
 });
-
-// Schema for user on plan used by the server and client.
-const userOnPlanSchema = z.object({
-  createdAt: z.string(),
-  userId: z.number()
-});
-
-// Fields in the DB which can be returned to the client.
-const userOnPlanFields: readonly string[] = ['createdAt', 'userId'];
 
 // Schema for plans retrieved from the database using prisma.
 const dbPlanSchema = z.object({
@@ -49,26 +42,13 @@ const planSchema = z.object({
   location: z.string(),
   description: z.string(),
   hostUser: userSchema,
-  users: z.array(userOnPlanSchema)
+  users: z.array(userSchema)
 });
 
-// Fields in the DB which can be returned to the client.
-const planFields: readonly string[] = [
-  'hostUserId',
-  'id',
-  'createdAt',
-  'title',
-  'color',
-  'start',
-  'end',
-  'location',
-  'description'
-];
-
-const planSelect = {
-  ...computeFieldsSelect(planFields),
-  HostUser: {select: userSelect},
-  users: {select: computeFieldsSelect(userOnPlanFields)}
+// Relational fields which should be returned to the client.
+const planInclude = {
+  HostUser: true,
+  users: {include: {user: true}}
 };
 
 // Schema for plan drafts. This is used to validate data which will be sent to the DB.
@@ -86,8 +66,6 @@ export const planDraftSchema = z.object({
  * Types.
  */
 
-type DbUserOnPlan = z.infer<typeof dbUserOnPlanSchema>;
-type UserOnPlan = z.infer<typeof userOnPlanSchema>;
 type DbPlan = z.infer<typeof dbPlanSchema>;
 export type Plan = z.infer<typeof planSchema>;
 export type PlanDraft = z.infer<typeof planDraftSchema>;
@@ -106,7 +84,7 @@ export async function findPlan(planId: number) {
     where: {
       id: planId
     },
-    select: planSelect
+    include: planInclude
   });
 
   const dbPlan = decodeDbPlan(data);
@@ -120,7 +98,7 @@ export async function findPlans() {
   const prisma = makePrismaClient();
 
   const data = await prisma.plan.findMany({
-    select: planSelect
+    include: planInclude
   });
 
   const dbPlans = decodeDbPlans(data);
@@ -132,7 +110,7 @@ export async function savePlan(planDraft: PlanDraft) {
 
   const data = await prisma.plan.create({
     data: planDraft,
-    select: planSelect
+    select: planInclude
   });
 
   const dbPlan = decodeDbPlan(data);
@@ -160,19 +138,6 @@ function decodeDbPlans(planRows: readonly unknown[]): readonly DbPlan[] {
 }
 
 /**
- * Used by the server to encode a user on plan from
- * the database to be sent to the client.
- */
-function encodeUserOnPlan(userOnPlanRow: DbUserOnPlan): UserOnPlan {
-  const userOnPlanBlob = {
-    createdAt: userOnPlanRow.createdAt.toISOString(),
-    userId: userOnPlanRow.userId
-  };
-
-  return userOnPlanSchema.parse(userOnPlanBlob);
-}
-
-/**
  * Used by the server to encode a plan from
  * the database to be sent to the client.
  */
@@ -187,7 +152,7 @@ function encodePlan(planRow: DbPlan): Plan {
     location: planRow.location,
     description: planRow.description,
     hostUser: planRow.HostUser,
-    users: planRow.users.map(encodeUserOnPlan)
+    users: planRow.users.map(userOnPlan => userOnPlan.user)
   };
 
   return planSchema.parse(planBlob);

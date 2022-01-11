@@ -13,10 +13,6 @@ export const userSchema = z.object({
   image: z.string()
 });
 
-// Fields in the DB which can be returned to the client.
-const userFields: readonly string[] = ['id', 'email', 'name', 'image'];
-export const userSelect = computeFieldsSelect(userFields);
-
 /*
  * Types.
  */

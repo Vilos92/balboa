@@ -80,6 +80,8 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req
 
   const plan = await findPlan(planIdInt);
 
+  console.log(plan);
+
   return {
     props: {
       host,
