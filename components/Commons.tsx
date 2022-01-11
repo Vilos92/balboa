@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import {useRouter} from 'next/router';
 import {FC, MouseEvent, PropsWithChildren, forwardRef} from 'react';
 import tw from 'twin.macro';
 
@@ -37,12 +38,12 @@ const StyledCardDiv = tw.div`
   sm:rounded-2xl
 `;
 
-const StyledLogoDiv = tw.div`
+const StyledLogoDiv = tw.button`
   flex
   flex-row
   items-center
-  pt-6
-  pb-6
+  mt-6
+  mb-6
 `;
 
 const StyledLogoH1 = tw.h1`
@@ -58,12 +59,17 @@ const StyledLogoH1 = tw.h1`
 
 export const Body: FC = ({children}) => <StyledBodyDiv>{children}</StyledBodyDiv>;
 
-export const Logo: FC = () => (
-  <StyledLogoDiv>
-    <Image src={grueSvg} />
-    <StyledLogoH1>Grueplan</StyledLogoH1>
-  </StyledLogoDiv>
-);
+export const Logo: FC = () => {
+  const router = useRouter();
+  const onClick = () => router.push(`/`);
+
+  return (
+    <StyledLogoDiv onClick={onClick}>
+      <Image src={grueSvg} />
+      <StyledLogoH1>Grueplan</StyledLogoH1>
+    </StyledLogoDiv>
+  );
+};
 
 export const CenteredContent: FC = ({children}) => {
   return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;
