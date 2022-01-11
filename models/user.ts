@@ -1,7 +1,5 @@
 import {z} from 'zod';
 
-import {computeFieldsSelect} from '../utils/schema';
-
 /*
  * Constants.
  */
