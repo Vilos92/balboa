@@ -7,7 +7,7 @@ import {computeFieldsSelect} from '../utils/schema';
  */
 
 export const userSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   email: z.string(),
   name: z.string(),
   image: z.string()

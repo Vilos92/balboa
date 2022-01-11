@@ -66,7 +66,7 @@ model VerificationToken {
 // Base resources.
 
 model Plan {
-  hostUserId  Int
+  hostUserId  Int           @map("host_user_id")
   id          Int           @id @default(autoincrement())
   createdAt   DateTime      @map("created_at") @default(now())
   title       String
@@ -84,9 +84,9 @@ model Plan {
 model UserOnPlan {
   createdAt  DateTime  @map("created_at") @default(now())
   plan       Plan      @relation(fields: [planId], references: [id])
-  planId     Int
+  planId     Int       @map("plan_id")
   user       User      @relation(fields: [userId], references: [id])
-  userId     Int
+  userId     Int       @map("user_id")
 
   @@id([planId, userId])
   @@map("user_on_plan")
