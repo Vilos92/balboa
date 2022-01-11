@@ -7,8 +7,12 @@ import GoogleProvider from 'next-auth/providers/google';
  * Constants.
  */
 
-const clientId = process.env.GOOGLE_CLIENT_ID ?? '';
-const clientSecret = process.env.GOOGLE_SECRET ?? '';
+// Needed for Next Auth in production.
+const nextAuthSecret = process.env.NEXTAUTH_SECRET;
+
+// Google Provider credentials.
+const googleClientId = process.env.GOOGLE_CLIENT_ID ?? '';
+const googleClientSecret = process.env.GOOGLE_SECRET ?? '';
 
 const prisma = new PrismaClient();
 
@@ -22,5 +26,6 @@ export default NextAuth({
       return Promise.resolve(updatedSession);
     }
   },
-  providers: [GoogleProvider({clientId, clientSecret})]
+  providers: [GoogleProvider({clientId: googleClientId, clientSecret: googleClientSecret})],
+  secret: nextAuthSecret
 });
