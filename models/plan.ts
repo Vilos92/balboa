@@ -108,9 +108,19 @@ export async function findPlans() {
 export async function savePlan(planDraft: PlanDraft) {
   const prisma = makePrismaClient();
 
+  // The host of this plan should automatically join.
+  const users = {
+    create: [{user: {connect: {id: planDraft.hostUserId}}}]
+  };
+
+  const draftBlob = {
+    ...planDraft,
+    users
+  };
+
   const data = await prisma.plan.create({
-    data: planDraft,
-    select: planInclude
+    data: draftBlob,
+    include: planInclude
   });
 
   const dbPlan = decodeDbPlan(data);
