@@ -61,6 +61,12 @@ export const planDraftSchema = z.object({
   description: z.string().max(300)
 });
 
+// Schema for user on plan drafts.
+const userOnPlanDraftSchema = z.object({
+  userId: z.number(),
+  planId: z.number()
+});
+
 /*
  * Types.
  */
@@ -68,6 +74,7 @@ export const planDraftSchema = z.object({
 type DbPlan = z.infer<typeof dbPlanSchema>;
 export type Plan = z.infer<typeof planSchema>;
 export type PlanDraft = z.infer<typeof planDraftSchema>;
+type UserOnPlanDraft = z.infer<typeof userOnPlanDraftSchema>;
 
 /*
  * Database operations.
@@ -118,6 +125,31 @@ export async function savePlan(planDraft: PlanDraft) {
   };
 
   const data = await prisma.plan.create({
+    data: draftBlob,
+    include: planInclude
+  });
+
+  const dbPlan = decodeDbPlan(data);
+  return encodePlan(dbPlan);
+}
+
+export async function saveUserOnPlan(userOnPlanDraft: UserOnPlanDraft) {
+  const prisma = makePrismaClient();
+
+  const {userId, planId} = userOnPlanDraft;
+
+  const users = {
+    create: [{user: {connect: {id: userId}}}]
+  };
+
+  const draftBlob = {
+    users
+  };
+
+  const data = await prisma.plan.update({
+    where: {
+      id: planId
+    },
     data: draftBlob,
     include: planInclude
   });
@@ -181,4 +213,12 @@ function encodePlans(planRows: readonly DbPlan[]): readonly Plan[] {
  */
 export function encodeDraftPlan(planBlob: unknown): PlanDraft {
   return planDraftSchema.parse(planBlob);
+}
+
+/**
+ * Used by the server to encode a plan from the client for the database.
+ * Does not handle any exceptions thrown by the parser.
+ */
+export function encodeDraftUserOnPlan(userOnPlanBlob: unknown): UserOnPlanDraft {
+  return userOnPlanDraftSchema.parse(userOnPlanBlob);
 }

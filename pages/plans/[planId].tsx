@@ -3,6 +3,7 @@ import {useRouter} from 'next/router';
 import {FC} from 'react';
 import tw from 'twin.macro';
 
+import {Button} from '../../components/Button';
 import {ChromelessButton} from '../../components/ChromelessButton';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
@@ -12,6 +13,7 @@ import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {useAuthSession} from '../../utils/auth';
+import {postPlanPartake} from '../api/plans/[planId]/partake';
 
 /*
  * Types.
@@ -24,6 +26,11 @@ interface PlanPageProps {
 
 interface HostUserProps {
   hostUser: User;
+}
+
+interface PartakeButtonProps {
+  planId: number;
+  isPartaking: boolean;
 }
 
 /*
@@ -67,6 +74,13 @@ const StyledHostH4 = tw.h4`
   text-sm
 `;
 
+const StyledPartakeButton = tw(Button)`
+  bg-purple-900
+  border-2
+  border-gray-200
+  h-10
+`;
+
 /*
  * Server-side props.
  */
@@ -81,8 +95,6 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req
 
   const plan = await findPlan(planIdInt);
 
-  console.log(plan);
-
   return {
     props: {
       host,
@@ -96,15 +108,16 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req
  */
 
 const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
-  const {hostUser} = plan;
+  const {id: planId, hostUser, users} = plan;
 
   const router = useRouter();
   const shareUrl = `${host}${router.asPath}`;
 
-  const authUser = useAuthSession();
+  const authSession = useAuthSession();
 
   // A host should not be able to manually change their follow status.
-  const isFollowButtonVisible = authUser.isAuthenticated && authUser.user.id !== hostUser.id;
+  const isPartakeButtonVisible = authSession.isAuthenticated && authSession.user.id !== hostUser.id;
+  const isPartaking = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
 
   return (
     <Body>
@@ -113,7 +126,8 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
           <Logo />
 
           <StyledCard>
-            {isFollowButtonVisible ? <>Follow</> : <CopyInputWithButton label='Share' value={shareUrl} />}
+            {isPartakeButtonVisible && <PartakeButton planId={planId} isPartaking={isPartaking} />}
+            {isPartaking && <CopyInputWithButton label='Share' value={shareUrl} />}
           </StyledCard>
 
           <StyledCard>
@@ -147,6 +161,14 @@ const HostUser: FC<HostUserProps> = ({hostUser}) => (
     </HoverTooltip>
   </StyledHostH4>
 );
+
+const PartakeButton: FC<PartakeButtonProps> = ({planId, isPartaking}) => {
+  const text = isPartaking ? ' Partaking' : 'Partake';
+
+  const onClick = () => postPlanPartake(planId);
+
+  return <StyledPartakeButton onClick={onClick}>{text}</StyledPartakeButton>;
+};
 
 /*
  * Helpers.

@@ -71,7 +71,7 @@ export function useAuthSession(): AuthSession {
     return {user, status, isAuthenticated: true};
   }
 
-  return {status, isAuthenticated: false};
+  return {user: undefined, status, isAuthenticated: false};
 }
 
 /*
