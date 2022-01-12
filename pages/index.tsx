@@ -51,14 +51,12 @@ export const getServerSideProps: GetServerSideProps<LandingPageProps> = async ()
 const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   const router = useRouter();
 
-  const {user, status} = useAuthSession();
+  const {status, isAuthenticated} = useAuthSession();
 
   // For the modal located in the AccountFooter.
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
   if (status === SessionStatusesEnum.LOADING) return null;
-
-  const isAuthenticated = status === SessionStatusesEnum.AUTHENTICATED && Boolean(user);
 
   const createPlan = async (planDraft: PostPlan) => {
     if (!planDraft) return;

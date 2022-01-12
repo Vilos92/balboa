@@ -11,6 +11,7 @@ import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
+import {useAuthSession} from '../../utils/auth';
 
 /*
  * Types.
@@ -100,6 +101,11 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
   const router = useRouter();
   const shareUrl = `${host}${router.asPath}`;
 
+  const authUser = useAuthSession();
+
+  // A host should not be able to manually change their follow status.
+  const isFollowButtonVisible = authUser.isAuthenticated && authUser.user.id !== hostUser.id;
+
   return (
     <Body>
       <CenteredContent>
@@ -107,7 +113,7 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
           <Logo />
 
           <StyledCard>
-            <CopyInputWithButton label='Share' value={shareUrl} />
+            {isFollowButtonVisible ? <>Follow</> : <CopyInputWithButton label='Share' value={shareUrl} />}
           </StyledCard>
 
           <StyledCard>
