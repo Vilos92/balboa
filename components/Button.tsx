@@ -9,14 +9,13 @@ interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   backgroundColor?: string;
 }
 
-interface StyledColoredButtonProps {
-  $backgroundColor?: string;
-}
-
 /*
  * Styles.
  */
 
+interface StyledColoredButtonProps {
+  $backgroundColor?: string;
+}
 const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$backgroundColor}) => ({
   style: {backgroundColor: $backgroundColor}
 }))<StyledColoredButtonProps>`

@@ -29,18 +29,13 @@ interface ColorSwatchesProps {
   onClickSwatch: onChangeColor;
 }
 
-interface StyledColorDivProps {
-  $backgroundColor: string;
-}
-
-interface StyledColorSwatchDivProps {
-  $backgroundColor: string;
-}
-
 /*
  * Styles.
  */
 
+interface StyledColorDivProps {
+  $backgroundColor: string;
+}
 const StyledColorDiv = styled.div.attrs<StyledColorDivProps>(({$backgroundColor}) => ({
   style: {backgroundColor: $backgroundColor}
 }))<StyledColorDivProps>`
@@ -67,6 +62,9 @@ const StyledColorSwatchesContainerDiv = tw.div`
   pb-1
 `;
 
+interface StyledColorSwatchDivProps {
+  $backgroundColor: string;
+}
 const StyledColorSwatchDiv = styled.div.attrs<StyledColorSwatchDivProps>(({$backgroundColor}) => ({
   style: {backgroundColor: $backgroundColor}
 }))<StyledColorSwatchDivProps>`
