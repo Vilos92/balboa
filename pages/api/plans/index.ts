@@ -54,7 +54,7 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
 
   const plan = await savePlan(planDraft);
 
-  res.status(200).json(plan);
+  res.status(201).json(plan);
 }
 
 /*
