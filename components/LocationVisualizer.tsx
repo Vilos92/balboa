@@ -6,7 +6,7 @@ import tw, {styled} from 'twin.macro';
 
 import {GetGeolocationResponse, geolocationApi} from '../pages/api/geolocation';
 import MapStyle from '../styles/map-style-basic-v8.json';
-import {useDebounce} from '../utils/hooks';
+import {useDebounceValue} from '../utils/hooks';
 import {useNetGet} from '../utils/net';
 
 /*
@@ -50,7 +50,7 @@ const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
   const [zoom, setZoom] = useState(13);
   const onViewportChange = (viewport: ViewportProps) => viewport.zoom && setZoom(viewport.zoom);
 
-  const debouncedLocation = useDebounce(location, 1000);
+  const debouncedLocation = useDebounceValue(location, 1000);
   const geolocationUrl = computeGeolocationUrl(debouncedLocation) ?? '';
 
   const {data, error} = useNetGet<GetGeolocationResponse>(geolocationUrl);

@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 
 import {Handler} from '../types/common';
 
@@ -38,20 +38,7 @@ export function useTimeout(): [SetTimeout, ClearTimeout] {
   return [setTimeoutCallback, clearTimeoutCallback];
 }
 
-export function useDebounce(value: string, delay: number) {
-  const [debouncedValue, setDebouncedValue] = useState(value);
-  const [setDebounceTimeout] = useTimeout();
-
-  useEffect(() => {
-    setDebounceTimeout(() => {
-      setDebouncedValue(value);
-    }, delay);
-  }, [value, delay]);
-
-  return debouncedValue;
-}
-
-export function useDebounceHandler(handler: Handler, delay: number) {
+export function useDebounce(handler: Handler, delay: number) {
   const [setDebounceTimeout] = useTimeout();
 
   const debouncedHandler = () => {
@@ -61,6 +48,19 @@ export function useDebounceHandler(handler: Handler, delay: number) {
   };
 
   return debouncedHandler;
+}
+
+export function useDebounceValue(value: string, delay: number) {
+  const [debouncedValue, setDebouncedValue] = useState(value);
+
+  const updateValue = useMemo(() => () => setDebouncedValue(value), [value]);
+  const debouncedUpdateValue = useDebounce(updateValue, delay);
+
+  useEffect(() => {
+    debouncedUpdateValue();
+  }, [debouncedUpdateValue]);
+
+  return debouncedValue;
 }
 
 export function useClickWindow<T extends HTMLElement>(onClick: () => void) {

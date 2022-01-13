@@ -15,7 +15,7 @@ import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
 import {SessionStatusesEnum, useAuthSession} from '../../utils/auth';
-import {useDebounceHandler, usePrevious} from '../../utils/hooks';
+import {useDebounce, usePrevious} from '../../utils/hooks';
 import {parseQueryNumber} from '../../utils/net';
 import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
@@ -229,7 +229,7 @@ const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, 
     return isAttendingLocal ? () => deletePlanAttend(planId) : () => postPlanAttend(planId);
   }, [isAttendingLocal, deletePlanAttend, postPlanAttend]);
 
-  const debouncedHandler = useDebounceHandler(handler, 500);
+  const debouncedHandler = useDebounce(handler, 500);
 
   const onClick = async () => {
     try {
