@@ -1,6 +1,6 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
-import {FC, useEffect, useRef, useState} from 'react';
+import {FC, useCallback, useEffect, useState} from 'react';
 import {SWRConfig} from 'swr';
 import tw, {styled} from 'twin.macro';
 
@@ -15,7 +15,7 @@ import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
 import {SessionStatusesEnum, useAuthSession} from '../../utils/auth';
-import {usePrevious} from '../../utils/hooks';
+import {useDebounceHandler, usePrevious} from '../../utils/hooks';
 import {parseQueryNumber} from '../../utils/net';
 import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
@@ -223,21 +223,20 @@ const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, 
 
   useEffect(() => {
     if (isAttending !== previousIsAttending) setIsAttendingLocal(isAttending);
-  }, []);
+  }, [isAttending, previousIsAttending]);
 
-  const [isPosting, setIsPosting] = useState<boolean>(false);
+  const handler = useCallback(() => {
+    return isAttendingLocal ? () => deletePlanAttend(planId) : () => postPlanAttend(planId);
+  }, [isAttendingLocal, deletePlanAttend, postPlanAttend]);
+
+  const debouncedHandler = useDebounceHandler(handler, 500);
 
   const onClick = async () => {
-    const attendHandler = isAttending ? deletePlanAttend : postPlanAttend;
-
     try {
-      setIsAttendingLocal(!isAttending);
-      setIsPosting(true);
-      await attendHandler(planId);
-      setIsPosting(false);
+      setIsAttendingLocal(!isAttendingLocal);
+      await debouncedHandler();
       refreshPlan();
     } catch (error) {
-      setIsPosting(false);
       setIsAttendingLocal(isAttending);
       throw error;
     }
@@ -246,7 +245,7 @@ const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, 
   const text = isAttendingLocal ? 'Attending' : 'Attend';
 
   return (
-    <StyledAttendButton $isPartaking={isAttendingLocal} onClick={onClick} disabled={isDisabled || isPosting}>
+    <StyledAttendButton $isPartaking={isAttendingLocal} onClick={onClick} disabled={isDisabled}>
       {text}
     </StyledAttendButton>
   );

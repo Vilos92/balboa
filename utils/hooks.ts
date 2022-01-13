@@ -51,6 +51,18 @@ export function useDebounce(value: string, delay: number) {
   return debouncedValue;
 }
 
+export function useDebounceHandler(handler: Handler, delay: number) {
+  const [setDebounceTimeout] = useTimeout();
+
+  const debouncedHandler = () => {
+    setDebounceTimeout(() => {
+      handler();
+    }, delay);
+  };
+
+  return debouncedHandler;
+}
+
 export function useClickWindow<T extends HTMLElement>(onClick: () => void) {
   const elementRef = useRef<T>(null);
 
