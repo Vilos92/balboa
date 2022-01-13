@@ -1,7 +1,7 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
 import {FC} from 'react';
-import tw from 'twin.macro';
+import tw, {styled} from 'twin.macro';
 
 import {Button} from '../../components/Button';
 import {ChromelessButton} from '../../components/ChromelessButton';
@@ -12,8 +12,8 @@ import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
-import {useAuthSession} from '../../utils/auth';
-import {postPlanPartake} from '../api/plans/[planId]/partake';
+import {SessionStatusesEnum, useAuthSession} from '../../utils/auth';
+import {deletePlanPartake, postPlanPartake} from '../api/plans/[planId]/partake';
 
 /*
  * Types.
@@ -31,6 +31,7 @@ interface HostUserProps {
 interface PartakeButtonProps {
   planId: number;
   isPartaking: boolean;
+  isDisabled: boolean;
 }
 
 /*
@@ -47,6 +48,12 @@ const StyledContentDiv = tw.div`
 const StyledCard = tw(Card)`
   sm:w-7/12
   mb-5
+`;
+
+const StyledHeaderDiv = tw.div`
+  flex
+  flex-row
+  justify-between
 `;
 
 const StyledTitleH2 = tw.h2`
@@ -74,11 +81,18 @@ const StyledHostH4 = tw.h4`
   text-sm
 `;
 
-const StyledPartakeButton = tw(Button)`
-  bg-purple-900
-  border-2
-  border-gray-200
-  h-10
+interface StyledPartakeButtonProps {
+  $isPartaking: boolean;
+}
+const StyledPartakeButton = styled(Button)<StyledPartakeButtonProps>`
+  ${tw`
+    bg-purple-900
+    border-2
+    border-gray-200
+    h-10
+  `}
+
+  ${({$isPartaking}) => $isPartaking && tw`bg-green-500`}
 `;
 
 /*
@@ -115,8 +129,10 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
 
   const authSession = useAuthSession();
 
+  if (authSession.status === SessionStatusesEnum.LOADING) return null;
+
   // A host should not be able to manually change their follow status.
-  const isPartakeButtonVisible = authSession.isAuthenticated && authSession.user.id !== hostUser.id;
+  const isPartakeButtonDisabled = !authSession.isAuthenticated || authSession.user.id === hostUser.id;
   const isPartaking = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
 
   return (
@@ -126,17 +142,21 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
           <Logo />
 
           <StyledCard>
-            {isPartakeButtonVisible && <PartakeButton planId={planId} isPartaking={isPartaking} />}
-            {isPartaking && <CopyInputWithButton label='Share' value={shareUrl} />}
+            <CopyInputWithButton label='Share' value={shareUrl} />
           </StyledCard>
 
           <StyledCard>
-            <StyledTitleH2>
-              <VisualPlan plan={plan} />
-            </StyledTitleH2>
-            <StyledDateTimeRangeH3>
-              <DateTimeRange start={plan.start} end={plan.end} />
-            </StyledDateTimeRangeH3>
+            <StyledHeaderDiv>
+              <div>
+                <StyledTitleH2>
+                  <VisualPlan plan={plan} />
+                </StyledTitleH2>
+                <StyledDateTimeRangeH3>
+                  <DateTimeRange start={plan.start} end={plan.end} />
+                </StyledDateTimeRangeH3>
+              </div>
+              <PartakeButton planId={planId} isPartaking={isPartaking} isDisabled={isPartakeButtonDisabled} />
+            </StyledHeaderDiv>
             <StyledLocationH3>@ {plan.location}</StyledLocationH3>
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
             <HostUser hostUser={hostUser} />
@@ -162,12 +182,23 @@ const HostUser: FC<HostUserProps> = ({hostUser}) => (
   </StyledHostH4>
 );
 
-const PartakeButton: FC<PartakeButtonProps> = ({planId, isPartaking}) => {
+const PartakeButton: FC<PartakeButtonProps> = ({planId, isPartaking, isDisabled}) => {
   const text = isPartaking ? ' Partaking' : 'Partake';
 
-  const onClick = () => postPlanPartake(planId);
+  const onClick = () => {
+    if (isPartaking) {
+      deletePlanPartake(planId);
+      return;
+    }
 
-  return <StyledPartakeButton onClick={onClick}>{text}</StyledPartakeButton>;
+    postPlanPartake(planId);
+  };
+
+  return (
+    <StyledPartakeButton $isPartaking={isPartaking} onClick={onClick} disabled={isDisabled}>
+      {text}
+    </StyledPartakeButton>
+  );
 };
 
 /*

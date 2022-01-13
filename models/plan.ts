@@ -136,7 +136,7 @@ export async function savePlan(planDraft: PlanDraft) {
 export async function saveUserOnPlan(userOnPlanDraft: UserOnPlanDraft) {
   const prisma = makePrismaClient();
 
-  const {userId, planId} = userOnPlanDraft;
+  const {planId, userId} = userOnPlanDraft;
 
   const users = {
     create: [{user: {connect: {id: userId}}}]
@@ -156,6 +156,21 @@ export async function saveUserOnPlan(userOnPlanDraft: UserOnPlanDraft) {
 
   const dbPlan = decodeDbPlan(data);
   return encodePlan(dbPlan);
+}
+
+export async function deleteUserOnPlan(planId: number, userId: number) {
+  const prisma = makePrismaClient();
+
+  await prisma.userOnPlan.delete({
+    where: {
+      planId_userId: {
+        planId,
+        userId
+      }
+    }
+  });
+
+  return findPlan(planId);
 }
 
 /*

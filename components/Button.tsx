@@ -40,10 +40,11 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
  * Component.
  */
 
-export const Button: FC<ButtonProps> = ({children, backgroundColor, onClick, className}) => (
+export const Button: FC<ButtonProps> = ({children, backgroundColor, disabled, onClick, className}) => (
   <StyledColoredButton
     type='button'
     $backgroundColor={backgroundColor}
+    disabled={disabled}
     onClick={onClick}
     className={className}
   >
