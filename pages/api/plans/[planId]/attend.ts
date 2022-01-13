@@ -67,9 +67,9 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse<Plan>) {
     return;
   }
 
-  const plan = await deleteUserOnPlan(planId, user.id);
+  await deleteUserOnPlan(planId, user.id);
 
-  res.status(204).json(plan);
+  res.status(204).end();
 }
 
 /*

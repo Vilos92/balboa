@@ -1,6 +1,6 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
-import {FC} from 'react';
+import {FC, useEffect, useRef, useState} from 'react';
 import {SWRConfig} from 'swr';
 import tw, {styled} from 'twin.macro';
 
@@ -15,6 +15,7 @@ import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
 import {SessionStatusesEnum, useAuthSession} from '../../utils/auth';
+import {usePrevious} from '../../utils/hooks';
 import {parseQueryNumber} from '../../utils/net';
 import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
@@ -102,6 +103,8 @@ const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
     border-gray-200
     h-10
   `}
+
+  width: 110px;
 
   ${({$isPartaking}) => $isPartaking && tw`bg-green-500`}
 `;
@@ -213,16 +216,37 @@ const HostUser: FC<HostUserProps> = ({hostUser}) => (
 );
 
 const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, isDisabled, refreshPlan}) => {
-  const text = isAttending ? 'Attending' : 'Attend';
-  const attendHandler = isAttending ? deletePlanAttend : postPlanAttend;
+  // For optimistic update.
+  const [isAttendingLocal, setIsAttendingLocal] = useState<boolean>(isAttending);
+
+  const previousIsAttending = usePrevious(isAttending);
+
+  useEffect(() => {
+    if (isAttending !== previousIsAttending) setIsAttendingLocal(isAttending);
+  }, []);
+
+  const [isPosting, setIsPosting] = useState<boolean>(false);
 
   const onClick = async () => {
-    await attendHandler(planId);
-    refreshPlan();
+    const attendHandler = isAttending ? deletePlanAttend : postPlanAttend;
+
+    try {
+      setIsAttendingLocal(!isAttending);
+      setIsPosting(true);
+      await attendHandler(planId);
+      setIsPosting(false);
+      refreshPlan();
+    } catch (error) {
+      setIsPosting(false);
+      setIsAttendingLocal(isAttending);
+      throw error;
+    }
   };
 
+  const text = isAttendingLocal ? 'Attending' : 'Attend';
+
   return (
-    <StyledAttendButton $isPartaking={isAttending} onClick={onClick} disabled={isDisabled}>
+    <StyledAttendButton $isPartaking={isAttendingLocal} onClick={onClick} disabled={isDisabled || isPosting}>
       {text}
     </StyledAttendButton>
   );
