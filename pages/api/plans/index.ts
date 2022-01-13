@@ -32,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
     switch (req.method) {
       case 'POST':
         await postHandler(req, res);
+        break;
       default:
         res.status(404);
     }

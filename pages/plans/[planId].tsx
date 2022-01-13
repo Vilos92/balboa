@@ -1,6 +1,7 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
 import {FC} from 'react';
+import {SWRConfig} from 'swr';
 import tw, {styled} from 'twin.macro';
 
 import {Button} from '../../components/Button';
@@ -12,7 +13,10 @@ import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
+import {Handler} from '../../types/common';
 import {SessionStatusesEnum, useAuthSession} from '../../utils/auth';
+import {parseQueryNumber} from '../../utils/net';
+import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
 
 /*
@@ -21,7 +25,13 @@ import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
 
 interface PlanPageProps {
   host: string;
-  plan: Plan;
+  planId: number;
+}
+
+interface PlanPageContainerProps extends PlanPageProps {
+  fallback: {
+    [url: string]: Plan;
+  };
 }
 
 interface HostUserProps {
@@ -32,6 +42,7 @@ interface AttendButtonProps {
   planId: number;
   isAttending: boolean;
   isDisabled: boolean;
+  refreshPlan: Handler;
 }
 
 /*
@@ -102,17 +113,21 @@ const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
 export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req, query}) => {
   const host = req.headers.host ?? '';
 
-  const {planId} = query;
-  if (!planId) return {notFound: true};
+  const {planId: planIdParam} = query;
+  if (!planIdParam) return {notFound: true};
 
-  const planIdInt = parseInt(parseFirstQueryParam(planId));
+  const planId = parseQueryNumber(planIdParam);
 
-  const plan = await findPlan(planIdInt);
+  const plan = await findPlan(planId);
+  const planUrl = computePlanUrl(planId);
 
   return {
     props: {
       host,
-      plan
+      planId,
+      fallback: {
+        [planUrl]: plan
+      }
     }
   };
 };
@@ -121,15 +136,19 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req
  * Page.
  */
 
-const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
-  const {id: planId, hostUser, users} = plan;
-
+const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
   const router = useRouter();
+  const authSession = useAuthSession();
+  const {data: plan, error, mutate} = useNetGetPlan(planId);
+
   const shareUrl = `${host}${router.asPath}`;
 
-  const authSession = useAuthSession();
-
   if (authSession.status === SessionStatusesEnum.LOADING) return null;
+
+  if (!plan || error) return null;
+  const {hostUser, users} = plan;
+
+  const refreshPlan = () => mutate();
 
   // A host should not be able to manually change their follow status.
   const isAttendButtonDisabled = !authSession.isAuthenticated || authSession.user.id === hostUser.id;
@@ -155,7 +174,12 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
                   <DateTimeRange start={plan.start} end={plan.end} />
                 </StyledDateTimeRangeH3>
               </div>
-              <AttendButton planId={planId} isAttending={isAttending} isDisabled={isAttendButtonDisabled} />
+              <AttendButton
+                planId={planId}
+                isAttending={isAttending}
+                isDisabled={isAttendButtonDisabled}
+                refreshPlan={refreshPlan}
+              />
             </StyledHeaderDiv>
             <StyledLocationH3>@ {plan.location}</StyledLocationH3>
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
@@ -167,7 +191,13 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
   );
 };
 
-export default PlanPage;
+const PlanPageContainer: FC<PlanPageContainerProps> = ({fallback, ...planPageProps}) => (
+  <SWRConfig value={{fallback}}>
+    <PlanPage {...planPageProps} />
+  </SWRConfig>
+);
+
+export default PlanPageContainer;
 
 /**
  * Components
@@ -182,16 +212,13 @@ const HostUser: FC<HostUserProps> = ({hostUser}) => (
   </StyledHostH4>
 );
 
-const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, isDisabled}) => {
+const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, isDisabled, refreshPlan}) => {
   const text = isAttending ? 'Attending' : 'Attend';
+  const attendHandler = isAttending ? deletePlanAttend : postPlanAttend;
 
-  const onClick = () => {
-    if (isAttending) {
-      deletePlanAttend(planId);
-      return;
-    }
-
-    postPlanAttend(planId);
+  const onClick = async () => {
+    await attendHandler(planId);
+    refreshPlan();
   };
 
   return (
@@ -200,16 +227,3 @@ const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, 
     </StyledAttendButton>
   );
 };
-
-/*
- * Helpers.
- */
-
-/**
- * Retrieve the first occurrence of a query parameter.
- */
-function parseFirstQueryParam(param: string | readonly string[]): string {
-  if (typeof param === 'string') return param;
-
-  return param[0];
-}
