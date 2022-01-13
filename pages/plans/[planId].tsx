@@ -1,8 +1,10 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
-import {FC} from 'react';
-import tw from 'twin.macro';
+import {FC, useEffect, useRef, useState} from 'react';
+import {SWRConfig} from 'swr';
+import tw, {styled} from 'twin.macro';
 
+import {Button} from '../../components/Button';
 import {ChromelessButton} from '../../components/ChromelessButton';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
@@ -11,6 +13,12 @@ import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
+import {Handler} from '../../types/common';
+import {SessionStatusesEnum, useAuthSession} from '../../utils/auth';
+import {usePrevious} from '../../utils/hooks';
+import {parseQueryNumber} from '../../utils/net';
+import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
+import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
 
 /*
  * Types.
@@ -18,11 +26,24 @@ import {User} from '../../models/user';
 
 interface PlanPageProps {
   host: string;
-  plan: Plan;
+  planId: number;
+}
+
+interface PlanPageContainerProps extends PlanPageProps {
+  fallback: {
+    [url: string]: Plan;
+  };
 }
 
 interface HostUserProps {
   hostUser: User;
+}
+
+interface AttendButtonProps {
+  planId: number;
+  isAttending: boolean;
+  isDisabled: boolean;
+  refreshPlan: Handler;
 }
 
 /*
@@ -39,6 +60,12 @@ const StyledContentDiv = tw.div`
 const StyledCard = tw(Card)`
   sm:w-7/12
   mb-5
+`;
+
+const StyledHeaderDiv = tw.div`
+  flex
+  flex-row
+  justify-between
 `;
 
 const StyledTitleH2 = tw.h2`
@@ -66,6 +93,22 @@ const StyledHostH4 = tw.h4`
   text-sm
 `;
 
+interface StyledAttendButtonProps {
+  $isPartaking: boolean;
+}
+const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
+  ${tw`
+    bg-purple-900
+    border-2
+    border-gray-200
+    h-10
+  `}
+
+  width: 110px;
+
+  ${({$isPartaking}) => $isPartaking && tw`bg-green-500`}
+`;
+
 /*
  * Server-side props.
  */
@@ -73,17 +116,21 @@ const StyledHostH4 = tw.h4`
 export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req, query}) => {
   const host = req.headers.host ?? '';
 
-  const {planId} = query;
-  if (!planId) return {notFound: true};
+  const {planId: planIdParam} = query;
+  if (!planIdParam) return {notFound: true};
 
-  const planIdInt = parseInt(parseFirstQueryParam(planId));
+  const planId = parseQueryNumber(planIdParam);
 
-  const plan = await findPlan(planIdInt);
+  const plan = await findPlan(planId);
+  const planUrl = computePlanUrl(planId);
 
   return {
     props: {
       host,
-      plan
+      planId,
+      fallback: {
+        [planUrl]: plan
+      }
     }
   };
 };
@@ -92,11 +139,23 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req
  * Page.
  */
 
-const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
-  const {hostUser} = plan;
-
+const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
   const router = useRouter();
+  const authSession = useAuthSession();
+  const {data: plan, error, mutate} = useNetGetPlan(planId);
+
   const shareUrl = `${host}${router.asPath}`;
+
+  if (authSession.status === SessionStatusesEnum.LOADING) return null;
+
+  if (!plan || error) return null;
+  const {hostUser, users} = plan;
+
+  const refreshPlan = () => mutate();
+
+  // A host should not be able to manually change their follow status.
+  const isAttendButtonDisabled = !authSession.isAuthenticated || authSession.user.id === hostUser.id;
+  const isAttending = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
 
   return (
     <Body>
@@ -109,12 +168,22 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
           </StyledCard>
 
           <StyledCard>
-            <StyledTitleH2>
-              <VisualPlan plan={plan} />
-            </StyledTitleH2>
-            <StyledDateTimeRangeH3>
-              <DateTimeRange start={plan.start} end={plan.end} />
-            </StyledDateTimeRangeH3>
+            <StyledHeaderDiv>
+              <div>
+                <StyledTitleH2>
+                  <VisualPlan plan={plan} />
+                </StyledTitleH2>
+                <StyledDateTimeRangeH3>
+                  <DateTimeRange start={plan.start} end={plan.end} />
+                </StyledDateTimeRangeH3>
+              </div>
+              <AttendButton
+                planId={planId}
+                isAttending={isAttending}
+                isDisabled={isAttendButtonDisabled}
+                refreshPlan={refreshPlan}
+              />
+            </StyledHeaderDiv>
             <StyledLocationH3>@ {plan.location}</StyledLocationH3>
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
             <HostUser hostUser={hostUser} />
@@ -125,7 +194,13 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
   );
 };
 
-export default PlanPage;
+const PlanPageContainer: FC<PlanPageContainerProps> = ({fallback, ...planPageProps}) => (
+  <SWRConfig value={{fallback}}>
+    <PlanPage {...planPageProps} />
+  </SWRConfig>
+);
+
+export default PlanPageContainer;
 
 /**
  * Components
@@ -140,15 +215,39 @@ const HostUser: FC<HostUserProps> = ({hostUser}) => (
   </StyledHostH4>
 );
 
-/*
- * Helpers.
- */
+const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, isDisabled, refreshPlan}) => {
+  // For optimistic update.
+  const [isAttendingLocal, setIsAttendingLocal] = useState<boolean>(isAttending);
 
-/**
- * Retrieve the first occurrence of a query parameter.
- */
-function parseFirstQueryParam(param: string | readonly string[]): string {
-  if (typeof param === 'string') return param;
+  const previousIsAttending = usePrevious(isAttending);
 
-  return param[0];
-}
+  useEffect(() => {
+    if (isAttending !== previousIsAttending) setIsAttendingLocal(isAttending);
+  }, []);
+
+  const [isPosting, setIsPosting] = useState<boolean>(false);
+
+  const onClick = async () => {
+    const attendHandler = isAttending ? deletePlanAttend : postPlanAttend;
+
+    try {
+      setIsAttendingLocal(!isAttending);
+      setIsPosting(true);
+      await attendHandler(planId);
+      setIsPosting(false);
+      refreshPlan();
+    } catch (error) {
+      setIsPosting(false);
+      setIsAttendingLocal(isAttending);
+      throw error;
+    }
+  };
+
+  const text = isAttendingLocal ? 'Attending' : 'Attend';
+
+  return (
+    <StyledAttendButton $isPartaking={isAttendingLocal} onClick={onClick} disabled={isDisabled || isPosting}>
+      {text}
+    </StyledAttendButton>
+  );
+};

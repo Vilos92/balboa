@@ -9,14 +9,13 @@ interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   backgroundColor?: string;
 }
 
-interface StyledColoredButtonProps {
-  $backgroundColor?: string;
-}
-
 /*
  * Styles.
  */
 
+interface StyledColoredButtonProps {
+  $backgroundColor?: string;
+}
 const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$backgroundColor}) => ({
   style: {backgroundColor: $backgroundColor}
 }))<StyledColoredButtonProps>`
@@ -41,10 +40,11 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
  * Component.
  */
 
-export const Button: FC<ButtonProps> = ({children, backgroundColor, onClick, className}) => (
+export const Button: FC<ButtonProps> = ({children, backgroundColor, disabled, onClick, className}) => (
   <StyledColoredButton
     type='button'
     $backgroundColor={backgroundColor}
+    disabled={disabled}
     onClick={onClick}
     className={className}
   >

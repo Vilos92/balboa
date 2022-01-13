@@ -32,6 +32,7 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
     switch (req.method) {
       case 'POST':
         await postHandler(req, res);
+        break;
       default:
         res.status(404);
     }
@@ -54,7 +55,7 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
 
   const plan = await savePlan(planDraft);
 
-  res.status(200).json(plan);
+  res.status(201).json(plan);
 }
 
 /*

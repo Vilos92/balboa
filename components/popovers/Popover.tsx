@@ -21,14 +21,13 @@ export interface PopoverProps {
   className?: string;
 }
 
-interface StyledPopoverDivProps {
-  $isVisible: boolean;
-}
-
 /*
  * Styles.
  */
 
+interface StyledPopoverDivProps {
+  $isVisible: boolean;
+}
 const StyledPopoverDiv = styled.div<StyledPopoverDivProps>`
   ${tw`
     z-50

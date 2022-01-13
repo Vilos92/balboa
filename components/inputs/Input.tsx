@@ -5,10 +5,6 @@ import tw, {css, styled} from 'twin.macro';
  * Types.
  */
 
-interface StyledInputProps {
-  $isDisabled?: boolean;
-}
-
 export interface InputProps extends React.HTMLProps<HTMLInputElement> {
   label: string;
 }
@@ -50,6 +46,9 @@ export const inputLabelTransitionCss = css`
   }
 `;
 
+interface StyledInputProps {
+  $isDisabled?: boolean;
+}
 const StyledInput = styled.input<StyledInputProps>`
   ${tw`
     relative

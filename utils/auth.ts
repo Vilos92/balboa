@@ -25,6 +25,14 @@ export enum SessionStatusesEnum {
   AUTHENTICATED = 'authenticated'
 }
 
+type AuthSession =
+  | {user: User; status: SessionStatusesEnum; isAuthenticated: true}
+  | {
+      user: undefined;
+      status: SessionStatusesEnum;
+      isAuthenticated: false;
+    };
+
 /*
  * Utilities.
  */
@@ -53,13 +61,17 @@ export async function getSessionUser(req: NextApiRequest) {
  * Hooks.
  */
 
-export function useAuthSession(): {user?: User; status: SessionStatusesEnum} {
+export function useAuthSession(): AuthSession {
   const {data, status} = useSession();
-
   if (!isSessionStatusesEnum(status)) throw new Error(`Not a valid session status: ${status}`);
 
   const user = data ? decodeSessionUser(data) : undefined;
-  return {user, status};
+
+  if (user && status === SessionStatusesEnum.AUTHENTICATED) {
+    return {user, status, isAuthenticated: true};
+  }
+
+  return {user: undefined, status, isAuthenticated: false};
 }
 
 /*

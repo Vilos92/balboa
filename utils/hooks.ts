@@ -13,6 +13,17 @@ type ClearTimeout = Handler;
  * Hooks.
  */
 
+export function usePrevious<T>(value: T) {
+  const ref = useRef<T>();
+
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+
+  // The previous value is returned before the useEffect hook runs.
+  return ref.current;
+}
+
 export function useTimeout(): [SetTimeout, ClearTimeout] {
   const timeoutRef = useRef<number>();
   useEffect(() => () => window.clearTimeout(timeoutRef.current), []);
