@@ -13,7 +13,7 @@ import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {SessionStatusesEnum, useAuthSession} from '../../utils/auth';
-import {deletePlanPartake, postPlanPartake} from '../api/plans/[planId]/partake';
+import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
 
 /*
  * Types.
@@ -28,9 +28,9 @@ interface HostUserProps {
   hostUser: User;
 }
 
-interface PartakeButtonProps {
+interface AttendButtonProps {
   planId: number;
-  isPartaking: boolean;
+  isAttending: boolean;
   isDisabled: boolean;
 }
 
@@ -81,10 +81,10 @@ const StyledHostH4 = tw.h4`
   text-sm
 `;
 
-interface StyledPartakeButtonProps {
+interface StyledAttendButtonProps {
   $isPartaking: boolean;
 }
-const StyledPartakeButton = styled(Button)<StyledPartakeButtonProps>`
+const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
   ${tw`
     bg-purple-900
     border-2
@@ -132,8 +132,8 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
   if (authSession.status === SessionStatusesEnum.LOADING) return null;
 
   // A host should not be able to manually change their follow status.
-  const isPartakeButtonDisabled = !authSession.isAuthenticated || authSession.user.id === hostUser.id;
-  const isPartaking = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
+  const isAttendButtonDisabled = !authSession.isAuthenticated || authSession.user.id === hostUser.id;
+  const isAttending = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
 
   return (
     <Body>
@@ -155,7 +155,7 @@ const PlanPage: FC<PlanPageProps> = ({host, plan}) => {
                   <DateTimeRange start={plan.start} end={plan.end} />
                 </StyledDateTimeRangeH3>
               </div>
-              <PartakeButton planId={planId} isPartaking={isPartaking} isDisabled={isPartakeButtonDisabled} />
+              <AttendButton planId={planId} isAttending={isAttending} isDisabled={isAttendButtonDisabled} />
             </StyledHeaderDiv>
             <StyledLocationH3>@ {plan.location}</StyledLocationH3>
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
@@ -182,22 +182,22 @@ const HostUser: FC<HostUserProps> = ({hostUser}) => (
   </StyledHostH4>
 );
 
-const PartakeButton: FC<PartakeButtonProps> = ({planId, isPartaking, isDisabled}) => {
-  const text = isPartaking ? ' Partaking' : 'Partake';
+const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, isDisabled}) => {
+  const text = isAttending ? 'Attending' : 'Attend';
 
   const onClick = () => {
-    if (isPartaking) {
-      deletePlanPartake(planId);
+    if (isAttending) {
+      deletePlanAttend(planId);
       return;
     }
 
-    postPlanPartake(planId);
+    postPlanAttend(planId);
   };
 
   return (
-    <StyledPartakeButton $isPartaking={isPartaking} onClick={onClick} disabled={isDisabled}>
+    <StyledAttendButton $isPartaking={isAttending} onClick={onClick} disabled={isDisabled}>
       {text}
-    </StyledPartakeButton>
+    </StyledAttendButton>
   );
 };
 

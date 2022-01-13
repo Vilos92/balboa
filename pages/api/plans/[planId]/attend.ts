@@ -8,7 +8,7 @@ import {NetResponse, netDelete, netPost, parseQueryNumber} from '../../../../uti
  * Constants.
  */
 
-const planPartakeUrl = '/api/plans/:planId/partake';
+const planAttendUrl = '/api/plans/:planId/attend';
 
 /*
  * Types.
@@ -76,14 +76,14 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse<Plan>) {
  * Client.
  */
 
-export function postPlanPartake(planId: number) {
-  const url = computePlanPartakeUrl(planId);
+export function postPlanAttend(planId: number) {
+  const url = computePlanAttendUrl(planId);
 
   return netPost<{}, Plan>(url);
 }
 
-export function deletePlanPartake(planId: number) {
-  const url = computePlanPartakeUrl(planId);
+export function deletePlanAttend(planId: number) {
+  const url = computePlanAttendUrl(planId);
 
   return netDelete<{}, Plan>(url);
 }
@@ -92,6 +92,6 @@ export function deletePlanPartake(planId: number) {
  * Helpers.
  */
 
-function computePlanPartakeUrl(planId: number) {
-  return planPartakeUrl.replace(':planId', planId.toString());
+function computePlanAttendUrl(planId: number) {
+  return planAttendUrl.replace(':planId', planId.toString());
 }
