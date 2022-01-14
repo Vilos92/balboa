@@ -99,8 +99,6 @@ interface StyledAttendButtonProps {
 const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
   ${tw`
     bg-purple-900
-    border-2
-    border-gray-200
     h-10
   `}
 
