@@ -25,7 +25,6 @@ const textAreaLabelTransitionCss = css`
 const StyledTextArea = styled.textarea`
   ${tw`
     relative
-    z-10
     w-full
     px-3
     py-2

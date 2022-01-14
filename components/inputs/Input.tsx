@@ -52,7 +52,6 @@ interface StyledInputProps {
 const StyledInput = styled.input<StyledInputProps>`
   ${tw`
     relative
-    z-10
     shadow
     appearance-none
     border
