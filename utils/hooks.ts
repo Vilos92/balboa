@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 
 import {Handler} from '../types/common';
 
@@ -53,7 +53,7 @@ export function useDebounce(handler: Handler, delay: number) {
 export function useDebounceValue(value: string, delay: number) {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
-  const updateValue = useMemo(() => () => setDebouncedValue(value), [value]);
+  const updateValue = () => setDebouncedValue(value);
   const debouncedUpdateValue = useDebounce(updateValue, delay);
 
   useEffect(() => {

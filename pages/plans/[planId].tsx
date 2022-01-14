@@ -225,17 +225,28 @@ const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, 
     if (isAttending !== previousIsAttending) setIsAttendingLocal(isAttending);
   }, [isAttending, previousIsAttending]);
 
-  const handler = useCallback(() => {
-    return isAttendingLocal ? () => deletePlanAttend(planId) : () => postPlanAttend(planId);
-  }, [isAttendingLocal, deletePlanAttend, postPlanAttend]);
+  const handler = async () => {
+    const planHandler = isAttendingLocal
+      ? async () => {
+          if (!isAttending) return;
+          await deletePlanAttend(planId);
+          refreshPlan();
+        }
+      : async () => {
+          if (isAttending) return;
+          await postPlanAttend(planId);
+          refreshPlan();
+        };
+
+    await planHandler();
+  };
 
   const debouncedHandler = useDebounce(handler, 500);
 
   const onClick = async () => {
     try {
       setIsAttendingLocal(!isAttendingLocal);
-      await debouncedHandler();
-      refreshPlan();
+      debouncedHandler();
     } catch (error) {
       setIsAttendingLocal(isAttending);
       throw error;
