@@ -1,8 +1,8 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
-import {FC, useCallback, useEffect, useState} from 'react';
+import {FC, useEffect, useState} from 'react';
 import {SWRConfig} from 'swr';
-import tw, {styled} from 'twin.macro';
+import tw, {TwStyle, styled} from 'twin.macro';
 
 import {Button} from '../../components/Button';
 import {ChromelessButton} from '../../components/ChromelessButton';
@@ -15,7 +15,7 @@ import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
 import {SessionStatusesEnum, useAuthSession} from '../../utils/auth';
-import {useDebounce, usePrevious} from '../../utils/hooks';
+import {usePrevious} from '../../utils/hooks';
 import {parseQueryNumber} from '../../utils/net';
 import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
@@ -37,10 +37,12 @@ interface PlanPageContainerProps extends PlanPageProps {
 
 interface HostUserProps {
   hostUser: User;
+  isHosting: boolean;
 }
 
 interface AttendButtonProps {
   planId: number;
+  isHosting: boolean;
   isAttending: boolean;
   isDisabled: boolean;
   refreshPlan: Handler;
@@ -94,7 +96,8 @@ const StyledHostH4 = tw.h4`
 `;
 
 interface StyledAttendButtonProps {
-  $isPartaking: boolean;
+  $isAttending: boolean;
+  $isHosting: boolean;
 }
 const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
   ${tw`
@@ -104,7 +107,7 @@ const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
 
   width: 110px;
 
-  ${({$isPartaking}) => $isPartaking && tw`bg-green-500`}
+  ${({$isHosting, $isAttending}) => computeStyledAttendButtonBackground($isHosting, $isAttending)}
 `;
 
 /*
@@ -151,8 +154,9 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
 
   const refreshPlan = () => mutate();
 
-  // A host should not be able to manually change their follow status.
-  const isAttendButtonDisabled = !authSession.isAuthenticated || authSession.user.id === hostUser.id;
+  const isHosting = authSession.isAuthenticated && authSession.user.id === hostUser.id;
+  const isAttendButtonDisabled = !authSession.isAuthenticated || isHosting;
+
   const isAttending = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
 
   return (
@@ -178,13 +182,14 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
               <AttendButton
                 planId={planId}
                 isAttending={isAttending}
+                isHosting={isHosting}
                 isDisabled={isAttendButtonDisabled}
                 refreshPlan={refreshPlan}
               />
             </StyledHeaderDiv>
             <StyledLocationH3>@ {plan.location}</StyledLocationH3>
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
-            <HostUser hostUser={hostUser} />
+            <HostUser hostUser={hostUser} isHosting={isHosting} />
           </StyledCard>
         </StyledContentDiv>
       </CenteredContent>
@@ -204,16 +209,25 @@ export default PlanPageContainer;
  * Components
  */
 
-const HostUser: FC<HostUserProps> = ({hostUser}) => (
+const HostUser: FC<HostUserProps> = ({hostUser, isHosting: isHost}) => (
   <StyledHostH4>
     Hosted by{' '}
     <HoverTooltip text={hostUser.email}>
-      <ChromelessButton>{hostUser.name}</ChromelessButton>
+      <ChromelessButton>
+        {hostUser.name}
+        {isHost ? ' (you)' : ''}
+      </ChromelessButton>
     </HoverTooltip>
   </StyledHostH4>
 );
 
-const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, isDisabled, refreshPlan}) => {
+const AttendButton: FC<AttendButtonProps> = ({
+  planId,
+  isAttending: isAttending,
+  isDisabled,
+  isHosting,
+  refreshPlan
+}) => {
   // Optimistic update state.
   const [isAttendingLocal, setIsAttendingLocal] = useState<boolean>(isAttending);
   const previousIsAttending = usePrevious(isAttending);
@@ -249,11 +263,31 @@ const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, 
 
   // Disable button until results of refresh match optimistic update.
   const isButtonDisabled = isDisabled || isAttendingLocal !== isAttending;
-  const text = isAttendingLocal ? 'Attending' : 'Attend';
 
   return (
-    <StyledAttendButton $isPartaking={isAttendingLocal} onClick={onClick} disabled={isButtonDisabled}>
-      {text}
+    <StyledAttendButton
+      $isAttending={isAttendingLocal}
+      $isHosting={isHosting}
+      onClick={onClick}
+      disabled={isButtonDisabled}
+    >
+      {computeAttendButtonText(isHosting, isAttendingLocal)}
     </StyledAttendButton>
   );
 };
+
+/*
+ * Helpers.
+ */
+
+function computeAttendButtonText(isHosting: boolean, isAttending: boolean): string {
+  if (isHosting) return 'Hosting';
+
+  return isAttending ? 'Attending' : 'Attend';
+}
+
+function computeStyledAttendButtonBackground(isHosting: boolean, isAttending: boolean): TwStyle | undefined {
+  if (isHosting) return tw`bg-blue-500`;
+  if (isAttending) return tw`bg-green-500`;
+  return undefined;
+}
