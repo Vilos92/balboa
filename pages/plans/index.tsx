@@ -1,3 +1,4 @@
+import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
 import {FC} from 'react';
 import tw from 'twin.macro';
@@ -5,7 +6,8 @@ import tw from 'twin.macro';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {VisualPlan} from '../../components/VisualPlan';
-import {Plan, findPlans} from '../../models/plan';
+import {Plan, findPlansForUser} from '../../models/plan';
+import {getSessionUser} from '../../utils/auth';
 
 /*
  * Types.
@@ -66,15 +68,18 @@ const StyledDaysUntilDiv = tw.div`
  * Server-side props.
  */
 
-export async function getServerSideProps() {
-  const plans = await findPlans();
+export const getServerSideProps: GetServerSideProps<PlansPageProps> = async ({req}) => {
+  const user = await getSessionUser(req);
+  if (!user) return {notFound: true};
+
+  const plans = await findPlansForUser(user.id);
 
   return {
     props: {
       plans
     }
   };
-}
+};
 
 /*
  * Page.

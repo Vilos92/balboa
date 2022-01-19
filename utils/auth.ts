@@ -1,3 +1,4 @@
+import {IncomingMessage} from 'http';
 import {NextApiRequest} from 'next';
 import {Session} from 'next-auth';
 import {BuiltInProviderType} from 'next-auth/providers';
@@ -50,7 +51,7 @@ export async function signInWithProvider(providerId: ProviderId) {
 /**
  * Used by the server to retrieve the current user's session.
  */
-export async function getSessionUser(req: NextApiRequest) {
+export async function getSessionUser(req: NextApiRequest | IncomingMessage) {
   const session = await getSession({req});
   if (!session || !session.user) return undefined;
 

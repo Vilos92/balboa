@@ -100,10 +100,17 @@ export async function findPlan(planId: number) {
 /**
  * Select plans which have not yet started or ended.
  */
-export async function findPlans() {
+export async function findPlansForUser(userId: number) {
   const prisma = makePrismaClient();
 
   const data = await prisma.plan.findMany({
+    where: {
+      users: {
+        some: {
+          userId
+        }
+      }
+    },
     include: planInclude
   });
 
