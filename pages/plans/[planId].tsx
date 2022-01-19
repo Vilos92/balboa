@@ -214,47 +214,46 @@ const HostUser: FC<HostUserProps> = ({hostUser}) => (
 );
 
 const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, isDisabled, refreshPlan}) => {
-  // For optimistic update.
+  // Optimistic update state.
   const [isAttendingLocal, setIsAttendingLocal] = useState<boolean>(isAttending);
-
   const previousIsAttending = usePrevious(isAttending);
 
+  // We should always update the local state if the true state has a change.
   useEffect(() => {
     if (isAttending !== previousIsAttending) setIsAttendingLocal(isAttending);
   }, [isAttending, previousIsAttending]);
 
+  const planHandler = isAttendingLocal
+    ? async () => {
+        await deletePlanAttend(planId);
+      }
+    : async () => {
+        await postPlanAttend(planId);
+      };
+
   const handler = async () => {
-    const planHandler = isAttendingLocal
-      ? async () => {
-          if (!isAttending) return;
-          await deletePlanAttend(planId);
-          refreshPlan();
-        }
-      : async () => {
-          if (isAttending) return;
-          await postPlanAttend(planId);
-          refreshPlan();
-        };
-
     await planHandler();
+    refreshPlan();
   };
-
-  const debouncedHandler = useDebounce(handler, 500);
 
   const onClick = async () => {
     try {
       setIsAttendingLocal(!isAttendingLocal);
-      debouncedHandler();
+      await handler();
     } catch (error) {
+      // If we fail, set the local state back to the true state.
       setIsAttendingLocal(isAttending);
       throw error;
     }
   };
 
+  // Disable button into results of refresh match optimistic update.
+  const isButtonDisabled = isDisabled || isAttendingLocal !== isAttending;
+
   const text = isAttendingLocal ? 'Attending' : 'Attend';
 
   return (
-    <StyledAttendButton $isPartaking={isAttendingLocal} onClick={onClick} disabled={isDisabled}>
+    <StyledAttendButton $isPartaking={isAttendingLocal} onClick={onClick} disabled={isButtonDisabled}>
       {text}
     </StyledAttendButton>
   );

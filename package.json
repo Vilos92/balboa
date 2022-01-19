@@ -2,7 +2,8 @@
   "name": "balboa",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "local": "dotenv -e .env.dev -- next dev",
+    "dev": "dotenv -e .env.dev -- next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
