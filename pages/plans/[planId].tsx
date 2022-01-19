@@ -150,7 +150,12 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
   const authSession = useAuthSession();
   const {data: plan, error, mutate} = useNetGetPlan(planId);
 
-  const shareUrl = `${host}${router.asPath}`;
+  const [shareUrl, setShareUrl] = useState('');
+
+  // location is not available in SSR, so set this in an effect.
+  useEffect(() => {
+    setShareUrl(`${location.protocol}//${host}${router.asPath}`);
+  });
 
   if (authSession.status === SessionStatusesEnum.LOADING) return null;
 
