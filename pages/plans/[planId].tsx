@@ -223,7 +223,7 @@ const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, 
     if (isAttending !== previousIsAttending) setIsAttendingLocal(isAttending);
   }, [isAttending, previousIsAttending]);
 
-  const planHandler = isAttendingLocal
+  const handlePlan = isAttendingLocal
     ? async () => {
         await deletePlanAttend(planId);
       }
@@ -231,15 +231,15 @@ const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, 
         await postPlanAttend(planId);
       };
 
-  const handler = async () => {
-    await planHandler();
+  const handleAndRefreshPlan = async () => {
+    await handlePlan();
     refreshPlan();
   };
 
   const onClick = async () => {
     try {
       setIsAttendingLocal(!isAttendingLocal);
-      await handler();
+      await handleAndRefreshPlan();
     } catch (error) {
       // If we fail, set the local state back to the true state.
       setIsAttendingLocal(isAttending);
@@ -247,9 +247,8 @@ const AttendButton: FC<AttendButtonProps> = ({planId, isAttending: isAttending, 
     }
   };
 
-  // Disable button into results of refresh match optimistic update.
+  // Disable button until results of refresh match optimistic update.
   const isButtonDisabled = isDisabled || isAttendingLocal !== isAttending;
-
   const text = isAttendingLocal ? 'Attending' : 'Attend';
 
   return (
