@@ -5,12 +5,11 @@ import {SWRConfig} from 'swr';
 import tw, {TwStyle, styled} from 'twin.macro';
 
 import {Button} from '../../components/Button';
-import {ChromelessButton} from '../../components/ChromelessButton';
 import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {VisualPlan} from '../../components/VisualPlan';
+import {VisualUser} from '../../components/VisualUser';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
-import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
@@ -35,17 +34,17 @@ interface PlanPageContainerProps extends PlanPageProps {
   };
 }
 
-interface HostUserProps {
-  hostUser: User;
-  isHosting: boolean;
-}
-
 interface AttendButtonProps {
   planId: number;
   isHosting: boolean;
   isAttending: boolean;
   isDisabled: boolean;
   refreshPlan: Handler;
+}
+
+interface AttendeesProps {
+  users: readonly User[];
+  hostUserId: number;
 }
 
 /*
@@ -90,11 +89,6 @@ const StyledDescriptionP = tw.p`
   mb-1.5
 `;
 
-const StyledHostH4 = tw.h4`
-  italic
-  text-sm
-`;
-
 interface StyledAttendButtonProps {
   $isAttending: boolean;
   $isHosting: boolean;
@@ -108,6 +102,17 @@ const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
   width: 110px;
 
   ${({$isHosting, $isAttending}) => computeStyledAttendButtonBackground($isHosting, $isAttending)}
+`;
+
+const StyledAttendeesDiv = tw.div`
+  flex
+  flex-col
+`;
+
+const StyledAttendeeWrapperDiv = tw.div`
+  flex
+  flex-row
+  gap-1
 `;
 
 /*
@@ -189,7 +194,11 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
             </StyledHeaderDiv>
             <StyledLocationH3>@ {plan.location}</StyledLocationH3>
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
-            <HostUser hostUser={hostUser} isHosting={isHosting} />
+          </StyledCard>
+
+          <StyledCard>
+            <StyledTitleH2>Attended by</StyledTitleH2>
+            <Attendees users={users} hostUserId={hostUser.id} />
           </StyledCard>
         </StyledContentDiv>
       </CenteredContent>
@@ -208,18 +217,6 @@ export default PlanPageContainer;
 /**
  * Components
  */
-
-const HostUser: FC<HostUserProps> = ({hostUser, isHosting: isHost}) => (
-  <StyledHostH4>
-    Hosted by{' '}
-    <HoverTooltip text={hostUser.email}>
-      <ChromelessButton>
-        {hostUser.name}
-        {isHost ? ' (you)' : ''}
-      </ChromelessButton>
-    </HoverTooltip>
-  </StyledHostH4>
-);
 
 const AttendButton: FC<AttendButtonProps> = ({
   planId,
@@ -275,6 +272,17 @@ const AttendButton: FC<AttendButtonProps> = ({
     </StyledAttendButton>
   );
 };
+
+const Attendees: FC<AttendeesProps> = ({users, hostUserId}) => (
+  <StyledAttendeesDiv>
+    {users.map(user => (
+      <StyledAttendeeWrapperDiv>
+        <VisualUser user={user} />
+        {user.id === hostUserId ? ' (host)' : ''}
+      </StyledAttendeeWrapperDiv>
+    ))}
+  </StyledAttendeesDiv>
+);
 
 /*
  * Helpers.

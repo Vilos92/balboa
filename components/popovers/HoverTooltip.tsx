@@ -7,19 +7,24 @@ import {Tooltip, TooltipProps} from './Tooltip';
  * Types.
  */
 
-type HoverTooltipProps = Omit<TooltipProps, 'isVisible' | 'onMouseEnter' | 'onMouseLeave'>;
+type HoverTooltipProps = {visibilityDuration?: number} & Omit<
+  TooltipProps,
+  'isVisible' | 'onMouseEnter' | 'onMouseLeave'
+>;
 
 /*
  * Constants.
  */
 
-const tooltipVisibilityDuration = 500; // 500 ms.
+const defaultTooltipVisibilityDuration = 500; // 500 ms.
 
 /*
  * Component.
  */
 
-export const HoverTooltip: FC<HoverTooltipProps> = props => {
+export const HoverTooltip: FC<HoverTooltipProps> = ({visibilityDuration, ...props}) => {
+  const tooltipVisibilityDuration = visibilityDuration ?? defaultTooltipVisibilityDuration;
+
   const [isTooltipVisible, setIsTooltipVisible] = useState<boolean>(false);
   const [setTooltipTimeout, clearTooltipTimeout] = useTimeout();
 
