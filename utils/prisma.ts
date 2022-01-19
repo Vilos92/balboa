@@ -1,16 +1,23 @@
 import {PrismaClient} from '@prisma/client';
 
 /*
+ * Global constant.
+ */
+
+declare global {
+  var prisma: PrismaClient | undefined;
+}
+
+/*
  * Client.
  */
 
 function makePrismaClientFactory() {
-  let prisma: PrismaClient | undefined;
-
   return (): PrismaClient => {
-    if (prisma) return prisma;
+    const prisma = global.prisma ?? new PrismaClient();
 
-    prisma = new PrismaClient();
+    if (process.env.NODE_ENV !== 'production') global.prisma = prisma;
+
     return prisma;
   };
 }
