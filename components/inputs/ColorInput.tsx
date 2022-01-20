@@ -62,21 +62,24 @@ const StyledColorSwatchesContainerDiv = tw.div`
   pb-1
 `;
 
-interface StyledColorSwatchDivProps {
+interface StyledColorSwatchButtonProps {
   $backgroundColor: string;
 }
-const StyledColorSwatchDiv = styled.div.attrs<StyledColorSwatchDivProps>(({$backgroundColor}) => ({
+const StyledColorSwatchButton = styled.button.attrs<StyledColorSwatchButtonProps>(({$backgroundColor}) => ({
   style: {backgroundColor: $backgroundColor}
-}))<StyledColorSwatchDivProps>`
+}))<StyledColorSwatchButtonProps>`
   ${tw`
     w-6
     h-6
     m-1
-    border-none
     p-0
     rounded
     cursor-pointer
     outline-none
+    focus:border
+    active:border
+    focus:border-black
+    active:border-black
   `}
 `;
 
@@ -125,7 +128,8 @@ const ColorPicker: FC<ColorPickerProps> = ({label, color, onChange, onClose}) =>
 const ColorSwatches: FC<ColorSwatchesProps> = ({onClickSwatch}) => (
   <>
     {swatchColors.map(swatchColor => (
-      <StyledColorSwatchDiv
+      <StyledColorSwatchButton
+        type='button'
         key={swatchColor}
         $backgroundColor={swatchColor}
         onClick={() => onClickSwatch(swatchColor)}
