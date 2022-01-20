@@ -76,7 +76,7 @@ const CopyButton: FC<CopyButtonProps> = ({copyValue}) => {
 
   return (
     <StyledShareTooltipDiv>
-      <Tooltip text='Copied!' isVisible={isCopyTooltipVisible} placement='right'>
+      <Tooltip text='Copied!' isVisible={isCopyTooltipVisible}>
         <StyledShareButton onClick={onCopyValue}>Copy</StyledShareButton>
       </Tooltip>
     </StyledShareTooltipDiv>
