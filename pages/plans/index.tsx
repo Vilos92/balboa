@@ -8,6 +8,7 @@ import {Body, Card, CenteredContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {VisualPlan} from '../../components/VisualPlan';
+import {VisualUser} from '../../components/VisualUser';
 import {Plan, findPlansForUser} from '../../models/plan';
 import {getSessionUser} from '../../utils/auth';
 
@@ -57,6 +58,12 @@ const StyledTitleH2 = tw.h2`
 const StyledDateTimeRangeH3 = tw.h3`
   font-bold
   text-sm
+  mb-1
+`;
+
+const StyledLocationH3 = tw.h3`
+  text-sm
+  mb-1.5
 `;
 
 const StyledRightDiv = tw.div`
@@ -104,11 +111,11 @@ const PlansPage: FC<PlansPageProps> = ({plans}) => {
 
   const currentPlans = plans
     .filter(plan => new Date(plan.end) >= now)
-    .sort((planA, planB) => computeDateDifference(planB.start, planA.start));
+    .sort((planA, planB) => calculateDateDifference(planB.start, planA.start));
 
   const pastPlans = plans
     .filter(plan => new Date(plan.end) < now)
-    .sort((planA, planB) => computeDateDifference(planA.start, planB.start));
+    .sort((planA, planB) => calculateDateDifference(planA.start, planB.start));
 
   return (
     <Body>
@@ -152,12 +159,10 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
           <VisualPlan plan={plan} />
         </StyledTitleH2>
         <StyledDateTimeRangeH3>
-          <DateTimeRange start={plan.start} end={plan.end} />
+          📅 <DateTimeRange start={plan.start} end={plan.end} />
         </StyledDateTimeRangeH3>
-        <div>{plan.location}</div>
-        <div>
-          {hostUser.name} - {hostUser.email}
-        </div>
+        <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
+        <VisualUser user={hostUser} />
       </div>
       <StyledRightDiv>{renderDaysAwayOrSince(plan.start)}</StyledRightDiv>
     </StyledCard>
@@ -167,6 +172,13 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
 /*
  * Helpers.
  */
+
+function calculateDateDifference(dateStringA: string, dateStringB: string) {
+  const dateA = new Date(dateStringA);
+  const dateB = new Date(dateStringB);
+
+  return dateB.getTime() - dateA.getTime();
+}
 
 function renderDaysAwayOrSince(dateString: string) {
   const date = new Date(dateString);
@@ -185,15 +197,4 @@ function renderDaysAwayOrSince(dateString: string) {
       </StyledDaysUntilDiv>
     </>
   );
-}
-
-/*
- * Helpers.
- */
-
-function computeDateDifference(dateStringA: string, dateStringB: string) {
-  const dateA = new Date(dateStringA);
-  const dateB = new Date(dateStringB);
-
-  return dateB.getTime() - dateA.getTime();
 }
