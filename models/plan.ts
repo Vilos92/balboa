@@ -93,6 +93,8 @@ export async function findPlan(planId: number) {
     include: planInclude
   });
 
+  if (!data) return null;
+
   const dbPlan = decodeDbPlan(data);
   return encodePlan(dbPlan);
 }
