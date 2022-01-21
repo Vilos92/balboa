@@ -113,6 +113,7 @@ const Menu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
 
   const menuRef = useClickWindow<HTMLDivElement>(closeMenu);
 
+  const onClickCreate = () => router.push('/');
   const onClickPlans = () => router.push('/plans/');
   const onClickLogout = () => signOut();
 
@@ -120,7 +121,14 @@ const Menu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
     ? renderAuthenticatedRoutes(onClickPlans, onClickLogout)
     : renderUnauthenticatedRoutes(openLoginModal);
 
-  return <StyledMenuCard ref={menuRef}>{menuItems}</StyledMenuCard>;
+  return (
+    <StyledMenuCard ref={menuRef}>
+      <StyledMenuItemDiv>
+        <ChromelessButton onClick={onClickCreate}>Create</ChromelessButton>
+      </StyledMenuItemDiv>
+      {menuItems}
+    </StyledMenuCard>
+  );
 };
 
 /*
