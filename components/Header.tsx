@@ -14,8 +14,9 @@ const StyledFalseHeaderDiv = tw.div`
 `;
 
 export const StyledHeaderDiv = tw.div`
+  z-10
   bg-purple-900
-  opacity-90
+  opacity-95
   w-full
   h-16
   flex
