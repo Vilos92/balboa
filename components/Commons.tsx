@@ -25,6 +25,7 @@ const StyledBodyDiv = tw.div`
 const StyledCenteredContentDiv = tw.div`
   flex
   flex-col
+  gap-6
   items-center
   sm:justify-between
   min-h-screen
@@ -53,6 +54,14 @@ const StyledLogoH1 = tw.h1`
   text-center
 `;
 
+const StyledTopBarDiv = tw.div`
+  bg-purple-900
+  w-full
+  h-16
+  flex
+  justify-center
+`;
+
 /*
  * Components.
  */
@@ -68,6 +77,14 @@ export const Logo: FC = () => {
       <Image src={grueSvg} />
       <StyledLogoH1>Grueplan</StyledLogoH1>
     </StyledLogoDiv>
+  );
+};
+
+export const TopBar: FC = () => {
+  return (
+    <StyledTopBarDiv>
+      <Logo />
+    </StyledTopBarDiv>
   );
 };
 

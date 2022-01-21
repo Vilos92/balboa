@@ -3,8 +3,8 @@ import {useRouter} from 'next/router';
 import {useState} from 'react';
 import tw from 'twin.macro';
 
-import {AccountFooter, FooterSpacer} from '../components/AccountFooter';
-import {Body, Card, CenteredContent, Logo} from '../components/Commons';
+import {AccountFooter, FalseAccountFooter} from '../components/AccountFooter';
+import {Body, Card, CenteredContent, TopBar} from '../components/Commons';
 import {PlanForm} from '../components/PlanForm';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 import {PostPlan, postPlan} from './api/plans';
@@ -73,20 +73,17 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   return (
     <Body>
       <CenteredContent>
-        <Logo />
+        <TopBar />
         <StyledCard>
           <StyledLandingH2>Enter your event details here</StyledLandingH2>
           <PlanForm createPlan={createPlan} />
         </StyledCard>
-        {isAuthenticated ? (
-          <FooterSpacer />
-        ) : (
-          <AccountFooter
-            providers={providers}
-            isLoginModalVisible={isLoginModalVisible}
-            setIsLoginModalVisible={setIsLoginModalVisible}
-          />
-        )}
+        <AccountFooter
+          isAuthenticated={isAuthenticated}
+          providers={providers}
+          isLoginModalVisible={isLoginModalVisible}
+          setIsLoginModalVisible={setIsLoginModalVisible}
+        />
       </CenteredContent>
     </Body>
   );

@@ -12,6 +12,7 @@ import {Modal} from './Modal';
  */
 
 interface AccountFooterProps {
+  isAuthenticated: boolean;
   providers: Providers;
   isLoginModalVisible: boolean;
   setIsLoginModalVisible: (isVisible: boolean) => void;
@@ -30,12 +31,11 @@ const StyledFalseFooterDiv = tw.div`
   invisible 
   h-16
   w-full
-  mt-6
 `;
 
 const StyledFooterSpacerDiv = tw.div`
-  invisible 
-  h-6
+  invisible
+  h-0
   w-full
 `;
 
@@ -106,10 +106,13 @@ const StyledCardH1 = tw.h1`
  */
 
 export const AccountFooter: FC<AccountFooterProps> = ({
+  isAuthenticated,
   providers,
   isLoginModalVisible,
   setIsLoginModalVisible
 }) => {
+  if (isAuthenticated) return <StyledFooterSpacerDiv />;
+
   const openLoginModal = () => {
     setIsLoginModalVisible(true);
   };
@@ -117,7 +120,7 @@ export const AccountFooter: FC<AccountFooterProps> = ({
 
   return (
     <>
-      <FalseAccountFooter />
+      <StyledFalseFooterDiv />
       <StyledFooterDiv>
         <StyledContentDiv>
           <StyledFooterBlurbDiv>
@@ -146,15 +149,3 @@ const LoginModal: FC<LoginModalProps> = ({providers, closeModal}) => (
     </StyledCard>
   </Modal>
 );
-
-/**
- * Invisible footer which is rendered alongside the fixed real footer, to
- * ensure its dimensions are still represented in the DOM.
- */
-export const FalseAccountFooter: FC = () => <StyledFalseFooterDiv />;
-
-/**
- * Invisible footer to render when not authenticated, to provide a
- * margin at the bottom of the page.
- */
-export const FooterSpacer: FC = () => <StyledFooterSpacerDiv />;
