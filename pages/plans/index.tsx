@@ -3,7 +3,7 @@ import {useRouter} from 'next/router';
 import {FC} from 'react';
 import tw from 'twin.macro';
 
-import {FalseFooter} from '../../components/AccountFooter';
+import {FooterSpacer} from '../../components/AccountFooter';
 import {Body, Card, CenteredContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
@@ -32,6 +32,12 @@ const StyledContentDiv = tw.div`
   flex-col
   items-center
   w-full
+`;
+
+const StyledSectionH1 = tw.h1`
+  text-white
+  text-2xl
+  mt-2
 `;
 
 const StyledCard = tw(Card)`
@@ -93,19 +99,38 @@ export const getServerSideProps: GetServerSideProps<PlansPageProps> = async ({re
  * Page.
  */
 
-const PlansPage: FC<PlansPageProps> = ({plans}) => (
-  <Body>
-    <CenteredContent>
-      <Header />
-      <StyledContentDiv>
-        {plans.map(plan => (
-          <PlanCard key={plan.id} plan={plan} />
-        ))}
-      </StyledContentDiv>
-      <FalseFooter />
-    </CenteredContent>
-  </Body>
-);
+const PlansPage: FC<PlansPageProps> = ({plans}) => {
+  const now = new Date();
+
+  const currentPlans = plans
+    .filter(plan => new Date(plan.end) >= now)
+    .sort((planA, planB) => computeDateDifference(planB.start, planA.start));
+
+  const pastPlans = plans
+    .filter(plan => new Date(plan.end) < now)
+    .sort((planA, planB) => computeDateDifference(planA.start, planB.start));
+
+  return (
+    <Body>
+      <CenteredContent>
+        <Header />
+
+        <StyledSectionH1>Upcoming</StyledSectionH1>
+        <StyledContentDiv>
+          {currentPlans.map(plan => (
+            <PlanCard key={plan.id} plan={plan} />
+          ))}
+
+          <StyledSectionH1>Past</StyledSectionH1>
+          {pastPlans.map(plan => (
+            <PlanCard key={plan.id} plan={plan} />
+          ))}
+        </StyledContentDiv>
+        <FooterSpacer />
+      </CenteredContent>
+    </Body>
+  );
+};
 
 export default PlansPage;
 
@@ -117,12 +142,6 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
   const router = useRouter();
 
   const onClickCard = () => router.push(`plans/${plan.id}`);
-
-  const startDt = new Date(plan.start);
-  const differenceMs = startDt.getTime() - new Date().getTime();
-  const daysUntil = Math.ceil(differenceMs / 1000 / 3600 / 24);
-
-  const daysUntilString = daysUntil === 1 ? 'day' : 'days';
 
   const {hostUser} = plan;
 
@@ -140,10 +159,41 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
           {hostUser.name} - {hostUser.email}
         </div>
       </div>
-      <StyledRightDiv>
-        {daysUntil}
-        <StyledDaysUntilDiv>{daysUntilString} away</StyledDaysUntilDiv>
-      </StyledRightDiv>
+      <StyledRightDiv>{renderDaysAwayOrSince(plan.start)}</StyledRightDiv>
     </StyledCard>
   );
 };
+
+/*
+ * Helpers.
+ */
+
+function renderDaysAwayOrSince(dateString: string) {
+  const date = new Date(dateString);
+  const differenceMs = date.getTime() - new Date().getTime();
+  const daysUntil = Math.ceil(differenceMs / 1000 / 3600 / 24);
+
+  const daysUntilString = daysUntil >= 0 ? daysUntil.toString() : (-daysUntil).toString();
+  const daysString = daysUntil === 1 ? 'day' : 'days';
+  const awayOrSince = daysUntil >= 0 ? 'away' : 'since';
+
+  return (
+    <>
+      {daysUntilString}
+      <StyledDaysUntilDiv>
+        {daysString} {awayOrSince}
+      </StyledDaysUntilDiv>
+    </>
+  );
+}
+
+/*
+ * Helpers.
+ */
+
+function computeDateDifference(dateStringA: string, dateStringB: string) {
+  const dateA = new Date(dateStringA);
+  const dateB = new Date(dateStringB);
+
+  return dateB.getTime() - dateA.getTime();
+}
