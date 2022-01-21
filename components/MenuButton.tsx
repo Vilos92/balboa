@@ -1,13 +1,27 @@
 import {signOut} from 'next-auth/react';
 import {useRouter} from 'next/router';
-import React, {FC, useState} from 'react';
+import React, {FC, forwardRef, useState} from 'react';
 import tw from 'twin.macro';
 
-import {useAuthSession} from '../utils/auth';
+import {Handler} from '../types/common';
+import {Providers, useAuthSession} from '../utils/auth';
 import {useClickWindow} from '../utils/hooks';
 import {ChromelessButton} from './ChromelessButton';
-import {Card} from './Commons';
+import {LoginModal} from './LoginModal';
 import {Popover} from './popovers/Popover';
+
+/*
+ * Props
+ */
+
+interface MenuButtonProps {
+  providers?: Providers;
+}
+
+interface MenuProps {
+  openLoginModal?: Handler;
+  closeMenu: Handler;
+}
 
 /*
  * Styles.
@@ -34,71 +48,103 @@ const StyledHamburgerPattyDiv = tw.div`
   bg-white
 `;
 
-const StyledMenuCard = tw(Card)`
+const StyledMenuCard = tw.div`
   flex
   flex-col
   gap-2
+  p-3
+  bg-white
   text-black
+  shadow-md
+  rounded-2xl
 `;
 
 const StyledMenuItemDiv = tw.div`
+  w-full
   text-center
   border-b-2
+  rounded-t
   border-gray-300
   hover:border-purple-400
-  pl-1
-  pr-1
+  hover:bg-gray-100
+  p-1
 `;
 
 /*
  * Components.
  */
 
-export const MenuButton: FC = () => {
+export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
 
   const onClick = () => setIsMenuVisible(!isMenuVisible);
   const closeMenu = () => setIsMenuVisible(false);
 
-  const menuRef = useClickWindow<HTMLDivElement>(closeMenu);
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+
+  const openLoginModal = providers
+    ? () => {
+        setIsLoginModalVisible(true);
+      }
+    : undefined;
+  const closeLoginModal = () => setIsLoginModalVisible(false);
 
   return (
-    <StyledMenuDiv onClick={onClick} ref={menuRef}>
-      <Popover isVisible={isMenuVisible} popoverChildren={<Menu />}>
+    <StyledMenuDiv onClick={onClick}>
+      <Popover
+        isVisible={isMenuVisible}
+        popoverChildren={isMenuVisible && <Menu openLoginModal={openLoginModal} closeMenu={closeMenu} />}
+      >
         <StyledHamburgerDiv>
           <StyledHamburgerPattyDiv />
           <StyledHamburgerPattyDiv />
           <StyledHamburgerPattyDiv />
         </StyledHamburgerDiv>
       </Popover>
+      {isLoginModalVisible && providers && <LoginModal providers={providers} closeModal={closeLoginModal} />}
     </StyledMenuDiv>
   );
 };
 
-const Menu = () => {
+const Menu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
   const router = useRouter();
   const {isAuthenticated} = useAuthSession();
+
+  const menuRef = useClickWindow<HTMLDivElement>(closeMenu);
 
   const onClickPlans = () => router.push('plans/');
   const onClickLogout = () => signOut();
 
-  return (
-    <StyledMenuCard>
-      {!isAuthenticated && (
-        <StyledMenuItemDiv>
-          <ChromelessButton>Login</ChromelessButton>
-        </StyledMenuItemDiv>
-      )}
-      {isAuthenticated && (
-        <>
-          <StyledMenuItemDiv>
-            <ChromelessButton onClick={onClickPlans}>Plans</ChromelessButton>
-          </StyledMenuItemDiv>
-          <StyledMenuItemDiv>
-            <ChromelessButton onClick={onClickLogout}>Logout</ChromelessButton>
-          </StyledMenuItemDiv>
-        </>
-      )}
-    </StyledMenuCard>
-  );
+  const menuItems = isAuthenticated
+    ? renderAuthenticatedRoutes(onClickPlans, onClickLogout)
+    : renderUnauthenticatedRoutes(openLoginModal);
+
+  return <StyledMenuCard ref={menuRef}>{menuItems}</StyledMenuCard>;
 };
+
+/*
+ * Helpers.
+ */
+
+function renderUnauthenticatedRoutes(openLoginModal?: Handler) {
+  if (!openLoginModal) return;
+
+  return (
+    <StyledMenuItemDiv>
+      <ChromelessButton onClick={openLoginModal}>Login</ChromelessButton>
+    </StyledMenuItemDiv>
+  );
+}
+
+function renderAuthenticatedRoutes(onClickPlans: Handler, onClickLogout: Handler) {
+  return (
+    <>
+      <StyledMenuItemDiv>
+        <ChromelessButton onClick={onClickPlans}>Plans</ChromelessButton>
+      </StyledMenuItemDiv>
+      <StyledMenuItemDiv>
+        <ChromelessButton onClick={onClickLogout}>Logout</ChromelessButton>
+      </StyledMenuItemDiv>
+    </>
+  );
+}

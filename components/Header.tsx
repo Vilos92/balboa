@@ -1,8 +1,17 @@
 import React, {FC} from 'react';
 import tw from 'twin.macro';
 
+import {Providers} from '../utils/auth';
 import {Logo} from './Logo';
 import {MenuButton} from './MenuButton';
+
+/*
+ * Props.
+ */
+
+interface HeaderProps {
+  providers?: Providers;
+}
 
 /*
  * Styles.
@@ -15,7 +24,7 @@ const StyledFalseHeaderDiv = tw.div`
 `;
 
 const StyledHeaderDiv = tw.div`
-  z-10
+  z-20
   bg-purple-900
   opacity-95
   w-full
@@ -34,14 +43,14 @@ const StyledHeaderSpacerDiv = tw.div`
  * Components.
  */
 
-export const Header: FC = () => {
+export const Header: FC<HeaderProps> = ({providers}) => {
   return (
     <>
       <StyledFalseHeaderDiv />
       <StyledHeaderDiv>
         <StyledHeaderSpacerDiv />
         <Logo />
-        <MenuButton />
+        <MenuButton providers={providers} />
       </StyledHeaderDiv>
     </>
   );

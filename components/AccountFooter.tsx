@@ -1,26 +1,17 @@
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
-import {Handler} from '../types/common';
-import {Providers, signInWithProvider} from '../utils/auth';
+import {Providers} from '../utils/auth';
 import {Button} from './Button';
-import {Card} from './Commons';
-import {Modal} from './Modal';
+import {LoginModal} from './LoginModal';
 
 /*
- * Types
+ * Types.
  */
 
 interface AccountFooterProps {
   isAuthenticated: boolean;
   providers: Providers;
-  isLoginModalVisible: boolean;
-  setIsLoginModalVisible: (isVisible: boolean) => void;
-}
-
-interface LoginModalProps {
-  providers: Providers;
-  closeModal: Handler;
 }
 
 /*
@@ -93,27 +84,14 @@ const StyledFooterButton = tw(Button)`
   h-10
 `;
 
-const StyledCard = tw(Card)`
-  sm:max-w-md
-  p-20
-`;
-
-const StyledCardH1 = tw.h1`
-  text-2xl
-  mb-8
-`;
-
 /*
  * Components.
  */
 
-export const AccountFooter: FC<AccountFooterProps> = ({
-  isAuthenticated,
-  providers,
-  isLoginModalVisible,
-  setIsLoginModalVisible
-}) => {
+export const AccountFooter: FC<AccountFooterProps> = ({isAuthenticated, providers}) => {
   if (isAuthenticated) return <StyledFooterSpacerDiv />;
+
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
   const openLoginModal = () => {
     setIsLoginModalVisible(true);
@@ -138,16 +116,3 @@ export const AccountFooter: FC<AccountFooterProps> = ({
     </>
   );
 };
-
-const LoginModal: FC<LoginModalProps> = ({providers, closeModal}) => (
-  <Modal closeModal={closeModal}>
-    <StyledCard>
-      <StyledCardH1>Create your account</StyledCardH1>
-      {Object.values(providers).map(provider => (
-        <div key={provider.name}>
-          <button onClick={() => signInWithProvider(provider.id)}>Sign in with {provider.name}</button>
-        </div>
-      ))}
-    </StyledCard>
-  </Modal>
-);

@@ -54,18 +54,10 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
 
   const {status, isAuthenticated} = useAuthSession();
 
-  // For the modal located in the AccountFooter.
-  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
-
   if (status === SessionStatusesEnum.LOADING) return null;
 
   const createPlan = async (planDraft: PostPlan) => {
     if (!planDraft) return;
-
-    if (!isAuthenticated) {
-      setIsLoginModalVisible(true);
-      return;
-    }
 
     const plan = await postPlan(planDraft);
     router.push(`plans/${plan.id}`);
@@ -74,17 +66,12 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   return (
     <Body>
       <CenteredContent>
-        <Header />
+        <Header providers={providers} />
         <StyledCard>
           <StyledLandingH2>Enter your event details here</StyledLandingH2>
           <PlanForm createPlan={createPlan} />
         </StyledCard>
-        <AccountFooter
-          isAuthenticated={isAuthenticated}
-          providers={providers}
-          isLoginModalVisible={isLoginModalVisible}
-          setIsLoginModalVisible={setIsLoginModalVisible}
-        />
+        <AccountFooter isAuthenticated={isAuthenticated} providers={providers} />
       </CenteredContent>
     </Body>
   );
