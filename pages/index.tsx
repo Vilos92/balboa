@@ -3,8 +3,9 @@ import {useRouter} from 'next/router';
 import {useState} from 'react';
 import tw from 'twin.macro';
 
-import {AccountFooter, FalseAccountFooter} from '../components/AccountFooter';
-import {Body, Card, CenteredContent, TopBar} from '../components/Commons';
+import {AccountFooter} from '../components/AccountFooter';
+import {Body, Card, CenteredContent} from '../components/Commons';
+import {Header} from '../components/Header';
 import {PlanForm} from '../components/PlanForm';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 import {PostPlan, postPlan} from './api/plans';
@@ -73,7 +74,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   return (
     <Body>
       <CenteredContent>
-        <TopBar />
+        <Header />
         <StyledCard>
           <StyledLandingH2>Enter your event details here</StyledLandingH2>
           <PlanForm createPlan={createPlan} />

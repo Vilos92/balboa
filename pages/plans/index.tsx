@@ -3,8 +3,9 @@ import {useRouter} from 'next/router';
 import {FC} from 'react';
 import tw from 'twin.macro';
 
-import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
+import {Body, Card, CenteredContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
+import {Logo} from '../../components/Logo';
 import {VisualPlan} from '../../components/VisualPlan';
 import {Plan, findPlansForUser} from '../../models/plan';
 import {getSessionUser} from '../../utils/auth';

@@ -42,6 +42,7 @@ const StyledFooterSpacerDiv = tw.div`
 const StyledFooterDiv = styled.div`
   ${tw`
     bg-purple-900
+    opacity-90
     text-gray-100
     flex
     justify-center

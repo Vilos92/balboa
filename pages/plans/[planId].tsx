@@ -5,8 +5,9 @@ import {SWRConfig} from 'swr';
 import tw, {TwStyle, styled} from 'twin.macro';
 
 import {Button} from '../../components/Button';
-import {Body, Card, CenteredContent, Logo} from '../../components/Commons';
+import {Body, Card, CenteredContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
+import {Logo} from '../../components/Logo';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';

@@ -1,9 +1,5 @@
-import Image from 'next/image';
-import {useRouter} from 'next/router';
 import {FC, MouseEvent, PropsWithChildren, forwardRef} from 'react';
 import tw from 'twin.macro';
-
-import grueSvg from '../public/partyhat-grue_blocky.svg';
 
 /*
  * Types.
@@ -39,54 +35,11 @@ const StyledCardDiv = tw.div`
   sm:rounded-2xl
 `;
 
-const StyledLogoDiv = tw.button`
-  flex
-  flex-row
-  items-center
-  mt-6
-  mb-6
-`;
-
-const StyledLogoH1 = tw.h1`
-  inline-block
-  text-white
-  text-3xl
-  text-center
-`;
-
-const StyledTopBarDiv = tw.div`
-  bg-purple-900
-  w-full
-  h-16
-  flex
-  justify-center
-`;
-
 /*
  * Components.
  */
 
 export const Body: FC = ({children}) => <StyledBodyDiv>{children}</StyledBodyDiv>;
-
-export const Logo: FC = () => {
-  const router = useRouter();
-  const onClick = () => router.push(`/`);
-
-  return (
-    <StyledLogoDiv onClick={onClick}>
-      <Image src={grueSvg} />
-      <StyledLogoH1>Grueplan</StyledLogoH1>
-    </StyledLogoDiv>
-  );
-};
-
-export const TopBar: FC = () => {
-  return (
-    <StyledTopBarDiv>
-      <Logo />
-    </StyledTopBarDiv>
-  );
-};
 
 export const CenteredContent: FC = ({children}) => {
   return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;
