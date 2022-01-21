@@ -1,7 +1,8 @@
-import {FC} from 'react';
+import React, {FC} from 'react';
 import tw from 'twin.macro';
 
 import {Logo} from './Logo';
+import {MenuButton} from './MenuButton';
 
 /*
  * Styles.
@@ -29,21 +30,6 @@ const StyledHeaderSpacerDiv = tw.div`
   w-11
 `;
 
-const StyledHamburgerDiv = tw.div`
-  flex
-  flex-col
-  justify-center
-  gap-2
-  mr-2
-  cursor-pointer
-`;
-
-const StyledHamburgerPattyDiv = tw.div`
-  w-9
-  h-0.5
-  bg-white
-`;
-
 /*
  * Components.
  */
@@ -55,16 +41,8 @@ export const Header: FC = () => {
       <StyledHeaderDiv>
         <StyledHeaderSpacerDiv />
         <Logo />
-        <Menu />
+        <MenuButton />
       </StyledHeaderDiv>
     </>
   );
 };
-
-const Menu: FC = () => (
-  <StyledHamburgerDiv>
-    <StyledHamburgerPattyDiv />
-    <StyledHamburgerPattyDiv />
-    <StyledHamburgerPattyDiv />
-  </StyledHamburgerDiv>
-);

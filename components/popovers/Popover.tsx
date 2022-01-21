@@ -48,7 +48,7 @@ export const Popover: FC<PopoverProps> = props => {
   const {children, popoverChildren, isVisible, placement, onClick, onMouseEnter, onMouseLeave, className} =
     props;
 
-  const containerRef = useRef<HTMLSpanElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const popperRef = useRef<HTMLDivElement>(null);
 
   const {styles, attributes} = usePopper(containerRef.current, popperRef.current, {

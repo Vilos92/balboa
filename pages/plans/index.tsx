@@ -5,7 +5,7 @@ import tw from 'twin.macro';
 
 import {Body, Card, CenteredContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
-import {Logo} from '../../components/Logo';
+import {Header} from '../../components/Header';
 import {VisualPlan} from '../../components/VisualPlan';
 import {Plan, findPlansForUser} from '../../models/plan';
 import {getSessionUser} from '../../utils/auth';
@@ -71,7 +71,13 @@ const StyledDaysUntilDiv = tw.div`
 
 export const getServerSideProps: GetServerSideProps<PlansPageProps> = async ({req}) => {
   const user = await getSessionUser(req);
-  if (!user) return {notFound: true};
+  if (!user)
+    return {
+      redirect: {
+        permanent: false,
+        destination: '/'
+      }
+    };
 
   const plans = await findPlansForUser(user.id);
 
@@ -90,7 +96,7 @@ const PlansPage: FC<PlansPageProps> = ({plans}) => (
   <Body>
     <CenteredContent>
       <StyledContentDiv>
-        <Logo />
+        <Header />
         {plans.map(plan => (
           <PlanCard key={plan.id} plan={plan} />
         ))}
