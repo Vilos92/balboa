@@ -39,6 +39,7 @@ const StyledSectionH1 = tw.h1`
   text-white
   text-2xl
   mt-2
+  mb-1
 `;
 
 const StyledCard = tw(Card)`
@@ -122,8 +123,8 @@ const PlansPage: FC<PlansPageProps> = ({plans}) => {
       <CenteredContent>
         <Header />
 
-        <StyledSectionH1>Upcoming</StyledSectionH1>
         <StyledContentDiv>
+          <StyledSectionH1>Upcoming</StyledSectionH1>
           {currentPlans.map(plan => (
             <PlanCard key={plan.id} plan={plan} />
           ))}

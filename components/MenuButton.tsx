@@ -92,6 +92,7 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   return (
     <StyledMenuDiv onClick={onClick}>
       <Popover
+        placement='bottom-end'
         isVisible={isMenuVisible}
         popoverChildren={isMenuVisible && <Menu openLoginModal={openLoginModal} closeMenu={closeMenu} />}
       >
