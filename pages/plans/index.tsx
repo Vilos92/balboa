@@ -3,6 +3,7 @@ import {useRouter} from 'next/router';
 import {FC} from 'react';
 import tw from 'twin.macro';
 
+import {FalseFooter} from '../../components/AccountFooter';
 import {Body, Card, CenteredContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
@@ -95,12 +96,13 @@ export const getServerSideProps: GetServerSideProps<PlansPageProps> = async ({re
 const PlansPage: FC<PlansPageProps> = ({plans}) => (
   <Body>
     <CenteredContent>
+      <Header />
       <StyledContentDiv>
-        <Header />
         {plans.map(plan => (
           <PlanCard key={plan.id} plan={plan} />
         ))}
       </StyledContentDiv>
+      <FalseFooter />
     </CenteredContent>
   </Body>
 );

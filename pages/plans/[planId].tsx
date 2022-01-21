@@ -1,13 +1,14 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
-import {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {SWRConfig} from 'swr';
 import tw, {TwStyle, styled} from 'twin.macro';
 
+import {FalseFooter} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
 import {Body, Card, CenteredContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
-import {Logo} from '../../components/Logo';
+import {Header} from '../../components/Header';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
@@ -87,7 +88,9 @@ const StyledLocationH3 = tw.h3`
 `;
 
 const StyledDescriptionP = tw.p`
-  mb-1.5
+  border-t-2
+  pt-2
+  mt-2
 `;
 
 interface StyledAttendButtonProps {
@@ -173,9 +176,8 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
   return (
     <Body>
       <CenteredContent>
+        <Header />
         <StyledContentDiv>
-          <Logo />
-
           <StyledCard>
             <CopyInputWithButton label='Share' value={shareUrl} />
           </StyledCard>
@@ -187,7 +189,7 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
                   <VisualPlan plan={plan} />
                 </StyledTitleH2>
                 <StyledDateTimeRangeH3>
-                  <DateTimeRange start={plan.start} end={plan.end} />
+                  📅 <DateTimeRange start={plan.start} end={plan.end} />
                 </StyledDateTimeRangeH3>
               </div>
               <AttendButton
@@ -198,7 +200,8 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
                 refreshPlan={refreshPlan}
               />
             </StyledHeaderDiv>
-            <StyledLocationH3>@ {plan.location}</StyledLocationH3>
+            <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
+
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
           </StyledCard>
 
@@ -207,6 +210,7 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
             <Attendees users={users} hostUserId={hostUser.id} />
           </StyledCard>
         </StyledContentDiv>
+        <FalseFooter />
       </CenteredContent>
     </Body>
   );
@@ -282,7 +286,7 @@ const AttendButton: FC<AttendButtonProps> = ({
 const Attendees: FC<AttendeesProps> = ({users, hostUserId}) => (
   <StyledAttendeesDiv>
     {users.map(user => (
-      <StyledAttendeeWrapperDiv>
+      <StyledAttendeeWrapperDiv key={user.id}>
         <VisualUser user={user} />
         {user.id === hostUserId ? ' (host)' : ''}
       </StyledAttendeeWrapperDiv>

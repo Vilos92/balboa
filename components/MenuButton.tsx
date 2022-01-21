@@ -112,7 +112,7 @@ const Menu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
 
   const menuRef = useClickWindow<HTMLDivElement>(closeMenu);
 
-  const onClickPlans = () => router.push('plans/');
+  const onClickPlans = () => router.push('/plans/');
   const onClickLogout = () => signOut();
 
   const menuItems = isAuthenticated

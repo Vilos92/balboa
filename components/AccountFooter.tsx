@@ -116,3 +116,5 @@ export const AccountFooter: FC<AccountFooterProps> = ({isAuthenticated, provider
     </>
   );
 };
+
+export const FalseFooter: FC = () => <StyledFalseFooterDiv />;
