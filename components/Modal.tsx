@@ -27,8 +27,7 @@ const StyledOverlayDiv = tw.div`
   items-center
   justify-center
   bg-white
-  sm:bg-transparent
-  sm:backdrop-blur-md
+  sm:bg-black
 `;
 
 /*
