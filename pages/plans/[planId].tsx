@@ -77,7 +77,7 @@ const StyledAttendButtonDiv = tw.div`
 
 const StyledPlanTitleH2 = tw.h2`
   col-start-1
-  col-span-1
+  col-span-2
   text-xl
 `;
 
