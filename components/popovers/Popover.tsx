@@ -72,7 +72,7 @@ export const Popover: FC<PopoverProps> = props => {
         onMouseLeave={onMouseLeave}
         className={className}
       >
-        {popoverChildren}
+        {isVisible && popoverChildren}
       </StyledPopoverDiv>
     </>
   );

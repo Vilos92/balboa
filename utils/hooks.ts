@@ -77,7 +77,10 @@ export function useClickWindow<T extends HTMLElement>(onClick: () => void) {
   );
 
   useEffect(() => {
-    window.addEventListener('click', onClickWindow);
+    // Allow DOM to update before attaching window handler.
+    setTimeout(() => {
+      window.addEventListener('click', onClickWindow);
+    });
 
     return () => {
       window.removeEventListener('click', onClickWindow);

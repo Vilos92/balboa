@@ -94,7 +94,7 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
       <Popover
         placement='bottom-end'
         isVisible={isMenuVisible}
-        popoverChildren={isMenuVisible && <Menu openLoginModal={openLoginModal} closeMenu={closeMenu} />}
+        popoverChildren={<Menu openLoginModal={openLoginModal} closeMenu={closeMenu} />}
       >
         <StyledHamburgerDiv>
           <StyledHamburgerPattyDiv />
