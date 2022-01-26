@@ -66,21 +66,15 @@ export function useDebounceValue(value: string, delay: number) {
 export function useClickWindow<T extends HTMLElement>(onClick: () => void) {
   const elementRef = useRef<T>(null);
 
-  const onClickWindow = useCallback(
-    (event: globalThis.MouseEvent) => {
-      // We must cast the target to Node as per official rec:
-      // https://github.com/Microsoft/TypeScript/issues/15394#issuecomment-297495746
-      if (elementRef.current?.contains(event.target as Node)) return;
-      onClick();
-    },
-    [onClick]
-  );
+  const onClickWindow = (event: globalThis.MouseEvent) => {
+    // We must cast the target to Node as per official rec:
+    // https://github.com/Microsoft/TypeScript/issues/15394#issuecomment-297495746
+    if (elementRef.current?.contains(event.target as Node)) return;
+    onClick();
+  };
 
   useEffect(() => {
-    // Allow DOM to update before attaching window handler.
-    setTimeout(() => {
-      window.addEventListener('click', onClickWindow);
-    });
+    window.addEventListener('click', onClickWindow);
 
     return () => {
       window.removeEventListener('click', onClickWindow);
