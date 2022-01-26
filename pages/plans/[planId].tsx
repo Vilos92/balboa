@@ -71,8 +71,29 @@ const StyledPlanDetailsDiv = tw.div`
 `;
 
 const StyledAttendButtonDiv = tw.div`
-  col-start-3
-  col-span-1
+  col-start-1
+  col-span-3
+  sm:col-start-3
+  sm:col-span-1
+`;
+
+interface StyledAttendButtonProps {
+  $isAttending: boolean;
+  $isHosting: boolean;
+}
+const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
+  ${tw`
+    bg-purple-900
+    h-10
+    w-full
+    mt-1
+    mb-1
+    sm:w-max
+    sm:m-0
+    sm:float-right
+  `}
+
+  ${({$isHosting, $isAttending}) => computeStyledAttendButtonBackground($isHosting, $isAttending)}
 `;
 
 const StyledPlanTitleH2 = tw.h2`
@@ -111,21 +132,6 @@ const StyledAttendedDiv = tw.div`
 const StyledAttendedTitleH2 = tw.h2`
   text-xl
   mb-1
-`;
-
-interface StyledAttendButtonProps {
-  $isAttending: boolean;
-  $isHosting: boolean;
-}
-const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
-  ${tw`
-    bg-purple-900
-    h-10
-  `}
-
-  width: 110px;
-
-  ${({$isHosting, $isAttending}) => computeStyledAttendButtonBackground($isHosting, $isAttending)}
 `;
 
 const StyledAttendeesDiv = tw.div`
