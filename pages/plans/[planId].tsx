@@ -61,36 +61,52 @@ const StyledCard = tw(Card)`
   gap-4
 `;
 
-const StyledSectionDiv = tw.div`
+const StyledContentDiv = tw.div`
+  border-t-2
+  pt-2
+  grid
+  grid-cols-3
+`;
+
+const StyledAttendedDiv = tw.div`
   border-t-2
   pt-2
 `;
 
-const StyledHeaderDiv = tw.div`
-  flex
-  flex-row
-  justify-between
+const StyledAttendButtonDiv = tw.div`
+  col-start-3
+  col-span-1
 `;
 
-const StyledTitleH2 = tw.h2`
+const StyledPlanTitleH2 = tw.h2`
+  col-start-1
+  col-span-1
   text-xl
-  mb-1
 `;
 
 const StyledDateTimeRangeH3 = tw.h3`
-  font-bold
+  col-start-1
+  col-span-3
   text-sm
-  mb-1
+  mt-1
 `;
 
 const StyledLocationH3 = tw.h3`
+  col-start-1
+  col-span-3
   text-sm
-  mb-1.5
+  mt-1
 `;
 
 const StyledDescriptionP = tw.p`
-  pt-2
-  mt-2
+  col-start-1
+  col-span-3
+  mt-3
+`;
+
+const StyledAttendedTitleH2 = tw.h2`
+  text-xl
+  mb-1
 `;
 
 interface StyledAttendButtonProps {
@@ -182,16 +198,12 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
             <CopyInputWithButton label='Share' value={shareUrl} />
           </div>
 
-          <StyledSectionDiv>
-            <StyledHeaderDiv>
-              <div>
-                <StyledTitleH2>
-                  <VisualPlan plan={plan} />
-                </StyledTitleH2>
-                <StyledDateTimeRangeH3>
-                  📅 <DateTimeRange start={plan.start} end={plan.end} />
-                </StyledDateTimeRangeH3>
-              </div>
+          <StyledContentDiv>
+            <StyledPlanTitleH2>
+              <VisualPlan plan={plan} />
+            </StyledPlanTitleH2>
+
+            <StyledAttendButtonDiv>
               <AttendButton
                 planId={planId}
                 isAttending={isAttending}
@@ -199,16 +211,20 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
                 isDisabled={isAttendButtonDisabled}
                 refreshPlan={refreshPlan}
               />
-            </StyledHeaderDiv>
+            </StyledAttendButtonDiv>
+
+            <StyledDateTimeRangeH3>
+              📅 <DateTimeRange start={plan.start} end={plan.end} />
+            </StyledDateTimeRangeH3>
             <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
 
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
-          </StyledSectionDiv>
+          </StyledContentDiv>
 
-          <StyledSectionDiv>
-            <StyledTitleH2>Attended by</StyledTitleH2>
+          <StyledAttendedDiv>
+            <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
             <Attendees users={users} hostUserId={hostUser.id} />
-          </StyledSectionDiv>
+          </StyledAttendedDiv>
         </StyledCard>
         <FooterSpacer />
       </CenteredContent>
