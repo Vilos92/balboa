@@ -1,6 +1,6 @@
 import {signOut} from 'next-auth/react';
 import {useRouter} from 'next/router';
-import React, {FC, forwardRef, useCallback, useState} from 'react';
+import React, {FC, useState} from 'react';
 import tw from 'twin.macro';
 
 import {Handler} from '../types/common';
@@ -76,14 +76,16 @@ const StyledMenuItemDiv = tw.div`
 
 export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
   const openMenu = () => {
     // Handle onClick after closeMenu in the scenario where closeMenu is already mapped to the window.
     setTimeout(() => setIsMenuVisible(true));
   };
-  const closeMenu = () => setIsMenuVisible(false);
-
-  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+  const closeMenu = () => {
+    if (isLoginModalVisible) return;
+    setIsMenuVisible(false);
+  };
 
   const openLoginModal = () => {
     // Handle onClick after closeLoginModal in the scenario where closeMenu is already mapped to the window.

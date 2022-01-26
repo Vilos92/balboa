@@ -15,7 +15,7 @@ import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
-import {SessionStatusesEnum, useAuthSession} from '../../utils/auth';
+import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../../utils/auth';
 import {usePrevious} from '../../utils/hooks';
 import {parseQueryNumber} from '../../utils/net';
 import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
@@ -26,6 +26,7 @@ import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
  */
 
 interface PlanPageProps {
+  providers: Providers;
   host: string;
   planId: number;
 }
@@ -150,6 +151,8 @@ const StyledAttendeeWrapperDiv = tw.div`
  */
 
 export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req, query}) => {
+  const providers = await getAuthProviders();
+
   const host = req.headers.host ?? '';
 
   const {planId: planIdParam} = query;
@@ -162,6 +165,7 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req
 
   return {
     props: {
+      providers,
       host,
       planId,
       fallback: {
@@ -175,7 +179,7 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req
  * Page.
  */
 
-const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
+const PlanPage: FC<PlanPageProps> = ({providers, host, planId}) => {
   const router = useRouter();
   const authSession = useAuthSession();
   const {data: plan, error, mutate} = useNetGetPlan(planId);
@@ -202,7 +206,7 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
   return (
     <Body>
       <CenteredContent>
-        <Header />
+        <Header providers={providers} />
         <StyledCard>
           <div>
             <CopyInputWithButton label='Share' value={shareUrl} />
