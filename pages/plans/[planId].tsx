@@ -53,16 +53,17 @@ interface AttendeesProps {
  * Styles.
  */
 
-const StyledContentDiv = tw.div`
-  flex
-  flex-col
-  items-center
-  w-full
-`;
-
 const StyledCard = tw(Card)`
   sm:w-7/12
   mb-5
+  flex
+  flex-col
+  gap-4
+`;
+
+const StyledSectionDiv = tw.div`
+  border-t-2
+  pt-2
 `;
 
 const StyledHeaderDiv = tw.div`
@@ -88,7 +89,6 @@ const StyledLocationH3 = tw.h3`
 `;
 
 const StyledDescriptionP = tw.p`
-  border-t-2
   pt-2
   mt-2
 `;
@@ -177,12 +177,12 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
     <Body>
       <CenteredContent>
         <Header />
-        <StyledContentDiv>
-          <StyledCard>
+        <StyledCard>
+          <div>
             <CopyInputWithButton label='Share' value={shareUrl} />
-          </StyledCard>
+          </div>
 
-          <StyledCard>
+          <StyledSectionDiv>
             <StyledHeaderDiv>
               <div>
                 <StyledTitleH2>
@@ -203,13 +203,13 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
             <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
 
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
-          </StyledCard>
+          </StyledSectionDiv>
 
-          <StyledCard>
+          <StyledSectionDiv>
             <StyledTitleH2>Attended by</StyledTitleH2>
             <Attendees users={users} hostUserId={hostUser.id} />
-          </StyledCard>
-        </StyledContentDiv>
+          </StyledSectionDiv>
+        </StyledCard>
         <FooterSpacer />
       </CenteredContent>
     </Body>
