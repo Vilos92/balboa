@@ -1,6 +1,5 @@
-import {GetServerSideProps, NextPage} from 'next';
+import {GetServerSideProps as GetStaticProps, NextPage} from 'next';
 import {useRouter} from 'next/router';
-import {useState} from 'react';
 import tw from 'twin.macro';
 
 import {AccountFooter} from '../components/AccountFooter';
@@ -37,7 +36,7 @@ const StyledLandingH2 = tw.h2`
  * Server-side props.
  */
 
-export const getServerSideProps: GetServerSideProps<LandingPageProps> = async () => {
+export const getStaticProps: GetStaticProps<LandingPageProps> = async () => {
   const providers = await getAuthProviders();
 
   return {
