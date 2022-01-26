@@ -76,23 +76,24 @@ const StyledTextAreaInput = styled(TextAreaInput)`
  */
 
 export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
+  const [errors, setErrors] = useState<PlanFormErrors>();
+  const clearError = (inputName: PlanFormInputsEnum) => setErrors({...errors, [inputName]: undefined});
+
   const [title, setTitle] = useState('');
+  const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
+    clearError(PlanFormInputsEnum.TITLE);
+    setTitle(event.target.value);
+  };
+
   const [color, setColor] = useState('#ffffff');
+  const onChangeColor = (newColor: string) => setColor(newColor);
   useEffect(() => {
     const randColor = swatchColors[Math.floor(Math.random() * swatchColors.length)];
     setColor(randColor);
   }, []);
+
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState('14:00');
-  const [endDate, setEndDate] = useState('');
-  const [endTime, setEndTime] = useState('17:00');
-  const [description, setDescription] = useState('');
-  const [location, setLocation] = useState('');
-  const [hasLocationFocused, setHasLocationFocused] = useState(false);
-
-  const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => setTitle(event.target.value);
-  const onChangeColor = (newColor: string) => setColor(newColor);
-
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
     const start = computeDateTime(event.target.value, startTime);
     const end = computeDateTime(endDate, endTime);
@@ -114,6 +115,8 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
     }
   };
 
+  const [endDate, setEndDate] = useState('');
+  const [endTime, setEndTime] = useState('17:00');
   const onChangeEndDate = (event: ChangeEvent<HTMLInputElement>) => {
     const start = computeDateTime(startDate, startTime);
     const end = computeDateTime(event.target.value, endTime);
@@ -135,10 +138,19 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
     }
   };
 
-  const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => setLocation(event.target.value);
+  const [location, setLocation] = useState('');
+  const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => {
+    clearError(PlanFormInputsEnum.LOCATION);
+    setLocation(event.target.value);
+  };
+  const [hasLocationFocused, setHasLocationFocused] = useState(false);
   const onFocusLocation = () => setHasLocationFocused(true);
 
-  const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => setDescription(event.target.value);
+  const [description, setDescription] = useState('');
+  const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
+    clearError(PlanFormInputsEnum.DESCRIPTION);
+    setDescription(event.target.value);
+  };
 
   // Initial date should only be set on the client (no SSR).
   useEffect(() => {
@@ -149,8 +161,6 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
 
   // Cannot select dates before today.
   const minimumDate = computeInputValueFromDate(new Date());
-
-  const [errors, setErrors] = useState<PlanFormErrors>();
 
   const onSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -177,8 +187,6 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
 
     createPlan(planDraft);
   };
-
-  console.log('errors', errors);
 
   return (
     <form onSubmit={onSubmit}>

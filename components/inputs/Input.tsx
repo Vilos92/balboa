@@ -1,6 +1,8 @@
 import {FC} from 'react';
 import tw, {css, styled} from 'twin.macro';
 
+import {Tooltip} from '../popovers/Tooltip';
+
 /*
  * Types.
  */
@@ -84,19 +86,21 @@ export const Input: FC<InputProps> = props => {
 
   return (
     <StyledInputGroupDiv>
-      <StyledInput
-        id={label}
-        type={type}
-        placeholder=' '
-        value={value}
-        min={min}
-        onChange={onChange}
-        onFocus={onFocus}
-        disabled={disabled}
-        $hasError={hasError}
-        className={className}
-      />
-      <StyledLabel htmlFor={label}>{label}</StyledLabel>
+      <Tooltip isVisible={hasError} text={error ?? ''}>
+        <StyledInput
+          id={label}
+          type={type}
+          placeholder=' '
+          value={value}
+          min={min}
+          onChange={onChange}
+          onFocus={onFocus}
+          disabled={disabled}
+          $hasError={hasError}
+          className={className}
+        />
+        <StyledLabel htmlFor={label}>{label}</StyledLabel>
+      </Tooltip>
     </StyledInputGroupDiv>
   );
 };

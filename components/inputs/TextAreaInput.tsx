@@ -1,6 +1,7 @@
 import {FC} from 'react';
 import tw, {css, styled} from 'twin.macro';
 
+import {Tooltip} from '../popovers/Tooltip';
 import {StyledInputGroupDiv, StyledLabel, inputLabelTransitionCss} from './Input';
 
 /*
@@ -49,16 +50,22 @@ const StyledTextArea = styled.textarea<StyledTextAreaProps>`
  * Component.
  */
 
-export const TextAreaInput: FC<TextAreaInputProps> = ({label, value, error, onChange, className}) => (
-  <StyledInputGroupDiv>
-    <StyledTextArea
-      id={label}
-      placeholder=' '
-      value={value}
-      $hasError={Boolean(error)}
-      onChange={onChange}
-      className={className}
-    />
-    <StyledLabel htmlFor={label}>{label}</StyledLabel>
-  </StyledInputGroupDiv>
-);
+export const TextAreaInput: FC<TextAreaInputProps> = ({label, value, error, onChange, className}) => {
+  const hasError = Boolean(error);
+
+  return (
+    <StyledInputGroupDiv>
+      <Tooltip isVisible={hasError} text={error ?? ''}>
+        <StyledTextArea
+          id={label}
+          placeholder=' '
+          value={value}
+          $hasError={hasError}
+          onChange={onChange}
+          className={className}
+        />
+        <StyledLabel htmlFor={label}>{label}</StyledLabel>
+      </Tooltip>
+    </StyledInputGroupDiv>
+  );
+};
