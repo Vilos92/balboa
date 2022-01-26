@@ -306,7 +306,12 @@ function computeAttendButtonText(isHosting: boolean, isAttending: boolean): stri
 }
 
 function computeStyledAttendButtonBackground(isHosting: boolean, isAttending: boolean): TwStyle | undefined {
-  if (isHosting) return tw`bg-blue-500`;
+  if (isHosting)
+    return tw`
+    bg-gray-700
+    text-white
+    cursor-not-allowed
+  `;
   if (isAttending) return tw`bg-green-500`;
   return undefined;
 }
