@@ -24,13 +24,20 @@ export const StyledInputGroupDiv = tw.div`
   w-full
 `;
 
-export const StyledLabel = tw.label`
-  absolute
-  left-0
-  z-0
-  mt-2
-  ml-3
-  text-gray-400
+interface StyledLabelProps {
+  $hasError?: boolean;
+}
+export const StyledLabel = styled.label<StyledLabelProps>`
+  ${tw`
+    absolute
+    left-0
+    z-0
+    mt-2
+    ml-3
+    text-gray-400
+  `}
+
+  ${({$hasError}) => $hasError && tw`text-red-500`}
 `;
 
 export const inputLabelTransitionCss = css`
@@ -99,7 +106,9 @@ export const Input: FC<InputProps> = props => {
           $hasError={hasError}
           className={className}
         />
-        <StyledLabel htmlFor={label}>{label}</StyledLabel>
+        <StyledLabel htmlFor={label} $hasError={hasError}>
+          {label}
+        </StyledLabel>
       </Tooltip>
     </StyledInputGroupDiv>
   );
