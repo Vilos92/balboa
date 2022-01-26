@@ -79,13 +79,16 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
 
   const openMenu = () => {
     // Handle onClick after closeMenu in the scenario where closeMenu is already mapped to the window.
-    setTimeout(() => setIsMenuVisible(!isMenuVisible));
+    setTimeout(() => setIsMenuVisible(true));
   };
   const closeMenu = () => setIsMenuVisible(false);
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
-  const openLoginModal = () => setIsLoginModalVisible(true);
+  const openLoginModal = () => {
+    // Handle onClick after closeLoginModal in the scenario where closeMenu is already mapped to the window.
+    setTimeout(() => setIsLoginModalVisible(true));
+  };
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
   return (
