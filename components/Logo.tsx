@@ -24,7 +24,7 @@ const StyledLogoDiv = tw.button`
 `;
 
 const StyledLogoSvgDiv = tw.div`
-  mr-2
+  mr-0.5
 `;
 
 const StyledLogoH1 = tw.h1`
@@ -47,7 +47,7 @@ export const Logo: FC = () => {
       <StyledLogoSvgDiv>
         <LogoSvg fill='#ffffff' height='32px' />
       </StyledLogoSvgDiv>
-      <StyledLogoH1>Grueplan</StyledLogoH1>
+      <StyledLogoH1>rueplan</StyledLogoH1>
     </StyledLogoDiv>
   );
 };
