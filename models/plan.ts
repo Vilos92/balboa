@@ -53,12 +53,12 @@ const planInclude = {
 // Schema for plan drafts. This is used to validate data which will be sent to the DB.
 export const planDraftSchema = z.object({
   hostUserId: z.number(),
-  title: z.string().min(3).max(30),
+  title: z.string().min(3).max(60),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
   start: z.string().min(13).max(30),
   end: z.string().min(13).max(30),
-  location: z.string().min(3).max(30),
-  description: z.string().max(300)
+  location: z.string().min(3).max(60),
+  description: z.string().max(1000)
 });
 
 // Schema for user on plan drafts.
