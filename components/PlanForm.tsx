@@ -1,6 +1,7 @@
 import dynamic from 'next/dynamic';
-import {ChangeEvent, FC, useEffect, useState} from 'react';
+import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
+import {ZodIssue} from 'zod';
 
 import {Button} from '../components/Button';
 import {LocationVisualizerMock} from '../components/LocationVisualizer';
@@ -30,6 +31,16 @@ interface ColorInputWithTooltipProps {
   value: string;
   onChange: (newColor: string) => void;
 }
+
+enum PlanFormInputsEnum {
+  TITLE = 'title',
+  LOCATION = 'location',
+  DESCRIPTION = 'description'
+}
+
+type PlanFormErrors = {
+  [key in PlanFormInputsEnum]?: string;
+};
 
 /*
  * Styles.
@@ -139,7 +150,11 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
   // Cannot select dates before today.
   const minimumDate = computeInputValueFromDate(new Date());
 
-  const onClick = async () => {
+  const [errors, setErrors] = useState<PlanFormErrors>();
+
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
     const startDt = computeDateTime(startDate, startTime);
     const endDt = computeDateTime(endDate, endTime);
 
@@ -155,18 +170,26 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
     // Handle client-side validation errors in this form.
     const error = validatePostPlan(planDraft);
     if (error) {
-      console.error(error);
+      const planFormErrors = computePlanFormErrors(error);
+      setErrors(planFormErrors);
       return;
     }
 
     createPlan(planDraft);
   };
 
+  console.log('errors', errors);
+
   return (
-    <form>
+    <form onSubmit={onSubmit}>
       <StyledColorTitleGroupDiv>
         <ColorInputWithTooltip value={color} onChange={onChangeColor} />
-        <TextInput label='Title' value={title} onChange={onChangeTitle} />
+        <TextInput
+          label='Title'
+          value={title}
+          error={errors?.[PlanFormInputsEnum.TITLE]}
+          onChange={onChangeTitle}
+        />
       </StyledColorTitleGroupDiv>
 
       <StyledGroupDiv>
@@ -181,7 +204,13 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
       </StyledGroupDiv>
 
       <StyledGroupDiv>
-        <TextInput label='Location' value={location} onChange={onChangeLocation} onFocus={onFocusLocation} />
+        <TextInput
+          label='Location'
+          value={location}
+          error={errors?.[PlanFormInputsEnum.LOCATION]}
+          onChange={onChangeLocation}
+          onFocus={onFocusLocation}
+        />
         {hasLocationFocused || location.length > 0 ? (
           <LocationVisualizer location={location} />
         ) : (
@@ -190,10 +219,15 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
       </StyledGroupDiv>
 
       <StyledGroupDiv>
-        <StyledTextAreaInput label='Description' value={description} onChange={onChangeDescription} />
+        <StyledTextAreaInput
+          label='Description'
+          value={description}
+          error={errors?.[PlanFormInputsEnum.DESCRIPTION]}
+          onChange={onChangeDescription}
+        />
       </StyledGroupDiv>
 
-      <Button backgroundColor={color} onClick={onClick}>
+      <Button type='submit' backgroundColor={color}>
         Go time!
       </Button>
     </form>
@@ -259,4 +293,25 @@ function computeDateTime(date: string, time: string): Date {
   dt.setHours(hours, minutes, 0, 0);
 
   return dt;
+}
+
+/**
+ * Translates an array of zod errors into a PlanFormErrors object which can more easily
+ * be used to pass the input components their error states.
+ */
+function computePlanFormErrors(zodErrors: readonly ZodIssue[]): PlanFormErrors {
+  return zodErrors.reduce<PlanFormErrors>((currentPlanFormErrors, zodError) => {
+    const {path, message} = zodError;
+    const inputName = path[0];
+
+    // The plan form does not currently have any number inputs.
+    if (!inputName || typeof inputName !== 'string') return currentPlanFormErrors;
+
+    if (!Object.values(PlanFormInputsEnum).includes(inputName as PlanFormInputsEnum)) {
+      console.error(zodError);
+      return currentPlanFormErrors;
+    }
+
+    return {...currentPlanFormErrors, [inputName]: message};
+  }, {});
 }

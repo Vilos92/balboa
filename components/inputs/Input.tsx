@@ -6,7 +6,7 @@ import tw, {css, styled} from 'twin.macro';
  */
 
 export interface InputProps extends React.HTMLProps<HTMLInputElement> {
-  label: string;
+  error?: string;
 }
 // When defining custom input components, the type should be held static.
 export type StaticTypeInputProps = Omit<InputProps, 'type'>;
@@ -47,7 +47,7 @@ export const inputLabelTransitionCss = css`
 `;
 
 interface StyledInputProps {
-  $isDisabled?: boolean;
+  $hasError?: boolean;
 }
 const StyledInput = styled.input<StyledInputProps>`
   ${tw`
@@ -67,7 +67,8 @@ const StyledInput = styled.input<StyledInputProps>`
     focus-within:border-purple-500
   `}
 
-  ${({$isDisabled}) => $isDisabled && tw`bg-gray-300`}
+  ${({disabled}) => disabled && tw`bg-gray-300`}
+  ${({$hasError}) => $hasError && tw`border-red-500`}
 
   ${inputLabelTransitionCss}
 `;
@@ -77,13 +78,9 @@ const StyledInput = styled.input<StyledInputProps>`
  */
 
 export const Input: FC<InputProps> = props => {
-  const {type, label, value, min, onChange, onFocus, disabled, className} = props;
+  const {type, label, value, min, error, onChange, onFocus, disabled, className} = props;
 
-  // We manually handle the disabling of the Input component.
-  // An onChange must always be provided, so we assign a noop when disabled.
-  const onChangeHandler = disabled ? () => () => undefined : onChange;
-  // We pass a separate prop to change the color without actually disabling the input.
-  const $isDisabled = disabled;
+  const hasError = Boolean(error);
 
   return (
     <StyledInputGroupDiv>
@@ -93,9 +90,10 @@ export const Input: FC<InputProps> = props => {
         placeholder=' '
         value={value}
         min={min}
-        onChange={onChangeHandler}
+        onChange={onChange}
         onFocus={onFocus}
-        $isDisabled={$isDisabled}
+        disabled={disabled}
+        $hasError={hasError}
         className={className}
       />
       <StyledLabel htmlFor={label}>{label}</StyledLabel>

@@ -6,6 +6,7 @@ import tw, {styled} from 'twin.macro';
  */
 
 interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
+  type?: 'button' | 'submit';
   backgroundColor?: string;
 }
 
@@ -40,9 +41,9 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
  * Component.
  */
 
-export const Button: FC<ButtonProps> = ({children, backgroundColor, disabled, onClick, className}) => (
+export const Button: FC<ButtonProps> = ({children, type, backgroundColor, disabled, onClick, className}) => (
   <StyledColoredButton
-    type='button'
+    type={type}
     $backgroundColor={backgroundColor}
     disabled={disabled}
     onClick={onClick}

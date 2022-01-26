@@ -108,7 +108,9 @@ export const AccountFooter: FC<AccountFooterProps> = ({isAuthenticated, provider
             <StyledFooterH3>People on Grueplan stay coordinated</StyledFooterH3>
           </StyledFooterBlurbDiv>
           <StyledFooterButtonDiv>
-            <StyledFooterButton onClick={openLoginModal}>Log in</StyledFooterButton>
+            <StyledFooterButton type='button' onClick={openLoginModal}>
+              Log in
+            </StyledFooterButton>
           </StyledFooterButtonDiv>
         </StyledContentDiv>
       </StyledFooterDiv>

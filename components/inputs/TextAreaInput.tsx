@@ -9,6 +9,7 @@ import {StyledInputGroupDiv, StyledLabel, inputLabelTransitionCss} from './Input
 
 interface TextAreaInputProps extends React.HTMLProps<HTMLTextAreaElement> {
   label: string;
+  error?: string;
 }
 
 /*
@@ -22,7 +23,10 @@ const textAreaLabelTransitionCss = css`
   }
 `;
 
-const StyledTextArea = styled.textarea`
+interface StyledTextAreaProps {
+  $hasError?: boolean;
+}
+const StyledTextArea = styled.textarea<StyledTextAreaProps>`
   ${tw`
     relative
     w-full
@@ -35,6 +39,8 @@ const StyledTextArea = styled.textarea`
     focus:outline-none
   `}
 
+  ${({$hasError}) => $hasError && tw`border-red-500`}
+
   ${inputLabelTransitionCss}
   ${textAreaLabelTransitionCss}
 `;
@@ -43,9 +49,16 @@ const StyledTextArea = styled.textarea`
  * Component.
  */
 
-export const TextAreaInput: FC<TextAreaInputProps> = ({label, value, onChange, className}) => (
+export const TextAreaInput: FC<TextAreaInputProps> = ({label, value, error, onChange, className}) => (
   <StyledInputGroupDiv>
-    <StyledTextArea id={label} placeholder=' ' value={value} onChange={onChange} className={className} />
+    <StyledTextArea
+      id={label}
+      placeholder=' '
+      value={value}
+      $hasError={Boolean(error)}
+      onChange={onChange}
+      className={className}
+    />
     <StyledLabel htmlFor={label}>{label}</StyledLabel>
   </StyledInputGroupDiv>
 );

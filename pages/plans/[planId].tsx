@@ -273,6 +273,7 @@ const AttendButton: FC<AttendButtonProps> = ({
 
   return (
     <StyledAttendButton
+      type='button'
       $isAttending={isAttendingLocal}
       $isHosting={isHosting}
       onClick={onClick}

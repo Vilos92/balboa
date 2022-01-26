@@ -12,11 +12,20 @@ type TextInputProps = StaticTypeInputProps;
  * Component.
  */
 
-export const TextInput: FC<TextInputProps> = ({label, value, onChange, onFocus, disabled, className}) => (
+export const TextInput: FC<TextInputProps> = ({
+  label,
+  value,
+  error,
+  onChange,
+  onFocus,
+  disabled,
+  className
+}) => (
   <Input
     type='text'
     label={label}
     value={value}
+    error={error}
     onChange={onChange}
     onFocus={onFocus}
     disabled={disabled}

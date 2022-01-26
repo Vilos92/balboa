@@ -28,7 +28,7 @@ export const ChromelessButton: FC<ChromelessButtonProps> = ({
   onMouseEnter,
   onMouseLeave
 }) => (
-  <StyledButton onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+  <StyledButton type='button' onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
     {children}
   </StyledButton>
 );
