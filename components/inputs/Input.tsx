@@ -8,6 +8,8 @@ import {Tooltip} from '../popovers/Tooltip';
  */
 
 export interface InputProps extends React.HTMLProps<HTMLInputElement> {
+  // Override to not allow this property to be undefined.
+  label: string;
   error?: string;
 }
 // When defining custom input components, the type should be held static.
