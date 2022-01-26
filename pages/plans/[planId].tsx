@@ -61,16 +61,13 @@ const StyledCard = tw(Card)`
   gap-4
 `;
 
-const StyledContentDiv = tw.div`
+// Plan details.
+
+const StyledPlanDetailsDiv = tw.div`
   border-t-2
   pt-2
   grid
   grid-cols-3
-`;
-
-const StyledAttendedDiv = tw.div`
-  border-t-2
-  pt-2
 `;
 
 const StyledAttendButtonDiv = tw.div`
@@ -102,6 +99,13 @@ const StyledDescriptionP = tw.p`
   col-start-1
   col-span-3
   mt-3
+`;
+
+// Attendees information.
+
+const StyledAttendedDiv = tw.div`
+  border-t-2
+  pt-2
 `;
 
 const StyledAttendedTitleH2 = tw.h2`
@@ -198,7 +202,7 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
             <CopyInputWithButton label='Share' value={shareUrl} />
           </div>
 
-          <StyledContentDiv>
+          <StyledPlanDetailsDiv>
             <StyledPlanTitleH2>
               <VisualPlan plan={plan} />
             </StyledPlanTitleH2>
@@ -219,7 +223,7 @@ const PlanPage: FC<PlanPageProps> = ({host, planId}) => {
             <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
 
             <StyledDescriptionP>{plan.description}</StyledDescriptionP>
-          </StyledContentDiv>
+          </StyledPlanDetailsDiv>
 
           <StyledAttendedDiv>
             <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
