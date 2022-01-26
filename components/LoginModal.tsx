@@ -1,8 +1,9 @@
 import {FC} from 'react';
-import tw from 'twin.macro';
+import tw, {styled} from 'twin.macro';
 
 import {Handler} from '../types/common';
 import {Providers, signInWithProvider} from '../utils/auth';
+import {Button} from './Button';
 import {Card} from './Commons';
 import {Modal} from './Modal';
 
@@ -13,6 +14,11 @@ import {Modal} from './Modal';
 interface LoginModalProps {
   providers: Providers;
   closeModal: Handler;
+}
+
+interface LoginButtonProps {
+  providerId: string;
+  providerName: string;
 }
 
 /*
@@ -29,8 +35,15 @@ const StyledCardH1 = tw.h1`
   mb-8
 `;
 
+const StyledLoginButton = styled(Button)`
+  ${tw`
+    bg-purple-900
+    w-full
+  `}
+`;
+
 /*
- * Component.
+ * Components.
  */
 
 export const LoginModal: FC<LoginModalProps> = ({providers, closeModal}) => (
@@ -38,10 +51,14 @@ export const LoginModal: FC<LoginModalProps> = ({providers, closeModal}) => (
     <StyledCard>
       <StyledCardH1>Create your account</StyledCardH1>
       {Object.values(providers).map(provider => (
-        <div key={provider.name}>
-          <button onClick={() => signInWithProvider(provider.id)}>Sign in with {provider.name}</button>
-        </div>
+        <LoginButton key={provider.id} providerId={provider.id} providerName={provider.name} />
       ))}
     </StyledCard>
   </Modal>
+);
+
+const LoginButton: FC<LoginButtonProps> = ({providerId, providerName}) => (
+  <StyledLoginButton onClick={() => signInWithProvider(providerId)}>
+    Sign in with {providerName}
+  </StyledLoginButton>
 );
