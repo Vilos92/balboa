@@ -95,46 +95,62 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState('14:00');
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
-    const start = computeDateTime(event.target.value, startTime);
-    const end = computeDateTime(endDate, endTime);
+    try {
+      const start = computeDateTime(event.target.value, startTime);
+      const end = computeDateTime(endDate, endTime);
 
-    setStartDate(event.target.value);
-    if (start > end) {
-      setEndDate(event.target.value);
-      setEndTime(startTime);
+      setStartDate(event.target.value);
+      if (start > end) {
+        setEndDate(event.target.value);
+        setEndTime(startTime);
+      }
+    } catch (exception) {
+      // Ignore invalid dates.
     }
   };
   const onChangeStartTime = (event: ChangeEvent<HTMLInputElement>) => {
-    const start = computeDateTime(startDate, event.target.value);
-    const end = computeDateTime(endDate, endTime);
+    try {
+      const start = computeDateTime(startDate, event.target.value);
+      const end = computeDateTime(endDate, endTime);
 
-    setStartTime(event.target.value);
-    if (start > end) {
-      setEndDate(startDate);
-      setEndTime(event.target.value);
+      setStartTime(event.target.value);
+      if (start > end) {
+        setEndDate(startDate);
+        setEndTime(event.target.value);
+      }
+    } catch (exception) {
+      // Ignore invalid dates.
     }
   };
 
   const [endDate, setEndDate] = useState('');
   const [endTime, setEndTime] = useState('17:00');
   const onChangeEndDate = (event: ChangeEvent<HTMLInputElement>) => {
-    const start = computeDateTime(startDate, startTime);
-    const end = computeDateTime(event.target.value, endTime);
+    try {
+      const start = computeDateTime(startDate, startTime);
+      const end = computeDateTime(event.target.value, endTime);
 
-    setEndDate(event.target.value);
-    if (end < start) {
-      setStartDate(event.target.value);
-      setStartTime(endTime);
+      setEndDate(event.target.value);
+      if (end < start) {
+        setStartDate(event.target.value);
+        setStartTime(endTime);
+      }
+    } catch (exception) {
+      // Ignore invalid dates.
     }
   };
   const onChangeEndTime = (event: ChangeEvent<HTMLInputElement>) => {
-    const start = computeDateTime(startDate, startTime);
-    const end = computeDateTime(endDate, event.target.value);
+    try {
+      const start = computeDateTime(startDate, startTime);
+      const end = computeDateTime(endDate, event.target.value);
 
-    setEndTime(event.target.value);
-    if (end < start) {
-      setStartDate(endDate);
-      setStartTime(event.target.value);
+      setEndTime(event.target.value);
+      if (end < start) {
+        setStartDate(endDate);
+        setStartTime(event.target.value);
+      }
+    } catch (exception) {
+      // Ignore invalid dates.
     }
   };
 
