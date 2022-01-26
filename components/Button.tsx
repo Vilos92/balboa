@@ -24,7 +24,6 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
     flex
     items-center
     justify-center
-    hover:brightness-150
     text-white
     font-bold
     py-2
@@ -33,6 +32,8 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
     focus:outline-none
     focus:shadow
   `}
+
+  ${({disabled}) => !disabled && tw`hover:brightness-150`}
 
   text-shadow: 0 2px 4px rgba(0,0,0,0.10);
 `;
