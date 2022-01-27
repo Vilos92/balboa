@@ -65,7 +65,7 @@ export const LoginModal: FC<LoginModalProps> = ({providers, closeModal}) => {
 
 const GoogleLoginButton: FC<LoginButtonProps> = ({provider}) => (
   <StyledLoginButton onClick={() => signInWithProvider(provider.id)}>
-    <Image width={24} src={googleSvg} />
+    <Image width={24} src={googleSvg} priority />
     Sign in with {provider.name}
   </StyledLoginButton>
 );
