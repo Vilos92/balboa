@@ -92,12 +92,13 @@ const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
     w-full
     mt-1
     mb-1
-    sm:w-max
+    sm:w-28
     sm:m-0
     sm:float-right
   `}
 
-  ${({$isHosting, $isAttending}) => computeStyledAttendButtonBackground($isHosting, $isAttending)}
+  ${({disabled, $isHosting, $isAttending}) =>
+    computeStyledAttendButtonBackground(disabled, $isHosting, $isAttending)}
 `;
 
 const StyledPlanTitleH2 = tw.h2`
@@ -333,13 +334,24 @@ function computeAttendButtonText(isHosting: boolean, isAttending: boolean): stri
   return isAttending ? 'Attending' : 'Attend';
 }
 
-function computeStyledAttendButtonBackground(isHosting: boolean, isAttending: boolean): TwStyle | undefined {
+function computeStyledAttendButtonBackground(
+  disabled: boolean,
+  isHosting: boolean,
+  isAttending: boolean
+): TwStyle | undefined {
+  if (disabled)
+    return tw`
+      bg-blue-500
+      cursor-not-allowed
+    `;
+
   if (isHosting)
     return tw`
-    bg-gray-700
-    text-white
-    cursor-not-allowed
-  `;
+      bg-gray-700
+      cursor-not-allowed
+    `;
+
   if (isAttending) return tw`bg-green-500`;
+
   return undefined;
 }
