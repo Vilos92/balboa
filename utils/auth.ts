@@ -26,7 +26,7 @@ export enum SessionStatusesEnum {
   AUTHENTICATED = 'authenticated'
 }
 
-type AuthSession =
+export type AuthSession =
   | {user: User; status: SessionStatusesEnum; isAuthenticated: true}
   | {
       user: undefined;

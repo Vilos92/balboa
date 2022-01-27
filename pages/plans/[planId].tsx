@@ -1,7 +1,6 @@
-import {GetServerSideProps} from 'next';
+import {GetStaticPaths, GetStaticProps} from 'next';
 import {useRouter} from 'next/router';
 import React, {FC, useEffect, useState} from 'react';
-import {SWRConfig} from 'swr';
 import tw, {TwStyle, styled} from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
@@ -12,29 +11,26 @@ import {Header} from '../../components/Header';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
-import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../../utils/auth';
 import {usePrevious} from '../../utils/hooks';
 import {parseQueryNumber} from '../../utils/net';
-import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
+import {useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
 
 /*
  * Types.
  */
 
-interface PlanPageProps {
+interface PlanPageContainerProps {
   providers: Providers;
-  host: string;
-  planId: number;
 }
 
-interface PlanPageContainerProps extends PlanPageProps {
-  fallback: {
-    [url: string]: Plan;
-  };
+interface PlanPageProps {
+  providers: Providers;
+  authSession: AuthSession;
+  planId: number;
 }
 
 interface AttendButtonProps {
@@ -150,32 +146,17 @@ const StyledAttendeeWrapperDiv = tw.div`
  * Server-side props.
  */
 
-export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req, res, query}) => {
-  // Consider all requests fresh within 10s of last.
-  // Return stale between 10 and 59, but compute new page for next request.
-  // After 60 always compute new page.
-  res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+export const getStaticPaths: GetStaticPaths = async () => ({
+  paths: [],
+  fallback: true
+});
 
+export const getStaticProps: GetStaticProps<PlanPageContainerProps> = async () => {
   const providers = await getAuthProviders();
-
-  const host = req.headers.host ?? '';
-
-  const {planId: planIdParam} = query;
-  if (!planIdParam) return {notFound: true};
-
-  const planId = parseQueryNumber(planIdParam);
-
-  const plan = await findPlan(planId);
-  const planUrl = computePlanUrl(planId);
 
   return {
     props: {
-      providers,
-      host,
-      planId,
-      fallback: {
-        [planUrl]: plan
-      }
+      providers
     }
   };
 };
@@ -184,24 +165,39 @@ export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req
  * Page.
  */
 
-const PlanPage: FC<PlanPageProps> = ({providers, host, planId}) => {
+const PlanPageContainer: FC<PlanPageContainerProps> = ({providers}) => {
   const router = useRouter();
   const authSession = useAuthSession();
+
+  if (router.isFallback) return null;
+  if (authSession.status === SessionStatusesEnum.LOADING) return null;
+
+  const {query} = router;
+
+  const {planId: planIdParam} = query;
+  if (!planIdParam) return null;
+
+  const planId = parseQueryNumber(planIdParam);
+
+  return <PlanPage providers={providers} authSession={authSession} planId={planId} />;
+};
+
+export default PlanPageContainer;
+
+const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   const {data: plan, error, mutate} = useNetGetPlan(planId);
+  const refreshPlan = () => mutate();
 
   const [shareUrl, setShareUrl] = useState('');
-
   // location is not available in SSR, so set this in an effect.
   useEffect(() => {
-    setShareUrl(`${location.protocol}//${host}${router.asPath}`);
-  });
+    const {protocol, hostname, pathname} = window.location;
 
-  if (authSession.status === SessionStatusesEnum.LOADING) return null;
+    setShareUrl(`${protocol}//${hostname}${pathname}`);
+  });
 
   if (!plan || error) return null;
   const {hostUser, users} = plan;
-
-  const refreshPlan = () => mutate();
 
   const isHosting = authSession.isAuthenticated && authSession.user.id === hostUser.id;
   const isAttendButtonDisabled = !authSession.isAuthenticated || isHosting;
@@ -250,14 +246,6 @@ const PlanPage: FC<PlanPageProps> = ({providers, host, planId}) => {
     </Body>
   );
 };
-
-const PlanPageContainer: FC<PlanPageContainerProps> = ({fallback, ...planPageProps}) => (
-  <SWRConfig value={{fallback}}>
-    <PlanPage {...planPageProps} />
-  </SWRConfig>
-);
-
-export default PlanPageContainer;
 
 /**
  * Components
