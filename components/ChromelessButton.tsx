@@ -24,11 +24,18 @@ const StyledButton = tw.button`
 
 export const ChromelessButton: FC<ChromelessButtonProps> = ({
   children,
+  className,
   onClick,
   onMouseEnter,
   onMouseLeave
 }) => (
-  <StyledButton type='button' onClick={onClick} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+  <StyledButton
+    type='button'
+    className={className}
+    onClick={onClick}
+    onMouseEnter={onMouseEnter}
+    onMouseLeave={onMouseLeave}
+  >
     {children}
   </StyledButton>
 );

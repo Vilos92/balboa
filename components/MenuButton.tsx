@@ -1,7 +1,7 @@
 import {signOut} from 'next-auth/react';
 import {useRouter} from 'next/router';
 import React, {FC, useState} from 'react';
-import tw from 'twin.macro';
+import tw, {styled} from 'twin.macro';
 
 import {Handler} from '../types/common';
 import {Providers, useAuthSession} from '../utils/auth';
@@ -51,8 +51,6 @@ const StyledHamburgerPattyDiv = tw.div`
 const StyledMenuCard = tw.div`
   flex
   flex-col
-  gap-2
-  p-3
   bg-white
   text-black
   shadow-md
@@ -60,14 +58,35 @@ const StyledMenuCard = tw.div`
 `;
 
 const StyledMenuItemDiv = tw.div`
+  first:rounded-t-2xl
+  first:pt-3
+
+  last:rounded-b-2xl
+  last:pb-3
+
+  not-last:border-b-2
+  border-gray-200
+
+  pt-1
+  pb-1
+  pl-3
+  pr-3
+
   w-full
+  h-full
   text-center
-  border-b-2
-  rounded-t
-  border-gray-300
-  hover:border-purple-400
   hover:bg-gray-100
-  p-1
+`;
+
+const StyledMenuButton = styled(ChromelessButton)`
+  ${tw`
+    w-full
+    h-full
+    text-gray-500
+    active:text-purple-400
+    focus:text-purple-400
+    hover:text-purple-400
+  `}
 `;
 
 /*
@@ -128,7 +147,7 @@ const Menu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
   return (
     <StyledMenuCard ref={menuRef}>
       <StyledMenuItemDiv>
-        <ChromelessButton onClick={onClickCreate}>Create</ChromelessButton>
+        <StyledMenuButton onClick={onClickCreate}>Create</StyledMenuButton>
       </StyledMenuItemDiv>
       {menuItems}
     </StyledMenuCard>
@@ -144,7 +163,7 @@ function renderUnauthenticatedRoutes(openLoginModal?: Handler) {
 
   return (
     <StyledMenuItemDiv>
-      <ChromelessButton onClick={openLoginModal}>Login</ChromelessButton>
+      <StyledMenuButton onClick={openLoginModal}>Login</StyledMenuButton>
     </StyledMenuItemDiv>
   );
 }
@@ -153,10 +172,10 @@ function renderAuthenticatedRoutes(onClickPlans: Handler, onClickLogout: Handler
   return (
     <>
       <StyledMenuItemDiv>
-        <ChromelessButton onClick={onClickPlans}>Plans</ChromelessButton>
+        <StyledMenuButton onClick={onClickPlans}>Plans</StyledMenuButton>
       </StyledMenuItemDiv>
       <StyledMenuItemDiv>
-        <ChromelessButton onClick={onClickLogout}>Logout</ChromelessButton>
+        <StyledMenuButton onClick={onClickLogout}>Logout</StyledMenuButton>
       </StyledMenuItemDiv>
     </>
   );
