@@ -24,6 +24,7 @@ interface LandingPageProps {
 
 const StyledCard = tw(Card)`
   sm:w-7/12
+  sm:max-w-xl
 `;
 
 const StyledLandingH2 = tw.h2`

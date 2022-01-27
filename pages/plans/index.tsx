@@ -44,6 +44,7 @@ const StyledSectionH1 = tw.h1`
 
 const StyledCard = tw(Card)`
   sm:w-7/12
+  sm:max-w-xl
   flex
   flex-row
   items-center 
