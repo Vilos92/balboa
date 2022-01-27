@@ -68,7 +68,13 @@ const CopyButton: FC<CopyButtonProps> = ({copyValue}) => {
 
   const onCopyValue = async () => {
     setIsCopyTooltipVisible(false);
-    await navigator.clipboard.writeText(copyValue);
+
+    // Attempt to use share API, otherwise copy to clipboard.
+    try {
+      await navigator.share({title: 'Grueplan', text: 'Share this plan!', url: copyValue});
+    } catch {
+      await navigator.clipboard.writeText(copyValue);
+    }
 
     setIsCopyTooltipVisible(true);
     setCopyTimeout(() => setIsCopyTooltipVisible(false), tooltipVisibilityDuration);
