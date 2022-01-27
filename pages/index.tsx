@@ -68,7 +68,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
       <Header providers={providers} />
       <StyledCard>
         <StyledLandingH2>Enter your event details here</StyledLandingH2>
-        <PlanForm createPlan={createPlan} />
+        <PlanForm isAuthenticated={isAuthenticated} providers={providers} createPlan={createPlan} />
       </StyledCard>
       <AccountFooter isAuthenticated={isAuthenticated} providers={providers} />
     </ColumnJustifiedContent>

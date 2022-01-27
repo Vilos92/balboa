@@ -5,7 +5,9 @@ import {ZodIssue} from 'zod';
 
 import {Button} from '../components/Button';
 import {LocationVisualizerMock} from '../components/LocationVisualizer';
+import {LoginModal} from '../components/LoginModal';
 import {PostPlan, validatePostPlan} from '../pages/api/plans';
+import {Providers} from '../utils/auth';
 import {swatchColors} from '../utils/color';
 import {ColorInput} from './inputs/ColorInput';
 import {DateInput} from './inputs/DateInput';
@@ -24,6 +26,8 @@ const LocationVisualizer = dynamic(() => import('../components/LocationVisualize
  */
 
 interface PlanFormProps {
+  isAuthenticated: boolean;
+  providers: Providers;
   createPlan: (planDraft: PostPlan) => void;
 }
 
@@ -75,7 +79,7 @@ const StyledTextAreaInput = styled(TextAreaInput)`
  * Component.
  */
 
-export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
+export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, createPlan}) => {
   const [errors, setErrors] = useState<PlanFormErrors>();
   const clearError = (inputName: PlanFormInputsEnum) => setErrors({...errors, [inputName]: undefined});
 
@@ -178,9 +182,7 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
   // Cannot select dates before today.
   const minimumDate = computeInputValueFromDate(new Date());
 
-  const onSubmit = async (event: FormEvent) => {
-    event.preventDefault();
-
+  const submitCreate = async () => {
     const startDt = computeDateTime(startDate, startTime);
     const endDt = computeDateTime(endDate, endTime);
 
@@ -204,57 +206,74 @@ export const PlanForm: FC<PlanFormProps> = ({createPlan}) => {
     createPlan(planDraft);
   };
 
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+  const closeLoginModal = () => setIsLoginModalVisible(false);
+
+  const onSubmit = (event: FormEvent) => {
+    event.preventDefault();
+
+    if (!isAuthenticated) {
+      setIsLoginModalVisible(true);
+      return;
+    }
+
+    submitCreate();
+  };
+
   return (
-    <form onSubmit={onSubmit}>
-      <StyledColorTitleGroupDiv>
-        <ColorInputWithTooltip value={color} onChange={onChangeColor} />
-        <TextInput
-          label='Title'
-          value={title}
-          error={errors?.[PlanFormInputsEnum.TITLE]}
-          onChange={onChangeTitle}
-        />
-      </StyledColorTitleGroupDiv>
+    <>
+      <form onSubmit={onSubmit}>
+        <StyledColorTitleGroupDiv>
+          <ColorInputWithTooltip value={color} onChange={onChangeColor} />
+          <TextInput
+            label='Title'
+            value={title}
+            error={errors?.[PlanFormInputsEnum.TITLE]}
+            onChange={onChangeTitle}
+          />
+        </StyledColorTitleGroupDiv>
 
-      <StyledGroupDiv>
-        <StyledDateTimeDiv>
-          <DateInput label='Start Date' value={startDate} onChange={onChangeStartDate} min={minimumDate} />
-          <TimeInput label='Start Time' value={startTime} onChange={onChangeStartTime} />
-        </StyledDateTimeDiv>
-        <StyledDateTimeDiv>
-          <DateInput label='End Date' value={endDate} onChange={onChangeEndDate} min={minimumDate} />
-          <TimeInput label='End Time' value={endTime} onChange={onChangeEndTime} />
-        </StyledDateTimeDiv>
-      </StyledGroupDiv>
+        <StyledGroupDiv>
+          <StyledDateTimeDiv>
+            <DateInput label='Start Date' value={startDate} onChange={onChangeStartDate} min={minimumDate} />
+            <TimeInput label='Start Time' value={startTime} onChange={onChangeStartTime} />
+          </StyledDateTimeDiv>
+          <StyledDateTimeDiv>
+            <DateInput label='End Date' value={endDate} onChange={onChangeEndDate} min={minimumDate} />
+            <TimeInput label='End Time' value={endTime} onChange={onChangeEndTime} />
+          </StyledDateTimeDiv>
+        </StyledGroupDiv>
 
-      <StyledGroupDiv>
-        <TextInput
-          label='Location'
-          value={location}
-          error={errors?.[PlanFormInputsEnum.LOCATION]}
-          onChange={onChangeLocation}
-          onFocus={onFocusLocation}
-        />
-        {hasLocationFocused || location.length > 0 ? (
-          <LocationVisualizer location={location} />
-        ) : (
-          <LocationVisualizerMock />
-        )}
-      </StyledGroupDiv>
+        <StyledGroupDiv>
+          <TextInput
+            label='Location'
+            value={location}
+            error={errors?.[PlanFormInputsEnum.LOCATION]}
+            onChange={onChangeLocation}
+            onFocus={onFocusLocation}
+          />
+          {hasLocationFocused || location.length > 0 ? (
+            <LocationVisualizer location={location} />
+          ) : (
+            <LocationVisualizerMock />
+          )}
+        </StyledGroupDiv>
 
-      <StyledGroupDiv>
-        <StyledTextAreaInput
-          label='Description'
-          value={description}
-          error={errors?.[PlanFormInputsEnum.DESCRIPTION]}
-          onChange={onChangeDescription}
-        />
-      </StyledGroupDiv>
+        <StyledGroupDiv>
+          <StyledTextAreaInput
+            label='Description'
+            value={description}
+            error={errors?.[PlanFormInputsEnum.DESCRIPTION]}
+            onChange={onChangeDescription}
+          />
+        </StyledGroupDiv>
 
-      <Button type='submit' backgroundColor={color}>
-        Go time!
-      </Button>
-    </form>
+        <Button type='submit' backgroundColor={color}>
+          Go time!
+        </Button>
+      </form>
+      {isLoginModalVisible && providers && <LoginModal providers={providers} closeModal={closeLoginModal} />}
+    </>
   );
 };
 
