@@ -287,7 +287,7 @@ const AttendButton: FC<AttendButtonProps> = ({
 
   const onClick = async () => {
     try {
-      setIsAttendingLocal(!isAttendingLocal);
+      setIsAttendingLocal(currentIsAttendingLocal => !currentIsAttendingLocal);
       await handleAndRefreshPlan();
     } catch (error) {
       // If we fail, set the local state back to the true state.
