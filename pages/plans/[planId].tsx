@@ -13,7 +13,13 @@ import {VisualUser} from '../../components/VisualUser';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
-import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../../utils/auth';
+import {
+  AuthSession,
+  Providers,
+  SessionStatusesEnum,
+  getAuthProviders,
+  useAuthSession
+} from '../../utils/auth';
 import {usePrevious} from '../../utils/hooks';
 import {parseQueryNumber} from '../../utils/net';
 import {useNetGetPlan} from '../api/plans/[planId]';
