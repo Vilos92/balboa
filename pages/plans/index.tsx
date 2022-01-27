@@ -4,7 +4,7 @@ import {FC} from 'react';
 import tw from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
-import {Body, Card, CenteredContent} from '../../components/Commons';
+import {Card, CenteredContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {VisualPlan} from '../../components/VisualPlan';
@@ -124,24 +124,22 @@ const PlansPage: FC<PlansPageProps> = ({plans}) => {
     .sort((planA, planB) => calculateDateDifference(planA.start, planB.start));
 
   return (
-    <Body>
-      <CenteredContent>
-        <Header />
+    <CenteredContent>
+      <Header />
 
-        <StyledContentDiv>
-          <StyledSectionH1>Upcoming</StyledSectionH1>
-          {currentPlans.map(plan => (
-            <PlanCard key={plan.id} plan={plan} />
-          ))}
+      <StyledContentDiv>
+        <StyledSectionH1>Upcoming</StyledSectionH1>
+        {currentPlans.map(plan => (
+          <PlanCard key={plan.id} plan={plan} />
+        ))}
 
-          <StyledSectionH1>Past</StyledSectionH1>
-          {pastPlans.map(plan => (
-            <PlanCard key={plan.id} plan={plan} />
-          ))}
-        </StyledContentDiv>
-        <FooterSpacer />
-      </CenteredContent>
-    </Body>
+        <StyledSectionH1>Past</StyledSectionH1>
+        {pastPlans.map(plan => (
+          <PlanCard key={plan.id} plan={plan} />
+        ))}
+      </StyledContentDiv>
+      <FooterSpacer />
+    </CenteredContent>
   );
 };
 

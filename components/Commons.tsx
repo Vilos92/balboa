@@ -14,10 +14,6 @@ interface CardProps {
  * Styles.
  */
 
-const StyledBodyDiv = tw.div`
-  bg-gray-800
-`;
-
 const StyledCenteredContentDiv = tw.div`
   flex
   flex-col
@@ -38,8 +34,6 @@ const StyledCardDiv = tw.div`
 /*
  * Components.
  */
-
-export const Body: FC = ({children}) => <StyledBodyDiv>{children}</StyledBodyDiv>;
 
 export const CenteredContent: FC = ({children}) => {
   return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;

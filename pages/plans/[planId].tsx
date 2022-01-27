@@ -5,7 +5,7 @@ import tw, {TwStyle, styled} from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
-import {Body, Card, CenteredContent} from '../../components/Commons';
+import {Card, CenteredContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {VisualPlan} from '../../components/VisualPlan';
@@ -211,45 +211,43 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   const isAttending = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
 
   return (
-    <Body>
-      <CenteredContent>
-        <Header providers={providers} />
-        <StyledCard>
-          <div>
-            <CopyInputWithButton label='Share' value={shareUrl} />
-          </div>
+    <CenteredContent>
+      <Header providers={providers} />
+      <StyledCard>
+        <div>
+          <CopyInputWithButton label='Share' value={shareUrl} />
+        </div>
 
-          <StyledPlanDetailsDiv>
-            <StyledPlanTitleH2>
-              <VisualPlan plan={plan} />
-            </StyledPlanTitleH2>
+        <StyledPlanDetailsDiv>
+          <StyledPlanTitleH2>
+            <VisualPlan plan={plan} />
+          </StyledPlanTitleH2>
 
-            <StyledAttendButtonDiv>
-              <AttendButton
-                planId={planId}
-                isAttending={isAttending}
-                isHosting={isHosting}
-                isDisabled={isAttendButtonDisabled}
-                refreshPlan={refreshPlan}
-              />
-            </StyledAttendButtonDiv>
+          <StyledAttendButtonDiv>
+            <AttendButton
+              planId={planId}
+              isAttending={isAttending}
+              isHosting={isHosting}
+              isDisabled={isAttendButtonDisabled}
+              refreshPlan={refreshPlan}
+            />
+          </StyledAttendButtonDiv>
 
-            <StyledDateTimeRangeH3>
-              📅 <DateTimeRange start={plan.start} end={plan.end} />
-            </StyledDateTimeRangeH3>
-            <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
+          <StyledDateTimeRangeH3>
+            📅 <DateTimeRange start={plan.start} end={plan.end} />
+          </StyledDateTimeRangeH3>
+          <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
 
-            <StyledDescriptionP>{plan.description}</StyledDescriptionP>
-          </StyledPlanDetailsDiv>
+          <StyledDescriptionP>{plan.description}</StyledDescriptionP>
+        </StyledPlanDetailsDiv>
 
-          <StyledAttendedDiv>
-            <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
-            <Attendees users={users} hostUserId={hostUser.id} />
-          </StyledAttendedDiv>
-        </StyledCard>
-        <FooterSpacer />
-      </CenteredContent>
-    </Body>
+        <StyledAttendedDiv>
+          <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
+          <Attendees users={users} hostUserId={hostUser.id} />
+        </StyledAttendedDiv>
+      </StyledCard>
+      <FooterSpacer />
+    </CenteredContent>
   );
 };
 
