@@ -8,7 +8,7 @@ import {Button} from '../../components/Button';
 import {Card, ColumnJustifiedContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
-import {LoadingGrue} from '../../components/LoadingGrue';
+import {PageSkeleton} from '../../components/PageSkeleton';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
@@ -177,13 +177,13 @@ const PlanPageContainer: FC<PlanPageContainerProps> = ({providers}) => {
   const router = useRouter();
   const authSession = useAuthSession();
 
-  if (router.isFallback) return <LoadingGrue />;
-  if (authSession.status === SessionStatusesEnum.LOADING) return <LoadingGrue />;
+  if (router.isFallback) return <PageSkeleton />;
+  if (authSession.status === SessionStatusesEnum.LOADING) return <PageSkeleton />;
 
   const {query} = router;
 
   const {planId: planIdParam} = query;
-  if (!planIdParam) return <LoadingGrue />;
+  if (!planIdParam) return <PageSkeleton />;
 
   const planId = parseQueryNumber(planIdParam);
 
@@ -204,7 +204,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
     setShareUrl(`${protocol}//${hostname}${pathname}`);
   });
 
-  if (!plan || error) return <LoadingGrue />;
+  if (!plan || error) return <PageSkeleton />;
   const {hostUser, users} = plan;
 
   const isHosting = authSession.isAuthenticated && authSession.user.id === hostUser.id;
@@ -252,10 +252,6 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
     </ColumnJustifiedContent>
   );
 };
-
-/**
- * Components
- */
 
 const AttendButton: FC<AttendButtonProps> = ({
   planId,

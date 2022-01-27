@@ -23,13 +23,6 @@ const StyledColumnJustifiedContentDiv = tw.div`
   min-h-screen
 `;
 
-const StyledCenteredContentDiv = tw.div`
-  flex
-  flex-col
-  justify-center
-  min-h-screen
-`;
-
 const StyledCardDiv = tw.div`
   p-3
   bg-white
@@ -44,10 +37,6 @@ const StyledCardDiv = tw.div`
 
 export const ColumnJustifiedContent: FC = ({children}) => {
   return <StyledColumnJustifiedContentDiv>{children}</StyledColumnJustifiedContentDiv>;
-};
-
-export const CenteredContent: FC = ({children}) => {
-  return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;
 };
 
 export const Card = forwardRef<HTMLDivElement, PropsWithChildren<CardProps>>(

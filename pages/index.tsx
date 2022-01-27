@@ -5,7 +5,7 @@ import tw from 'twin.macro';
 import {AccountFooter} from '../components/AccountFooter';
 import {Card, ColumnJustifiedContent} from '../components/Commons';
 import {Header} from '../components/Header';
-import {LoadingGrue} from '../components/LoadingGrue';
+import {PageSkeleton} from '../components/PageSkeleton';
 import {PlanForm} from '../components/PlanForm';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 import {PostPlan, postPlan} from './api/plans';
@@ -54,7 +54,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
 
   const {status, isAuthenticated} = useAuthSession();
 
-  if (status === SessionStatusesEnum.LOADING) return <LoadingGrue />;
+  if (status === SessionStatusesEnum.LOADING) return <PageSkeleton />;
 
   const createPlan = async (planDraft: PostPlan) => {
     if (!planDraft) return;
