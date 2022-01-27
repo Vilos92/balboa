@@ -1,6 +1,5 @@
 import React, {FC} from 'react';
 
-import {CenteredContent} from './Commons';
 import {GrueSvg} from './svg/GrueSvg';
 
 /**
