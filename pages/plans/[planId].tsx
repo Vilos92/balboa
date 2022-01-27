@@ -336,15 +336,15 @@ function computeStyledAttendButtonBackground(
   isHosting: boolean,
   isAttending: boolean
 ): TwStyle | undefined {
-  if (disabled)
-    return tw`
-      bg-blue-500
-      cursor-not-allowed
-    `;
-
   if (isHosting)
     return tw`
       bg-gray-700
+      cursor-not-allowed
+    `;
+
+  if (disabled)
+    return tw`
+      bg-blue-500
       cursor-not-allowed
     `;
 
