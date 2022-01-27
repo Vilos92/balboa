@@ -11,7 +11,7 @@ import {Header} from '../../components/Header';
 import {PageSkeleton} from '../../components/PageSkeleton';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
-import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
+import {ShareInputWithButton} from '../../components/inputs/ShareInputWithButton';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
 import {
@@ -218,7 +218,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
       <Header providers={providers} />
       <StyledCard>
         <div>
-          <CopyInputWithButton label='Share' value={shareUrl} />
+          <ShareInputWithButton label='Share' value={shareUrl} />
         </div>
 
         <StyledPlanDetailsDiv>
