@@ -15,11 +15,12 @@ interface CardProps {
  */
 
 const StyledColumnJustifiedContentDiv = tw.div`
+  h-full
   flex
   flex-col
   gap-6
   items-center
-  sm:justify-between
+  justify-between
   min-h-screen
 `;
 
