@@ -3,7 +3,7 @@ import {useRouter} from 'next/router';
 import tw from 'twin.macro';
 
 import {AccountFooter} from '../components/AccountFooter';
-import {Card, CenteredContent} from '../components/Commons';
+import {Card, ColumnJustifiedContent} from '../components/Commons';
 import {Header} from '../components/Header';
 import {PlanForm} from '../components/PlanForm';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
@@ -63,14 +63,14 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   };
 
   return (
-    <CenteredContent>
+    <ColumnJustifiedContent>
       <Header providers={providers} />
       <StyledCard>
         <StyledLandingH2>Enter your event details here</StyledLandingH2>
         <PlanForm createPlan={createPlan} />
       </StyledCard>
       <AccountFooter isAuthenticated={isAuthenticated} providers={providers} />
-    </CenteredContent>
+    </ColumnJustifiedContent>
   );
 };
 

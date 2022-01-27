@@ -4,7 +4,7 @@ import {FC} from 'react';
 import tw from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
-import {Card, CenteredContent} from '../../components/Commons';
+import {Card, ColumnJustifiedContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {VisualPlan} from '../../components/VisualPlan';
@@ -124,7 +124,7 @@ const PlansPage: FC<PlansPageProps> = ({plans}) => {
     .sort((planA, planB) => calculateDateDifference(planA.start, planB.start));
 
   return (
-    <CenteredContent>
+    <ColumnJustifiedContent>
       <Header />
 
       <StyledContentDiv>
@@ -139,7 +139,7 @@ const PlansPage: FC<PlansPageProps> = ({plans}) => {
         ))}
       </StyledContentDiv>
       <FooterSpacer />
-    </CenteredContent>
+    </ColumnJustifiedContent>
   );
 };
 

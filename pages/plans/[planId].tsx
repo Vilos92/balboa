@@ -5,9 +5,10 @@ import tw, {TwStyle, styled} from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
-import {Card, CenteredContent} from '../../components/Commons';
+import {Card, ColumnJustifiedContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
+import {LoadingGrue} from '../../components/LoadingGrue';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {CopyInputWithButton} from '../../components/inputs/CopyInputWithButton';
@@ -175,13 +176,13 @@ const PlanPageContainer: FC<PlanPageContainerProps> = ({providers}) => {
   const router = useRouter();
   const authSession = useAuthSession();
 
-  if (router.isFallback) return null;
-  if (authSession.status === SessionStatusesEnum.LOADING) return null;
+  if (router.isFallback) return <LoadingGrue />;
+  if (authSession.status === SessionStatusesEnum.LOADING) return <LoadingGrue />;
 
   const {query} = router;
 
   const {planId: planIdParam} = query;
-  if (!planIdParam) return null;
+  if (!planIdParam) return <LoadingGrue />;
 
   const planId = parseQueryNumber(planIdParam);
 
@@ -202,7 +203,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
     setShareUrl(`${protocol}//${hostname}${pathname}`);
   });
 
-  if (!plan || error) return null;
+  if (!plan || error) return <LoadingGrue />;
   const {hostUser, users} = plan;
 
   const isHosting = authSession.isAuthenticated && authSession.user.id === hostUser.id;
@@ -211,7 +212,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   const isAttending = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
 
   return (
-    <CenteredContent>
+    <ColumnJustifiedContent>
       <Header providers={providers} />
       <StyledCard>
         <div>
@@ -247,7 +248,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
         </StyledAttendedDiv>
       </StyledCard>
       <FooterSpacer />
-    </CenteredContent>
+    </ColumnJustifiedContent>
   );
 };
 

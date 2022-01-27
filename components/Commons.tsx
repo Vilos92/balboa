@@ -14,12 +14,19 @@ interface CardProps {
  * Styles.
  */
 
-const StyledCenteredContentDiv = tw.div`
+const StyledColumnJustifiedContentDiv = tw.div`
   flex
   flex-col
   gap-6
   items-center
   sm:justify-between
+  min-h-screen
+`;
+
+const StyledCenteredContentDiv = tw.div`
+  flex
+  flex-col
+  justify-center
   min-h-screen
 `;
 
@@ -34,6 +41,10 @@ const StyledCardDiv = tw.div`
 /*
  * Components.
  */
+
+export const ColumnJustifiedContent: FC = ({children}) => {
+  return <StyledColumnJustifiedContentDiv>{children}</StyledColumnJustifiedContentDiv>;
+};
 
 export const CenteredContent: FC = ({children}) => {
   return <StyledCenteredContentDiv>{children}</StyledCenteredContentDiv>;
