@@ -26,6 +26,7 @@ specifiers:
   mapbox-gl: ^2.6.1
   next: 12.0.3
   next-auth: ^4.0.2
+  nextjs-progressbar: ^0.0.13
   prettier: ^2.4.1
   prisma: ^3.6.0
   react: 17.0.2
@@ -50,6 +51,7 @@ dependencies:
   mapbox-gl: 2.6.1
   next: 12.0.3_react-dom@17.0.2+react@17.0.2
   next-auth: 4.0.2_react-dom@17.0.2+react@17.0.2
+  nextjs-progressbar: 0.0.13_next@12.0.3+react@17.0.2
   react: 17.0.2
   react-colorful: 5.5.1_react-dom@17.0.2+react@17.0.2
   react-dom: 17.0.2_react@17.0.2
@@ -5036,6 +5038,18 @@ packages:
       - webpack
     dev: false
 
+  /nextjs-progressbar/0.0.13_next@12.0.3+react@17.0.2:
+    resolution: {integrity: sha512-vuE9/j1yaFyHhMVwdlPZbGbcwnvoZZMH8fXUG+HCa+w5uojRNOMO43EL+o9YZ53QwQHsjWdfUapz+J8D/u3jFw==}
+    peerDependencies:
+      next: '>= 6.0.0 <=12.x.x'
+      react: '>= 16.0.0 <= 17.x.x'
+    dependencies:
+      next: 12.0.3_react-dom@17.0.2+react@17.0.2
+      nprogress: 0.2.0
+      prop-types: 15.7.2
+      react: 17.0.2
+    dev: false
+
   /node-emoji/1.11.0:
     resolution: {integrity: sha512-wo2DpQkQp7Sjm2A0cq+sN7EHKO6Sl0ctXeBdFZrL9T9+UywORbufTcTZxom8YqpLQt/FqNMUkOpkZrJVYSKD3A==}
     dependencies:
@@ -5080,6 +5094,10 @@ packages:
     dependencies:
       path-key: 3.1.1
     dev: true
+
+  /nprogress/0.2.0:
+    resolution: {integrity: sha1-y480xTIT2JVyP8urkH6UIq28r7E=}
+    dev: false
 
   /nth-check/2.0.1:
     resolution: {integrity: sha512-it1vE95zF6dTT9lBsYbxvqh0Soy4SPowchj0UBGj/V6cTPnXXtQOPUbhZ6CmGzAD/rW22LQK6E96pcdJXk4A4w==}
