@@ -99,7 +99,7 @@ const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
   `}
 
   ${({disabled, $isHosting, $isAttending}) =>
-    computeStyledAttendButtonBackground(disabled, $isHosting, $isAttending)}
+    computeStyledAttendButtonBackground(Boolean(disabled), $isHosting, $isAttending)}
 `;
 
 const StyledPlanTitleH2 = tw.h2`
