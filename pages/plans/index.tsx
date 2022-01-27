@@ -84,7 +84,12 @@ const StyledDaysUntilDiv = tw.div`
  * Server-side props.
  */
 
-export const getServerSideProps: GetServerSideProps<PlansPageProps> = async ({req}) => {
+export const getServerSideProps: GetServerSideProps<PlansPageProps> = async ({req, res}) => {
+  // Consider all requests fresh within 10s of last.
+  // Return stale between 10 and 59, but compute new page for next request.
+  // After 60 always compute new page.
+  res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+
   const user = await getSessionUser(req);
   if (!user)
     return {

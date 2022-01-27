@@ -150,7 +150,12 @@ const StyledAttendeeWrapperDiv = tw.div`
  * Server-side props.
  */
 
-export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req, query}) => {
+export const getServerSideProps: GetServerSideProps<PlanPageProps> = async ({req, res, query}) => {
+  // Consider all requests fresh within 10s of last.
+  // Return stale between 10 and 59, but compute new page for next request.
+  // After 60 always compute new page.
+  res.setHeader('Cache-Control', 'public, s-maxage=10, stale-while-revalidate=59');
+
   const providers = await getAuthProviders();
 
   const host = req.headers.host ?? '';
