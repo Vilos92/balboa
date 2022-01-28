@@ -77,8 +77,6 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const planBlob = {id, hostUserId: user.id, title, color, start, end, location, description};
   const planDraft = encodeDraftPlan(planBlob);
 
-  console.log('draft', planDraft);
-
   const plan = await updatePlan(planDraft);
 
   res.status(201).json(plan);
