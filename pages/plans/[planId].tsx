@@ -243,9 +243,8 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   const isHosting = computeIsHosting(authSession, plan);
 
   const updatePlan = async (planDraft: PatchPlan) => {
-    // TODO: Mutate current state with newly fetched plan.
     const plan = await patchPlan(planDraft);
-    refreshPlan();
+    mutate(plan);
     setTabView(TabViewsEnum.DETAILS);
   };
 
