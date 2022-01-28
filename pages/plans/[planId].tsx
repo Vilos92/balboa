@@ -180,6 +180,15 @@ const StyledAttendeeWrapperDiv = tw.div`
   gap-1
 `;
 
+// Edit form
+
+const StyledEditH2 = tw.h2`
+  text-lg
+  text-center
+  font-bold
+  mb-2
+`;
+
 /*
  * Server-side props.
  */
@@ -230,12 +239,14 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
 
   if (!plan || error) return <PageSkeleton />;
 
+  const isHosting = computeIsHosting(authSession, plan);
+
   return (
     <ColumnJustifiedContent>
       <Header providers={providers} />
 
       <StyledCard>
-        {authSession.isAuthenticated && (
+        {isHosting && (
           <StyledTabsDiv>
             <StyledTabButton onClick={() => setTabView(TabViewsEnum.DETAILS)}>Details</StyledTabButton>
             <StyledTabButton onClick={() => setTabView(TabViewsEnum.EDIT)}>Edit</StyledTabButton>
@@ -247,12 +258,15 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
         )}
 
         {tabView === TabViewsEnum.EDIT && (
-          <PlanForm
-            isAuthenticated={authSession.isAuthenticated}
-            providers={providers}
-            plan={plan}
-            submitPlan={() => console.log('update')}
-          />
+          <>
+            <StyledEditH2>Edit your event details</StyledEditH2>
+            <PlanForm
+              isAuthenticated={authSession.isAuthenticated}
+              providers={providers}
+              plan={plan}
+              submitPlan={() => console.log('update')}
+            />
+          </>
         )}
       </StyledCard>
 
@@ -272,7 +286,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, refreshPlan}) => 
 
   const {hostUser, users} = plan;
 
-  const isHosting = authSession.isAuthenticated && authSession.user.id === hostUser.id;
+  const isHosting = computeIsHosting(authSession, plan);
   const isAttendButtonDisabled = !authSession.isAuthenticated || isHosting;
 
   const isAttending = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
@@ -282,7 +296,6 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, refreshPlan}) => 
       <div>
         <ShareInputWithButton label='Share' value={shareUrl} />
       </div>
-
       <StyledPlanDetailsDiv>
         <StyledPlanTitleH2>
           <VisualPlan plan={plan} />
@@ -305,7 +318,6 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, refreshPlan}) => 
 
         <StyledDescriptionP>{plan.description}</StyledDescriptionP>
       </StyledPlanDetailsDiv>
-
       <StyledAttendedDiv>
         <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
         <Attendees users={users} hostUserId={hostUser.id} />
@@ -384,6 +396,10 @@ const Attendees: FC<AttendeesProps> = ({users, hostUserId}) => (
 /*
  * Helpers.
  */
+
+function computeIsHosting(authSession: AuthSession, plan: Plan) {
+  return authSession.isAuthenticated && authSession.user.id === plan.hostUser.id;
+}
 
 function computeAttendButtonText(isHosting: boolean, isAttending: boolean): string {
   if (isHosting) return 'Hosting';
