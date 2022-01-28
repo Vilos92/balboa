@@ -58,8 +58,6 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   if (status === SessionStatusesEnum.LOADING) return <PageSkeleton />;
 
   const createPlan = async (planDraft: PostPlan) => {
-    if (!planDraft) return;
-
     const plan = await postPlan(planDraft);
     router.push(`plans/${plan.id}`);
   };
@@ -69,7 +67,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
       <Header providers={providers} />
       <StyledCard>
         <StyledLandingH2>Enter your event details here</StyledLandingH2>
-        <PlanForm isAuthenticated={isAuthenticated} providers={providers} createPlan={createPlan} />
+        <PlanForm isAuthenticated={isAuthenticated} providers={providers} submitPlan={createPlan} />
       </StyledCard>
       <AccountFooter isAuthenticated={isAuthenticated} providers={providers} />
     </ColumnJustifiedContent>

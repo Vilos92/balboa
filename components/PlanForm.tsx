@@ -6,7 +6,8 @@ import {ZodIssue} from 'zod';
 import {Button} from '../components/Button';
 import {LocationVisualizerMock} from '../components/LocationVisualizer';
 import {LoginModal} from '../components/LoginModal';
-import {PostPlan, validatePostPlan} from '../pages/api/plans';
+import {Plan} from '../models/plan';
+import {PostPlan, validatePatchPlan, validatePostPlan} from '../pages/api/plans';
 import {Providers} from '../utils/auth';
 import {swatchColors} from '../utils/color';
 import {ColorInput} from './inputs/ColorInput';
@@ -28,7 +29,8 @@ const LocationVisualizer = dynamic(() => import('../components/LocationVisualize
 interface PlanFormProps {
   isAuthenticated: boolean;
   providers: Providers;
-  createPlan: (planDraft: PostPlan) => void;
+  plan?: Plan;
+  submitPlan: (planDraft: PostPlan) => void;
 }
 
 interface ColorInputWithTooltipProps {
@@ -79,22 +81,24 @@ const StyledTextAreaInput = styled(TextAreaInput)`
  * Component.
  */
 
-export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, createPlan}) => {
+export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, submitPlan}) => {
   const [errors, setErrors] = useState<PlanFormErrors>();
   const clearError = (inputName: PlanFormInputsEnum) => setErrors({...errors, [inputName]: undefined});
 
-  const [title, setTitle] = useState('');
+  const [title, setTitle] = useState(plan ? plan.title : '');
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     clearError(PlanFormInputsEnum.TITLE);
     setTitle(event.target.value);
   };
 
-  const [color, setColor] = useState('#ffffff');
+  const [color, setColor] = useState(plan ? plan.color : '#ffffff');
   const onChangeColor = (newColor: string) => setColor(newColor);
   useEffect(() => {
+    if (plan) return;
+
     const randColor = swatchColors[Math.floor(Math.random() * swatchColors.length)];
     setColor(randColor);
-  }, []);
+  }, [plan]);
 
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState('14:00');
@@ -158,7 +162,7 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, createP
     }
   };
 
-  const [location, setLocation] = useState('');
+  const [location, setLocation] = useState(plan ? plan.location : '');
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => {
     clearError(PlanFormInputsEnum.LOCATION);
     setLocation(event.target.value);
@@ -166,27 +170,41 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, createP
   const [hasLocationFocused, setHasLocationFocused] = useState(false);
   const onFocusLocation = () => setHasLocationFocused(true);
 
-  const [description, setDescription] = useState('');
+  const [description, setDescription] = useState(plan ? plan.description : '');
   const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
     clearError(PlanFormInputsEnum.DESCRIPTION);
     setDescription(event.target.value);
   };
 
-  // Initial date should only be set on the client (no SSR).
   useEffect(() => {
+    if (plan) {
+      const start = new Date(plan.start);
+      const end = new Date(plan.end);
+
+      setStartDate(computeInputDateFromObject(start));
+      setStartTime(computeInputTimeFromObject(start));
+
+      setEndDate(computeInputDateFromObject(end));
+      setEndTime(computeInputTimeFromObject(end));
+
+      return;
+    }
+
+    // Initial default date should only be set on the client (no SSR).
     const defaultDate = computeDefaultDate();
     setStartDate(defaultDate);
     setEndDate(defaultDate);
-  }, []);
+  }, [plan]);
 
   // Cannot select dates before today.
-  const minimumDate = computeInputValueFromDate(new Date());
+  const minimumDate = computeInputDateFromObject(new Date());
 
-  const submitCreate = async () => {
+  const submit = async () => {
     const startDt = computeDateTime(startDate, startTime);
     const endDt = computeDateTime(endDate, endTime);
 
     const planDraft = {
+      id: plan ? plan.id : undefined,
       title,
       color,
       start: startDt.toISOString(),
@@ -196,14 +214,14 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, createP
     };
 
     // Handle client-side validation errors in this form.
-    const error = validatePostPlan(planDraft);
+    const error = plan ? validatePatchPlan(planDraft) : validatePostPlan(planDraft);
     if (error) {
       const planFormErrors = computePlanFormErrors(error);
       setErrors(planFormErrors);
       return;
     }
 
-    createPlan(planDraft);
+    submitPlan(planDraft);
   };
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
@@ -217,7 +235,7 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, createP
       return;
     }
 
-    submitCreate();
+    submit();
   };
 
   return (
@@ -301,12 +319,20 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({value, onChange}
 function computeDefaultDate(): string {
   const start = new Date();
   start.setDate(start.getDate() + 7);
-  return computeInputValueFromDate(start);
+  return computeInputDateFromObject(start);
 }
 
-function computeInputValueFromDate(date: Date): string {
+function computeInputDateFromObject(date: Date): string {
   const [month, day, year] = date.toLocaleDateString().split('/');
   return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
+function computeInputTimeFromObject(date: Date): string {
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: false
+  });
 }
 
 /**

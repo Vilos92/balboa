@@ -28,6 +28,11 @@ export async function netPost<T, V>(url: string, body?: T): Promise<V> {
   return response.data;
 }
 
+export async function netPatch<T, V>(url: string, body?: T): Promise<V> {
+  const response = await axios.patch<V>(url, body);
+  return response.data;
+}
+
 export async function netDelete<T, V>(url: string, body?: T): Promise<V> {
   const response = await axios.delete<V>(url, body);
   return response.data;
