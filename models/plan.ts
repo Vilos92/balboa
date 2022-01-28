@@ -17,8 +17,8 @@ const dbUserOnPlanSchema = z.object({
 
 // Schema for plans retrieved from the database using prisma.
 const dbPlanSchema = z.object({
-  hostUserId: z.number(),
   id: z.number(),
+  hostUserId: z.number(),
   createdAt: z.date(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
@@ -52,7 +52,7 @@ const planInclude = {
 
 // Schema for plan drafts. This is used to validate data which will be sent to the DB.
 export const planDraftSchema = z.object({
-  id: z.number(),
+  id: z.number().optional(),
   hostUserId: z.number(),
   title: z.string().min(3).max(60),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
@@ -135,6 +135,25 @@ export async function savePlan(planDraft: PlanDraft) {
   };
 
   const data = await prisma.plan.create({
+    data: draftBlob,
+    include: planInclude
+  });
+
+  const dbPlan = decodeDbPlan(data);
+  return encodePlan(dbPlan);
+}
+
+export async function updatePlan(planDraft: PlanDraft) {
+  const prisma = makePrismaClient();
+
+  const draftBlob = {
+    ...planDraft
+  };
+
+  const data = await prisma.plan.update({
+    where: {
+      id: planDraft.id
+    },
     data: draftBlob,
     include: planInclude
   });

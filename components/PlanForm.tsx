@@ -7,7 +7,7 @@ import {Button} from '../components/Button';
 import {LocationVisualizerMock} from '../components/LocationVisualizer';
 import {LoginModal} from '../components/LoginModal';
 import {Plan} from '../models/plan';
-import {PostPlan, validatePostPlan} from '../pages/api/plans';
+import {PostPlan, validatePatchPlan, validatePostPlan} from '../pages/api/plans';
 import {Providers} from '../utils/auth';
 import {swatchColors} from '../utils/color';
 import {ColorInput} from './inputs/ColorInput';
@@ -81,7 +81,7 @@ const StyledTextAreaInput = styled(TextAreaInput)`
  * Component.
  */
 
-export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, submitPlan: createPlan}) => {
+export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, submitPlan}) => {
   const [errors, setErrors] = useState<PlanFormErrors>();
   const clearError = (inputName: PlanFormInputsEnum) => setErrors({...errors, [inputName]: undefined});
 
@@ -199,7 +199,7 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, s
   // Cannot select dates before today.
   const minimumDate = computeInputDateFromObject(new Date());
 
-  const submitCreate = async () => {
+  const submit = async () => {
     const startDt = computeDateTime(startDate, startTime);
     const endDt = computeDateTime(endDate, endTime);
 
@@ -214,14 +214,14 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, s
     };
 
     // Handle client-side validation errors in this form.
-    const error = validatePostPlan(planDraft);
+    const error = plan ? validatePatchPlan(planDraft) : validatePostPlan(planDraft);
     if (error) {
       const planFormErrors = computePlanFormErrors(error);
       setErrors(planFormErrors);
       return;
     }
 
-    createPlan(planDraft);
+    submitPlan(planDraft);
   };
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
@@ -235,7 +235,7 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, s
       return;
     }
 
-    submitCreate();
+    submit();
   };
 
   return (

@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {ZodIssue, z} from 'zod';
 
-import {Plan, encodeDraftPlan, planDraftSchema, savePlan} from '../../../models/plan';
+import {Plan, encodeDraftPlan, planDraftSchema, savePlan, updatePlan} from '../../../models/plan';
 import {getSessionUser} from '../../../utils/auth';
 import {NetResponse, netPatch, netPost} from '../../../utils/net';
 import {validateSchema} from '../../../utils/schema';
@@ -106,4 +106,8 @@ export function patchPlan(planBlob: PatchPlan) {
  */
 export function validatePostPlan(planBlob: PostPlan): readonly ZodIssue[] | undefined {
   return validateSchema(postPlanSchema, planBlob);
+}
+
+export function validatePatchPlan(planBlob: PostPlan): readonly ZodIssue[] | undefined {
+  return validateSchema(patchPlanSchema, planBlob);
 }
