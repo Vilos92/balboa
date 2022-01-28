@@ -26,6 +26,7 @@ import {
 } from '../../utils/auth';
 import {usePrevious} from '../../utils/hooks';
 import {parseQueryNumber} from '../../utils/net';
+import {PatchPlan, patchPlan} from '../api/plans';
 import {useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
 
@@ -241,6 +242,13 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
 
   const isHosting = computeIsHosting(authSession, plan);
 
+  const updatePlan = async (planDraft: PatchPlan) => {
+    // TODO: Mutate current state with newly fetched plan.
+    const plan = await patchPlan(planDraft);
+    refreshPlan();
+    setTabView(TabViewsEnum.DETAILS);
+  };
+
   return (
     <ColumnJustifiedContent>
       <Header providers={providers} />
@@ -264,7 +272,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
               isAuthenticated={authSession.isAuthenticated}
               providers={providers}
               plan={plan}
-              submitPlan={() => console.log('update')}
+              submitPlan={updatePlan}
             />
           </>
         )}

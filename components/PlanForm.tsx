@@ -204,6 +204,7 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, s
     const endDt = computeDateTime(endDate, endTime);
 
     const planDraft = {
+      id: plan ? plan.id : undefined,
       title,
       color,
       start: startDt.toISOString(),

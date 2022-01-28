@@ -58,8 +58,6 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   if (status === SessionStatusesEnum.LOADING) return <PageSkeleton />;
 
   const createPlan = async (planDraft: PostPlan) => {
-    if (!planDraft) return;
-
     const plan = await postPlan(planDraft);
     router.push(`plans/${plan.id}`);
   };
