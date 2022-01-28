@@ -5,13 +5,16 @@ import tw, {TwStyle, styled} from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
+import {ChromelessButton} from '../../components/ChromelessButton';
 import {Card, ColumnJustifiedContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {PageSkeleton} from '../../components/PageSkeleton';
+import {PlanForm} from '../../components/PlanForm';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {ShareInputWithButton} from '../../components/inputs/ShareInputWithButton';
+import {Plan} from '../../models/plan';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
 import {
@@ -30,6 +33,11 @@ import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
  * Types.
  */
 
+enum TabViewsEnum {
+  DETAILS = 'details',
+  EDIT = 'edit'
+}
+
 interface PlanPageContainerProps {
   providers: Providers;
 }
@@ -38,6 +46,12 @@ interface PlanPageProps {
   providers: Providers;
   authSession: AuthSession;
   planId: number;
+}
+
+interface PlanDetailsProps {
+  authSession: AuthSession;
+  plan: Plan;
+  refreshPlan: Handler;
 }
 
 interface AttendButtonProps {
@@ -64,6 +78,21 @@ const StyledCard = tw(Card)`
   flex
   flex-col
   gap-4
+`;
+
+const StyledTabsDiv = tw.div`
+  flex
+  flex-row
+  justify-evenly
+  border-b-2
+`;
+
+const StyledTabButton = styled(ChromelessButton)`
+  ${tw`
+    w-full
+    pb-2
+    first:border-r-2
+  `}
 `;
 
 // Plan details.
@@ -197,15 +226,50 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   const {data: plan, error, mutate} = useNetGetPlan(planId);
   const refreshPlan = () => mutate();
 
+  const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
+
+  if (!plan || error) return <PageSkeleton />;
+
+  return (
+    <ColumnJustifiedContent>
+      <Header providers={providers} />
+
+      <StyledCard>
+        {authSession.isAuthenticated && (
+          <StyledTabsDiv>
+            <StyledTabButton onClick={() => setTabView(TabViewsEnum.DETAILS)}>Details</StyledTabButton>
+            <StyledTabButton onClick={() => setTabView(TabViewsEnum.EDIT)}>Edit</StyledTabButton>
+          </StyledTabsDiv>
+        )}
+
+        {tabView === TabViewsEnum.DETAILS && (
+          <PlanDetails authSession={authSession} plan={plan} refreshPlan={refreshPlan} />
+        )}
+
+        {tabView === TabViewsEnum.EDIT && (
+          <PlanForm
+            isAuthenticated={authSession.isAuthenticated}
+            providers={providers}
+            plan={plan}
+            submitPlan={() => console.log('update')}
+          />
+        )}
+      </StyledCard>
+
+      <FooterSpacer />
+    </ColumnJustifiedContent>
+  );
+};
+
+const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, refreshPlan}) => {
   const [shareUrl, setShareUrl] = useState('');
-  // location is not available in SSR, so set this in an effect.
+  // window.location is not available in SSR, so set this in an effect.
   useEffect(() => {
     const {protocol, hostname, pathname} = window.location;
 
     setShareUrl(`${protocol}//${hostname}${pathname}`);
   });
 
-  if (!plan || error) return <PageSkeleton />;
   const {hostUser, users} = plan;
 
   const isHosting = authSession.isAuthenticated && authSession.user.id === hostUser.id;
@@ -214,43 +278,39 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   const isAttending = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
 
   return (
-    <ColumnJustifiedContent>
-      <Header providers={providers} />
-      <StyledCard>
-        <div>
-          <ShareInputWithButton label='Share' value={shareUrl} />
-        </div>
+    <>
+      <div>
+        <ShareInputWithButton label='Share' value={shareUrl} />
+      </div>
 
-        <StyledPlanDetailsDiv>
-          <StyledPlanTitleH2>
-            <VisualPlan plan={plan} />
-          </StyledPlanTitleH2>
+      <StyledPlanDetailsDiv>
+        <StyledPlanTitleH2>
+          <VisualPlan plan={plan} />
+        </StyledPlanTitleH2>
 
-          <StyledAttendButtonDiv>
-            <AttendButton
-              planId={planId}
-              isAttending={isAttending}
-              isHosting={isHosting}
-              isDisabled={isAttendButtonDisabled}
-              refreshPlan={refreshPlan}
-            />
-          </StyledAttendButtonDiv>
+        <StyledAttendButtonDiv>
+          <AttendButton
+            planId={plan.id}
+            isAttending={isAttending}
+            isHosting={isHosting}
+            isDisabled={isAttendButtonDisabled}
+            refreshPlan={refreshPlan}
+          />
+        </StyledAttendButtonDiv>
 
-          <StyledDateTimeRangeH3>
-            📅 <DateTimeRange start={plan.start} end={plan.end} />
-          </StyledDateTimeRangeH3>
-          <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
+        <StyledDateTimeRangeH3>
+          📅 <DateTimeRange start={plan.start} end={plan.end} />
+        </StyledDateTimeRangeH3>
+        <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
 
-          <StyledDescriptionP>{plan.description}</StyledDescriptionP>
-        </StyledPlanDetailsDiv>
+        <StyledDescriptionP>{plan.description}</StyledDescriptionP>
+      </StyledPlanDetailsDiv>
 
-        <StyledAttendedDiv>
-          <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
-          <Attendees users={users} hostUserId={hostUser.id} />
-        </StyledAttendedDiv>
-      </StyledCard>
-      <FooterSpacer />
-    </ColumnJustifiedContent>
+      <StyledAttendedDiv>
+        <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
+        <Attendees users={users} hostUserId={hostUser.id} />
+      </StyledAttendedDiv>
+    </>
   );
 };
 
