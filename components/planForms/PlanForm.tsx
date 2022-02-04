@@ -5,6 +5,7 @@ import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
 import {swatchColors} from '../../utils/color';
+import {useDebounce} from '../../utils/hooks';
 import {Button} from '../Button';
 import {LocationVisualizerMock} from '../LocationVisualizer';
 import {ColorInput} from '../inputs/ColorInput';
@@ -250,19 +251,25 @@ export const PlanForm: FC<PlanFormProps> = props => {
     submit();
   };
 
-  const onChangeForm = () => {
-    persistPlan?.(
+  const debouncedPersistPlan = useDebounce(() => {
+    if (!persistPlan) return;
+
+    persistPlan(
       makePlanDraft(undefined, title, color, startDate, startTime, endDate, endTime, location, description)
     );
-  };
+  }, 1000);
+
+  useEffect(() => {
+    debouncedPersistPlan();
+  }, [title, color, startDate, startTime, endDate, endTime, location, description]);
 
   return (
-    <form onSubmit={onSubmit} onChange={onChangeForm}>
+    <form onSubmit={onSubmit}>
       <StyledColorTitleGroupDiv>
         <ColorInputWithTooltip value={color} onChange={onChangeColor} />
         <TextInput
           label='Title'
-          value={planTitle}
+          value={title}
           error={errors?.[PlanFormInputsEnum.TITLE]}
           onChange={onChangeTitle}
         />

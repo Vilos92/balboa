@@ -23,16 +23,16 @@ interface CreatePlanFormProps {
 
 const {persistAtom} = recoilPersist();
 
-const planState = atom<PostPlan | undefined>({
-  key: 'planState',
+const planFormState = atom<PostPlan | undefined>({
+  key: 'planFormState',
   default: undefined,
   effects_UNSTABLE: [persistAtom]
 });
 
-const partialPlanState = selector<Partial<PostPlan>>({
-  key: 'partialPlanState',
+const planFormValue = selector<Partial<PostPlan>>({
+  key: 'partialPlanFormState',
   get: ({get}) => {
-    const plan = get(planState);
+    const plan = get(planFormState);
 
     return plan ?? {};
   }
@@ -43,9 +43,10 @@ const partialPlanState = selector<Partial<PostPlan>>({
  */
 
 const CreatePlanForm: FC<CreatePlanFormProps> = ({isAuthenticated, providers, createPlan}) => {
-  const [_, setPlanDraft] = useRecoilState(planState);
-  const planDraft = useRecoilValue(partialPlanState);
+  const [_, setPlanDraft] = useRecoilState(planFormState);
   const persistPlan = (plan: PostPlan) => setPlanDraft(plan);
+
+  const planDraft = useRecoilValue(planFormValue);
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const closeLoginModal = () => setIsLoginModalVisible(false);
