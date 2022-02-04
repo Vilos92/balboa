@@ -28,8 +28,9 @@ interface LoginButtonProps {
  */
 
 const StyledCard = tw(Card)`
-  sm:max-w-md
   p-20
+  shadow-none
+  sm:max-w-md
 `;
 
 const StyledCardH1 = tw.h1`

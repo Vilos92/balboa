@@ -3,7 +3,7 @@ import {useRouter} from 'next/router';
 import tw from 'twin.macro';
 
 import {AccountFooter} from '../components/AccountFooter';
-import {Card, ColumnJustifiedContent} from '../components/Commons';
+import {Card, ColumnHorizontalCentered} from '../components/Commons';
 import {Header} from '../components/Header';
 import {PageSkeleton} from '../components/PageSkeleton';
 import {CreatePlanFormContainer} from '../components/planForms/CreatePlanForm';
@@ -23,6 +23,8 @@ interface LandingPageProps {
  */
 
 const StyledCard = tw(Card)`
+  mt-4
+  sm:mt-8
   sm:w-7/12
   sm:max-w-xl
 `;
@@ -63,7 +65,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   };
 
   return (
-    <ColumnJustifiedContent>
+    <ColumnHorizontalCentered>
       <Header providers={providers} />
       <StyledCard>
         <StyledLandingH2>Enter your event details here</StyledLandingH2>
@@ -74,7 +76,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
         />
       </StyledCard>
       <AccountFooter isAuthenticated={isAuthenticated} providers={providers} />
-    </ColumnJustifiedContent>
+    </ColumnHorizontalCentered>
   );
 };
 

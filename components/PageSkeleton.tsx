@@ -1,7 +1,7 @@
 import React, {FC} from 'react';
 
 import {FooterSpacer} from './AccountFooter';
-import {ColumnJustifiedContent} from './Commons';
+import {ColumnJustified} from './Commons';
 import {Header} from './Header';
 import {LoadingGrue} from './LoadingGrue';
 
@@ -10,9 +10,9 @@ import {LoadingGrue} from './LoadingGrue';
  */
 
 export const PageSkeleton: FC = () => (
-  <ColumnJustifiedContent>
+  <ColumnJustified>
     <Header />
     <LoadingGrue />
     <FooterSpacer />
-  </ColumnJustifiedContent>
+  </ColumnJustified>
 );

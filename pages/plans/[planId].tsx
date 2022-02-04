@@ -8,7 +8,7 @@ import tw, {TwStyle, styled} from 'twin.macro';
 import {FooterSpacer} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
 import {ChromelessButton} from '../../components/ChromelessButton';
-import {Card, ColumnJustifiedContent} from '../../components/Commons';
+import {Card, ColumnHorizontalCentered} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {PageSkeleton} from '../../components/PageSkeleton';
@@ -18,7 +18,6 @@ import {ShareInputWithButton} from '../../components/inputs/ShareInputWithButton
 import {EditPlanForm} from '../../components/planForms/EditPlanForm';
 import {Plan} from '../../models/plan';
 import {User} from '../../models/user';
-import {Handler} from '../../types/common';
 import {
   AuthSession,
   Providers,
@@ -75,13 +74,14 @@ interface AttendeesProps {
  */
 
 const StyledCard = tw(Card)`
-  sm:w-7/12
-  sm:max-w-xl
-  mb-5
+  mt-4
   flex
   flex-col
   gap-4
   overflow-y-hidden
+  sm:mt-8
+  sm:w-7/12
+  sm:max-w-xl
 `;
 
 const StyledTabsDiv = tw.div`
@@ -280,7 +280,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   };
 
   return (
-    <ColumnJustifiedContent>
+    <ColumnHorizontalCentered>
       <Header providers={providers} />
 
       <StyledCard>
@@ -309,7 +309,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
       </StyledCard>
 
       <FooterSpacer />
-    </ColumnJustifiedContent>
+    </ColumnHorizontalCentered>
   );
 };
 

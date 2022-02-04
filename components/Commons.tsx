@@ -14,18 +14,30 @@ interface CardProps {
  * Styles.
  */
 
-const StyledColumnJustifiedContentDiv = tw.div`
-  h-full
+const StyledColumnJustifiedDiv = tw.div`
   flex
   flex-col
   gap-6
   items-center
   justify-between
+  h-full
   min-h-screen
   pl-1
   pr-1
-  sm:ml-0
-  sm:mr-0
+  sm:pl-0
+  sm:pr-0
+`;
+
+const StyledColumnHorizontalCenteredDiv = tw.div`
+  flex
+  flex-col
+  items-center
+  h-full
+  min-h-screen
+  pl-1
+  pr-1
+  sm:pl-0
+  sm:pr-0
 `;
 
 const StyledCardDiv = tw.div`
@@ -40,8 +52,12 @@ const StyledCardDiv = tw.div`
  * Components.
  */
 
-export const ColumnJustifiedContent: FC = ({children}) => {
-  return <StyledColumnJustifiedContentDiv>{children}</StyledColumnJustifiedContentDiv>;
+export const ColumnJustified: FC = ({children}) => {
+  return <StyledColumnJustifiedDiv>{children}</StyledColumnJustifiedDiv>;
+};
+
+export const ColumnHorizontalCentered: FC = ({children}) => {
+  return <StyledColumnHorizontalCenteredDiv>{children}</StyledColumnHorizontalCenteredDiv>;
 };
 
 export const Card = forwardRef<HTMLDivElement, PropsWithChildren<CardProps>>(
