@@ -35,6 +35,8 @@ specifiers:
   react-is: ^17.0.2
   react-map-gl: ^6.1.17
   react-popper: ^2.2.5
+  recoil: ^0.6.1
+  recoil-persist: ^4.0.0
   styled-components: ^5.3.3
   swr: ^1.0.1
   tailwindcss: ^2.2.19
@@ -57,6 +59,8 @@ dependencies:
   react-dom: 17.0.2_react@17.0.2
   react-map-gl: 6.1.17_react@17.0.2
   react-popper: 2.2.5_838acf1c84808345430cf17171f87518
+  recoil: 0.6.1_react-dom@17.0.2+react@17.0.2
+  recoil-persist: 4.0.0_recoil@0.6.1
   styled-components: 5.3.3_281a4fa50a045c9112baf635f3bc27a7
   swr: 1.0.1_react@17.0.2
   zod: 3.11.6
@@ -3592,6 +3596,10 @@ packages:
     engines: {node: '>=0.8.0'}
     dev: false
 
+  /hamt_plus/1.0.2:
+    resolution: {integrity: sha1-4hwlKWjH4zsg9qGwlM2FeHomVgE=}
+    dev: false
+
   /harmony-reflect/1.6.2:
     resolution: {integrity: sha512-HIp/n38R9kQjDEziXyDTuW3vvoxxyxjxFzXLrBr18uB47GnSt+G9D29fqrpM5ZkspMcPICud3XsBJQ4Y2URg8g==}
     dev: true
@@ -5781,6 +5789,31 @@ packages:
     dependencies:
       picomatch: 2.3.0
     dev: true
+
+  /recoil-persist/4.0.0_recoil@0.6.1:
+    resolution: {integrity: sha512-hJFWxAFYpEMF1/rdF+AjBQABWuERFMWoJ5Ag1vJKG1Aj1603MuBmk3epaz8rU/Jy4IUBRkFibl6zFrvwhRhCew==}
+    peerDependencies:
+      recoil: ^0.5.1
+    dependencies:
+      recoil: 0.6.1_react-dom@17.0.2+react@17.0.2
+    dev: false
+
+  /recoil/0.6.1_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-J7oT3LZl2vpyFClgSUpOQjpykz84VSX/NJE/PavAtR8n7Z+whEdVBPUtwc2TEWjONeL/lJmiac2XQ+qEOQA52Q==}
+    peerDependencies:
+      react: '>=16.13.1'
+      react-dom: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      hamt_plus: 1.0.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+    dev: false
 
   /redent/3.0.0:
     resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}

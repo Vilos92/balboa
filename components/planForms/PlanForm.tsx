@@ -33,6 +33,7 @@ interface PlanFormProps {
   description?: string;
   validatePlan: (planDraft: PostPlan | PatchPlan) => readonly ZodIssue[] | undefined;
   submitPlan: (planDraft: PostPlan | PatchPlan) => void;
+  persistPlan?: (planDraft: PostPlan | PatchPlan) => void;
 }
 
 interface ColorInputWithTooltipProps {
@@ -93,7 +94,8 @@ export const PlanForm: FC<PlanFormProps> = props => {
     location: planLocation,
     description: planDescription,
     submitPlan,
-    validatePlan
+    validatePlan,
+    persistPlan
   } = props;
 
   const [errors, setErrors] = useState<PlanFormErrors>();
@@ -220,18 +222,17 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const minimumDate = computeInputDateFromObject(new Date());
 
   const submit = async () => {
-    const startDt = computeDateTime(startDate, startTime);
-    const endDt = computeDateTime(endDate, endTime);
-
-    const planDraft = {
-      id: planId,
+    const planDraft = makePlanDraft(
+      planId,
       title,
       color,
-      start: startDt.toISOString(),
-      end: endDt.toISOString(),
+      startDate,
+      startTime,
+      endDate,
+      endTime,
       location,
       description
-    };
+    );
 
     // Handle client-side validation errors in this form.
     const error = validatePlan(planDraft);
@@ -249,8 +250,14 @@ export const PlanForm: FC<PlanFormProps> = props => {
     submit();
   };
 
+  const onChangeForm = () => {
+    persistPlan?.(
+      makePlanDraft(undefined, title, color, startDate, startTime, endDate, endTime, location, description)
+    );
+  };
+
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} onChange={onChangeForm}>
       <StyledColorTitleGroupDiv>
         <ColorInputWithTooltip value={color} onChange={onChangeColor} />
         <TextInput
@@ -391,4 +398,30 @@ function computePlanFormErrors(zodErrors: readonly ZodIssue[]): PlanFormErrors {
 
     return {...currentPlanFormErrors, [inputName]: message};
   }, {});
+}
+
+function makePlanDraft(
+  planId: number | undefined,
+  title: string,
+  color: string,
+  startDate: string,
+  startTime: string,
+  endDate: string,
+  endTime: string,
+  location: string,
+  description: string
+) {
+  const startDt = computeDateTime(startDate, startTime);
+  const endDt = computeDateTime(endDate, endTime);
+
+  const planDraft = {
+    id: planId,
+    title,
+    color,
+    start: startDt.toISOString(),
+    end: endDt.toISOString(),
+    location,
+    description
+  };
+  return planDraft;
 }
