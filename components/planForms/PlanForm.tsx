@@ -223,7 +223,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const minimumDate = computeInputDateFromObject(new Date());
 
   const submit = async () => {
-    const planDraft = makePlanDraft(
+    const planDraft = computePlanDraft(
       planId,
       title,
       color,
@@ -255,7 +255,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
     if (!persistPlan) return;
 
     persistPlan(
-      makePlanDraft(undefined, title, color, startDate, startTime, endDate, endTime, location, description)
+      computePlanDraft(undefined, title, color, startDate, startTime, endDate, endTime, location, description)
     );
   }, 1000);
 
@@ -407,7 +407,7 @@ function computePlanFormErrors(zodErrors: readonly ZodIssue[]): PlanFormErrors {
   }, {});
 }
 
-function makePlanDraft(
+function computePlanDraft(
   planId: number | undefined,
   title: string,
   color: string,
