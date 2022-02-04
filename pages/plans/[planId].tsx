@@ -89,6 +89,7 @@ const StyledTabsDiv = tw.div`
   flex-row
   justify-evenly
   border-b-2
+  mb-2
 `;
 
 const StyledTabButton = styled(ChromelessButton)`
