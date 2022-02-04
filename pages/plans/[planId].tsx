@@ -1,6 +1,8 @@
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {useRouter} from 'next/router';
 import React, {FC, useEffect, useState} from 'react';
+import {useResizeDetector} from 'react-resize-detector';
+import {animated, useSpring} from 'react-spring';
 import tw, {TwStyle, styled} from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
@@ -79,6 +81,7 @@ const StyledCard = tw(Card)`
   flex
   flex-col
   gap-4
+  overflow-y-hidden
 `;
 
 const StyledTabsDiv = tw.div`
@@ -238,6 +241,21 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
 
   const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
 
+  const onResizeCard = (_resizeWidth?: number, resizeHeight?: number) => {
+    animate({
+      height: `${resizeHeight}px`
+    });
+  };
+
+  const {height: cardHeight, ref} = useResizeDetector({onResize: onResizeCard});
+  const [style, animate] = useSpring(() => {
+    const height: number = cardHeight ?? 290;
+
+    return {
+      height: `${height}px`
+    };
+  });
+
   if (!plan || error) return <PageSkeleton />;
 
   const isHosting = computeIsHosting(authSession, plan);
@@ -253,23 +271,28 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
       <Header providers={providers} />
 
       <StyledCard>
-        {isHosting && (
-          <StyledTabsDiv>
-            <StyledTabButton onClick={() => setTabView(TabViewsEnum.DETAILS)}>Details</StyledTabButton>
-            <StyledTabButton onClick={() => setTabView(TabViewsEnum.EDIT)}>Edit</StyledTabButton>
-          </StyledTabsDiv>
-        )}
+        {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
+        <animated.div style={style}>
+          <div ref={ref}>
+            {isHosting && (
+              <StyledTabsDiv>
+                <StyledTabButton onClick={() => setTabView(TabViewsEnum.DETAILS)}>Details</StyledTabButton>
+                <StyledTabButton onClick={() => setTabView(TabViewsEnum.EDIT)}>Edit</StyledTabButton>
+              </StyledTabsDiv>
+            )}
 
-        {tabView === TabViewsEnum.DETAILS && (
-          <PlanDetails authSession={authSession} plan={plan} refreshPlan={refreshPlan} />
-        )}
+            {tabView === TabViewsEnum.DETAILS && (
+              <PlanDetails authSession={authSession} plan={plan} refreshPlan={refreshPlan} />
+            )}
 
-        {tabView === TabViewsEnum.EDIT && (
-          <>
-            <StyledEditH2>Edit your event details</StyledEditH2>
-            <EditPlanForm plan={plan} editPlan={updatePlan} />
-          </>
-        )}
+            {tabView === TabViewsEnum.EDIT && (
+              <>
+                <StyledEditH2>Edit your event details</StyledEditH2>
+                <EditPlanForm plan={plan} editPlan={updatePlan} />
+              </>
+            )}
+          </div>
+        </animated.div>
       </StyledCard>
 
       <FooterSpacer />
