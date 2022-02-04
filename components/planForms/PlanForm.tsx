@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic';
 import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
+import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
@@ -294,11 +295,10 @@ export const PlanForm: FC<PlanFormProps> = props => {
           onChange={onChangeLocation}
           onFocus={onFocusLocation}
         />
-        {hasLocationFocused || location.length > 0 ? (
-          <LocationVisualizer location={location} />
-        ) : (
-          <LocationVisualizerMock />
-        )}
+        <LocationVisualizerAccordion
+          isExpanded={hasLocationFocused || location.length > 0}
+          location={location}
+        />
       </StyledGroupDiv>
 
       <StyledGroupDiv>
@@ -314,6 +314,31 @@ export const PlanForm: FC<PlanFormProps> = props => {
         Go time!
       </Button>
     </form>
+  );
+};
+
+const LocationVisualizerAccordion: FC<{isExpanded: boolean; location: string}> = ({isExpanded, location}) => {
+  const [style, animate] = useSpring(() => ({
+    height: '0px',
+    opacity: 0
+  }));
+
+  useEffect(() => {
+    if (!isExpanded) return;
+
+    animate({
+      height: '$200px',
+      opacity: 100
+    });
+  }, [isExpanded]);
+
+  return (
+    <>
+      {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
+      <animated.div style={style}>
+        <LocationVisualizer location={location} />
+      </animated.div>
+    </>
   );
 };
 
