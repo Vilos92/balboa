@@ -6,7 +6,7 @@ import {AccountFooter} from '../components/AccountFooter';
 import {Card, ColumnJustifiedContent} from '../components/Commons';
 import {Header} from '../components/Header';
 import {PageSkeleton} from '../components/PageSkeleton';
-import {PlanForm} from '../components/PlanForm';
+import {CreatePlanForm} from '../components/planForms/CreatePlanForm';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 import {PostPlan, postPlan} from './api/plans';
 
@@ -67,7 +67,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
       <Header providers={providers} />
       <StyledCard>
         <StyledLandingH2>Enter your event details here</StyledLandingH2>
-        <PlanForm isAuthenticated={isAuthenticated} providers={providers} submitPlan={createPlan} />
+        <CreatePlanForm isAuthenticated={isAuthenticated} providers={providers} createPlan={createPlan} />
       </StyledCard>
       <AccountFooter isAuthenticated={isAuthenticated} providers={providers} />
     </ColumnJustifiedContent>

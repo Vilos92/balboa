@@ -10,10 +10,10 @@ import {Card, ColumnJustifiedContent} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {PageSkeleton} from '../../components/PageSkeleton';
-import {PlanForm} from '../../components/PlanForm';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {ShareInputWithButton} from '../../components/inputs/ShareInputWithButton';
+import {EditPlanForm} from '../../components/planForms/EditPlanForm';
 import {Plan} from '../../models/plan';
 import {User} from '../../models/user';
 import {Handler} from '../../types/common';
@@ -267,12 +267,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
         {tabView === TabViewsEnum.EDIT && (
           <>
             <StyledEditH2>Edit your event details</StyledEditH2>
-            <PlanForm
-              isAuthenticated={authSession.isAuthenticated}
-              providers={providers}
-              plan={plan}
-              submitPlan={updatePlan}
-            />
+            <EditPlanForm plan={plan} editPlan={updatePlan} />
           </>
         )}
       </StyledCard>

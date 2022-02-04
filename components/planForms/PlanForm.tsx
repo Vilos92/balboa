@@ -3,21 +3,18 @@ import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
-import {Button} from '../components/Button';
-import {LocationVisualizerMock} from '../components/LocationVisualizer';
-import {LoginModal} from '../components/LoginModal';
-import {Plan} from '../models/plan';
-import {PostPlan, validatePatchPlan, validatePostPlan} from '../pages/api/plans';
-import {Providers} from '../utils/auth';
-import {swatchColors} from '../utils/color';
-import {ColorInput} from './inputs/ColorInput';
-import {DateInput} from './inputs/DateInput';
-import {TextAreaInput} from './inputs/TextAreaInput';
-import {TextInput} from './inputs/TextInput';
-import {TimeInput} from './inputs/TimeInput';
-import {Tooltip} from './popovers/Tooltip';
+import {PatchPlan, PostPlan} from '../../pages/api/plans';
+import {swatchColors} from '../../utils/color';
+import {Button} from '../Button';
+import {LocationVisualizerMock} from '../LocationVisualizer';
+import {ColorInput} from '../inputs/ColorInput';
+import {DateInput} from '../inputs/DateInput';
+import {TextAreaInput} from '../inputs/TextAreaInput';
+import {TextInput} from '../inputs/TextInput';
+import {TimeInput} from '../inputs/TimeInput';
+import {Tooltip} from '../popovers/Tooltip';
 
-const LocationVisualizer = dynamic(() => import('../components/LocationVisualizer'), {
+const LocationVisualizer = dynamic(() => import('../LocationVisualizer'), {
   loading: () => <LocationVisualizerMock />,
   ssr: false
 });
@@ -27,10 +24,15 @@ const LocationVisualizer = dynamic(() => import('../components/LocationVisualize
  */
 
 interface PlanFormProps {
-  isAuthenticated: boolean;
-  providers: Providers;
-  plan?: Plan;
-  submitPlan: (planDraft: PostPlan) => void;
+  planId?: number;
+  title?: string;
+  color?: string;
+  start?: string;
+  end?: string;
+  location?: string;
+  description?: string;
+  validatePlan: (planDraft: PostPlan | PatchPlan) => readonly ZodIssue[] | undefined;
+  submitPlan: (planDraft: PostPlan | PatchPlan) => void;
 }
 
 interface ColorInputWithTooltipProps {
@@ -78,27 +80,39 @@ const StyledTextAreaInput = styled(TextAreaInput)`
 `;
 
 /*
- * Component.
+ * Components.
  */
 
-export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, submitPlan}) => {
+export const PlanForm: FC<PlanFormProps> = props => {
+  const {
+    planId,
+    title: planTitle,
+    color: planColor,
+    start: planStart,
+    end: planEnd,
+    location: planLocation,
+    description: planDescription,
+    submitPlan,
+    validatePlan
+  } = props;
+
   const [errors, setErrors] = useState<PlanFormErrors>();
   const clearError = (inputName: PlanFormInputsEnum) => setErrors({...errors, [inputName]: undefined});
 
-  const [title, setTitle] = useState(plan ? plan.title : '');
+  const [title, setTitle] = useState(planTitle ?? '');
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     clearError(PlanFormInputsEnum.TITLE);
     setTitle(event.target.value);
   };
 
-  const [color, setColor] = useState(plan ? plan.color : '#ffffff');
+  const [color, setColor] = useState(planColor ?? '#ffffff');
   const onChangeColor = (newColor: string) => setColor(newColor);
   useEffect(() => {
-    if (plan) return;
+    if (planColor) return;
 
     const randColor = swatchColors[Math.floor(Math.random() * swatchColors.length)];
     setColor(randColor);
-  }, [plan]);
+  }, [planColor]);
 
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState('14:00');
@@ -162,7 +176,7 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, s
     }
   };
 
-  const [location, setLocation] = useState(plan ? plan.location : '');
+  const [location, setLocation] = useState(planLocation ?? '');
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => {
     clearError(PlanFormInputsEnum.LOCATION);
     setLocation(event.target.value);
@@ -170,31 +184,37 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, s
   const [hasLocationFocused, setHasLocationFocused] = useState(false);
   const onFocusLocation = () => setHasLocationFocused(true);
 
-  const [description, setDescription] = useState(plan ? plan.description : '');
+  const [description, setDescription] = useState(planDescription ?? '');
   const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
     clearError(PlanFormInputsEnum.DESCRIPTION);
     setDescription(event.target.value);
   };
 
   useEffect(() => {
-    if (plan) {
-      const start = new Date(plan.start);
-      const end = new Date(plan.end);
+    if (planStart) {
+      const start = new Date(planStart);
 
       setStartDate(computeInputDateFromObject(start));
       setStartTime(computeInputTimeFromObject(start));
-
-      setEndDate(computeInputDateFromObject(end));
-      setEndTime(computeInputTimeFromObject(end));
-
       return;
     }
 
     // Initial default date should only be set on the client (no SSR).
-    const defaultDate = computeDefaultDate();
-    setStartDate(defaultDate);
-    setEndDate(defaultDate);
-  }, [plan]);
+    setStartDate(computeDefaultDate());
+  }, [planStart]);
+
+  useEffect(() => {
+    if (planEnd) {
+      const end = new Date(planEnd);
+
+      setEndDate(computeInputDateFromObject(end));
+      setEndTime(computeInputTimeFromObject(end));
+      return;
+    }
+
+    // Initial default date should only be set on the client (no SSR).
+    setEndDate(computeDefaultDate());
+  }, [planEnd]);
 
   // Cannot select dates before today.
   const minimumDate = computeInputDateFromObject(new Date());
@@ -204,7 +224,7 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, s
     const endDt = computeDateTime(endDate, endTime);
 
     const planDraft = {
-      id: plan ? plan.id : undefined,
+      id: planId,
       title,
       color,
       start: startDt.toISOString(),
@@ -214,7 +234,7 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, s
     };
 
     // Handle client-side validation errors in this form.
-    const error = plan ? validatePatchPlan(planDraft) : validatePostPlan(planDraft);
+    const error = validatePlan(planDraft);
     if (error) {
       const planFormErrors = computePlanFormErrors(error);
       setErrors(planFormErrors);
@@ -224,74 +244,62 @@ export const PlanForm: FC<PlanFormProps> = ({isAuthenticated, providers, plan, s
     submitPlan(planDraft);
   };
 
-  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
-  const closeLoginModal = () => setIsLoginModalVisible(false);
-
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
-
-    if (!isAuthenticated) {
-      setIsLoginModalVisible(true);
-      return;
-    }
-
     submit();
   };
 
   return (
-    <>
-      <form onSubmit={onSubmit}>
-        <StyledColorTitleGroupDiv>
-          <ColorInputWithTooltip value={color} onChange={onChangeColor} />
-          <TextInput
-            label='Title'
-            value={title}
-            error={errors?.[PlanFormInputsEnum.TITLE]}
-            onChange={onChangeTitle}
-          />
-        </StyledColorTitleGroupDiv>
+    <form onSubmit={onSubmit}>
+      <StyledColorTitleGroupDiv>
+        <ColorInputWithTooltip value={color} onChange={onChangeColor} />
+        <TextInput
+          label='Title'
+          value={planTitle}
+          error={errors?.[PlanFormInputsEnum.TITLE]}
+          onChange={onChangeTitle}
+        />
+      </StyledColorTitleGroupDiv>
 
-        <StyledGroupDiv>
-          <StyledDateTimeDiv>
-            <DateInput label='Start Date' value={startDate} onChange={onChangeStartDate} min={minimumDate} />
-            <TimeInput label='Start Time' value={startTime} onChange={onChangeStartTime} />
-          </StyledDateTimeDiv>
-          <StyledDateTimeDiv>
-            <DateInput label='End Date' value={endDate} onChange={onChangeEndDate} min={minimumDate} />
-            <TimeInput label='End Time' value={endTime} onChange={onChangeEndTime} />
-          </StyledDateTimeDiv>
-        </StyledGroupDiv>
+      <StyledGroupDiv>
+        <StyledDateTimeDiv>
+          <DateInput label='Start Date' value={startDate} onChange={onChangeStartDate} min={minimumDate} />
+          <TimeInput label='Start Time' value={startTime} onChange={onChangeStartTime} />
+        </StyledDateTimeDiv>
+        <StyledDateTimeDiv>
+          <DateInput label='End Date' value={endDate} onChange={onChangeEndDate} min={minimumDate} />
+          <TimeInput label='End Time' value={endTime} onChange={onChangeEndTime} />
+        </StyledDateTimeDiv>
+      </StyledGroupDiv>
 
-        <StyledGroupDiv>
-          <TextInput
-            label='Location'
-            value={location}
-            error={errors?.[PlanFormInputsEnum.LOCATION]}
-            onChange={onChangeLocation}
-            onFocus={onFocusLocation}
-          />
-          {hasLocationFocused || location.length > 0 ? (
-            <LocationVisualizer location={location} />
-          ) : (
-            <LocationVisualizerMock />
-          )}
-        </StyledGroupDiv>
+      <StyledGroupDiv>
+        <TextInput
+          label='Location'
+          value={location}
+          error={errors?.[PlanFormInputsEnum.LOCATION]}
+          onChange={onChangeLocation}
+          onFocus={onFocusLocation}
+        />
+        {hasLocationFocused || location.length > 0 ? (
+          <LocationVisualizer location={location} />
+        ) : (
+          <LocationVisualizerMock />
+        )}
+      </StyledGroupDiv>
 
-        <StyledGroupDiv>
-          <StyledTextAreaInput
-            label='Description'
-            value={description}
-            error={errors?.[PlanFormInputsEnum.DESCRIPTION]}
-            onChange={onChangeDescription}
-          />
-        </StyledGroupDiv>
+      <StyledGroupDiv>
+        <StyledTextAreaInput
+          label='Description'
+          value={description}
+          error={errors?.[PlanFormInputsEnum.DESCRIPTION]}
+          onChange={onChangeDescription}
+        />
+      </StyledGroupDiv>
 
-        <Button type='submit' backgroundColor={color}>
-          Go time!
-        </Button>
-      </form>
-      {isLoginModalVisible && providers && <LoginModal providers={providers} closeModal={closeLoginModal} />}
-    </>
+      <Button type='submit' backgroundColor={color}>
+        Go time!
+      </Button>
+    </form>
   );
 };
 
