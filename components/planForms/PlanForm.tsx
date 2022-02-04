@@ -5,6 +5,7 @@ import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
 import {swatchColors} from '../../utils/color';
+import {useDebounce} from '../../utils/hooks';
 import {Button} from '../Button';
 import {LocationVisualizerMock} from '../LocationVisualizer';
 import {ColorInput} from '../inputs/ColorInput';
@@ -33,6 +34,7 @@ interface PlanFormProps {
   description?: string;
   validatePlan: (planDraft: PostPlan | PatchPlan) => readonly ZodIssue[] | undefined;
   submitPlan: (planDraft: PostPlan | PatchPlan) => void;
+  persistPlan?: (planDraft: PostPlan | PatchPlan) => void;
 }
 
 interface ColorInputWithTooltipProps {
@@ -93,7 +95,8 @@ export const PlanForm: FC<PlanFormProps> = props => {
     location: planLocation,
     description: planDescription,
     submitPlan,
-    validatePlan
+    validatePlan,
+    persistPlan
   } = props;
 
   const [errors, setErrors] = useState<PlanFormErrors>();
@@ -220,18 +223,17 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const minimumDate = computeInputDateFromObject(new Date());
 
   const submit = async () => {
-    const startDt = computeDateTime(startDate, startTime);
-    const endDt = computeDateTime(endDate, endTime);
-
-    const planDraft = {
-      id: planId,
+    const planDraft = computePlanDraft(
+      planId,
       title,
       color,
-      start: startDt.toISOString(),
-      end: endDt.toISOString(),
+      startDate,
+      startTime,
+      endDate,
+      endTime,
       location,
       description
-    };
+    );
 
     // Handle client-side validation errors in this form.
     const error = validatePlan(planDraft);
@@ -249,13 +251,25 @@ export const PlanForm: FC<PlanFormProps> = props => {
     submit();
   };
 
+  const debouncedPersistPlan = useDebounce(() => {
+    if (!persistPlan) return;
+
+    persistPlan(
+      computePlanDraft(undefined, title, color, startDate, startTime, endDate, endTime, location, description)
+    );
+  }, 1000);
+
+  useEffect(() => {
+    debouncedPersistPlan();
+  }, [title, color, startDate, startTime, endDate, endTime, location, description]);
+
   return (
     <form onSubmit={onSubmit}>
       <StyledColorTitleGroupDiv>
         <ColorInputWithTooltip value={color} onChange={onChangeColor} />
         <TextInput
           label='Title'
-          value={planTitle}
+          value={title}
           error={errors?.[PlanFormInputsEnum.TITLE]}
           onChange={onChangeTitle}
         />
@@ -391,4 +405,30 @@ function computePlanFormErrors(zodErrors: readonly ZodIssue[]): PlanFormErrors {
 
     return {...currentPlanFormErrors, [inputName]: message};
   }, {});
+}
+
+function computePlanDraft(
+  planId: number | undefined,
+  title: string,
+  color: string,
+  startDate: string,
+  startTime: string,
+  endDate: string,
+  endTime: string,
+  location: string,
+  description: string
+) {
+  const startDt = computeDateTime(startDate, startTime);
+  const endDt = computeDateTime(endDate, endTime);
+
+  const planDraft = {
+    id: planId,
+    title,
+    color,
+    start: startDt.toISOString(),
+    end: endDt.toISOString(),
+    location,
+    description
+  };
+  return planDraft;
 }

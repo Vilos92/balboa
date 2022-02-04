@@ -1,6 +1,8 @@
 import {FC, useState} from 'react';
+import {RecoilRoot, useRecoilState, useRecoilValue} from 'recoil';
 
 import {PostPlan, validatePostPlan} from '../../pages/api/plans';
+import {planFormState, planFormValue} from '../../state/planForm';
 import {Providers} from '../../utils/auth';
 import {LoginModal} from '../LoginModal';
 import {PlanForm} from './PlanForm';
@@ -16,14 +18,13 @@ interface CreatePlanFormProps {
 }
 
 /*
- * Component.
+ * Components.
  */
 
-export const CreatePlanForm: FC<CreatePlanFormProps> = ({
-  isAuthenticated,
-  providers,
-  createPlan: submitPlan
-}) => {
+const CreatePlanForm: FC<CreatePlanFormProps> = ({isAuthenticated, providers, createPlan}) => {
+  const planDraft = useRecoilValue(planFormValue);
+  const [_, setPlanDraft] = useRecoilState(planFormState);
+
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
@@ -33,13 +34,34 @@ export const CreatePlanForm: FC<CreatePlanFormProps> = ({
       return;
     }
 
-    submitPlan(plan);
+    createPlan(plan);
+    setPlanDraft(undefined);
   };
 
   return (
     <>
-      <PlanForm validatePlan={validatePostPlan} submitPlan={authCheckSubmitPlan} />
+      <PlanForm
+        title={planDraft.title}
+        color={planDraft.color}
+        start={planDraft.start}
+        end={planDraft.end}
+        location={planDraft.location}
+        description={planDraft.description}
+        validatePlan={validatePostPlan}
+        submitPlan={authCheckSubmitPlan}
+        persistPlan={setPlanDraft}
+      />
       {isLoginModalVisible && providers && <LoginModal providers={providers} closeModal={closeLoginModal} />}
     </>
   );
 };
+
+export const CreatePlanFormContainer: FC<CreatePlanFormProps> = ({
+  isAuthenticated,
+  providers,
+  createPlan
+}) => (
+  <RecoilRoot>
+    <CreatePlanForm isAuthenticated={isAuthenticated} providers={providers} createPlan={createPlan} />
+  </RecoilRoot>
+);
