@@ -22,14 +22,18 @@ const StyledColumnJustifiedContentDiv = tw.div`
   items-center
   justify-between
   min-h-screen
+  pl-1
+  pr-1
+  sm:ml-0
+  sm:mr-0
 `;
 
 const StyledCardDiv = tw.div`
   p-3
   bg-white
   w-full
-  sm:shadow-md
-  sm:rounded-2xl
+  rounded-2xl
+  shadow-md
 `;
 
 /*
