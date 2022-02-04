@@ -54,7 +54,7 @@ interface PlanPageProps {
 interface PlanDetailsProps {
   authSession: AuthSession;
   plan: Plan;
-  refreshPlan: Handler;
+  mutateAttending: (isAttending: boolean) => void;
 }
 
 interface AttendButtonProps {
@@ -62,7 +62,7 @@ interface AttendButtonProps {
   isHosting: boolean;
   isAttending: boolean;
   isDisabled: boolean;
-  refreshPlan: Handler;
+  mutateAttending: (isAttending: boolean) => void;
 }
 
 interface AttendeesProps {
@@ -237,7 +237,6 @@ export default PlanPageContainer;
 
 const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   const {data: plan, error, mutate} = useNetGetPlan(planId);
-  const refreshPlan = () => mutate();
 
   const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
 
@@ -266,6 +265,18 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
     setTabView(TabViewsEnum.DETAILS);
   };
 
+  const mutateAttending = (isAttending: boolean) => {
+    if (!plan || !authSession.user) return;
+    const {users} = plan;
+
+    const newUsers = isAttending
+      ? [...users, authSession.user]
+      : users.filter(user => user.id !== authSession.user?.id);
+
+    mutate({...plan, users: newUsers});
+    return;
+  };
+
   return (
     <ColumnJustifiedContent>
       <Header providers={providers} />
@@ -282,7 +293,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
             )}
 
             {tabView === TabViewsEnum.DETAILS && (
-              <PlanDetails authSession={authSession} plan={plan} refreshPlan={refreshPlan} />
+              <PlanDetails authSession={authSession} plan={plan} mutateAttending={mutateAttending} />
             )}
 
             {tabView === TabViewsEnum.EDIT && (
@@ -300,7 +311,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   );
 };
 
-const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, refreshPlan}) => {
+const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending}) => {
   const [shareUrl, setShareUrl] = useState('');
   // window.location is not available in SSR, so set this in an effect.
   useEffect(() => {
@@ -332,7 +343,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, refreshPlan}) => 
             isAttending={isAttending}
             isHosting={isHosting}
             isDisabled={isAttendButtonDisabled}
-            refreshPlan={refreshPlan}
+            mutateAttending={mutateAttending}
           />
         </StyledAttendButtonDiv>
 
@@ -356,7 +367,7 @@ const AttendButton: FC<AttendButtonProps> = ({
   isAttending: isAttending,
   isDisabled,
   isHosting,
-  refreshPlan
+  mutateAttending
 }) => {
   // Optimistic update state.
   const [isAttendingLocal, setIsAttendingLocal] = useState<boolean>(isAttending);
@@ -367,23 +378,20 @@ const AttendButton: FC<AttendButtonProps> = ({
     if (isAttending !== previousIsAttending) setIsAttendingLocal(isAttending);
   }, [isAttending, previousIsAttending]);
 
-  const handlePlan = isAttendingLocal
+  const handlePlanAttend = isAttendingLocal
     ? async () => {
         await deletePlanAttend(planId);
+        mutateAttending(false);
       }
     : async () => {
         await postPlanAttend(planId);
+        mutateAttending(true);
       };
-
-  const handleAndRefreshPlan = async () => {
-    await handlePlan();
-    refreshPlan();
-  };
 
   const onClick = async () => {
     try {
       setIsAttendingLocal(currentIsAttendingLocal => !currentIsAttendingLocal);
-      await handleAndRefreshPlan();
+      await handlePlanAttend();
     } catch (error) {
       // If we fail, set the local state back to the true state.
       setIsAttendingLocal(isAttending);
