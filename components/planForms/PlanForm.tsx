@@ -83,6 +83,13 @@ const StyledDateTimeDiv = tw.div`
   gap-1
 `;
 
+interface StyledLocationDivProps {
+  $isExpanded: boolean;
+}
+const StyledLocationDiv = styled.div<StyledLocationDivProps>`
+  ${({$isExpanded}) => !$isExpanded && tw`invisible`}
+`;
+
 const StyledTextAreaInput = styled(TextAreaInput)`
   min-height: 72px;
 `;
@@ -300,6 +307,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
           onChange={onChangeLocation}
           onFocus={onFocusLocation}
         />
+
         <LocationVisualizerAccordion
           isExpanded={hasLocationFocused || location.length > 0}
           location={location}
@@ -363,7 +371,9 @@ const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> = ({isEx
     <>
       {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
       <animated.div style={style}>
-        <LocationVisualizer location={location} />
+        <StyledLocationDiv $isExpanded={isExpanded}>
+          <LocationVisualizer location={location} />
+        </StyledLocationDiv>
       </animated.div>
     </>
   );
