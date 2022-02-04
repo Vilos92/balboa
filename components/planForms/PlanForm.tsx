@@ -26,6 +26,7 @@ const LocationVisualizer = dynamic(() => import('../LocationVisualizer'), {
  */
 
 interface PlanFormProps {
+  shouldShowColorHint: boolean;
   planId?: number;
   title?: string;
   color?: string;
@@ -39,6 +40,7 @@ interface PlanFormProps {
 }
 
 interface ColorInputWithTooltipProps {
+  shouldShowColorHint: boolean;
   value: string;
   onChange: (newColor: string) => void;
 }
@@ -100,6 +102,7 @@ const StyledTextAreaInput = styled(TextAreaInput)`
 
 export const PlanForm: FC<PlanFormProps> = props => {
   const {
+    shouldShowColorHint = true,
     planId,
     title: planTitle,
     color: planColor,
@@ -279,7 +282,11 @@ export const PlanForm: FC<PlanFormProps> = props => {
   return (
     <form onSubmit={onSubmit}>
       <StyledColorTitleGroupDiv>
-        <ColorInputWithTooltip value={color} onChange={onChangeColor} />
+        <ColorInputWithTooltip
+          shouldShowColorHint={shouldShowColorHint}
+          value={color}
+          onChange={onChangeColor}
+        />
         <TextInput
           label='Title'
           value={title}
@@ -330,8 +337,8 @@ export const PlanForm: FC<PlanFormProps> = props => {
   );
 };
 
-const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({value, onChange}) => {
-  const [isTooltipVisible, setIsTooltipVisible] = useState(true);
+const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorHint, value, onChange}) => {
+  const [isTooltipVisible, setIsTooltipVisible] = useState(shouldShowColorHint);
 
   const onChangeColor = (newColor: string) => {
     setIsTooltipVisible(false);

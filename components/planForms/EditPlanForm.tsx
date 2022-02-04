@@ -19,6 +19,7 @@ interface EditPlanFormProps {
 
 export const EditPlanForm: FC<EditPlanFormProps> = ({plan, editPlan: submitPlan}) => (
   <PlanForm
+    shouldShowColorHint={false}
     planId={plan.id}
     title={plan.title}
     color={plan.color}
