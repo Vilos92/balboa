@@ -6,7 +6,7 @@ import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
 import {swatchColors} from '../../utils/color';
-import {useDebounce} from '../../utils/hooks';
+import {useDebounce, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
 import {LocationVisualizerMock} from '../LocationVisualizer';
 import {ColorInput} from '../inputs/ColorInput';
@@ -330,10 +330,15 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({value, onChange}
     onChange(newColor);
   };
 
-  const onClickTooltip = () => setIsTooltipVisible(false);
+  const hideTooltip = () => setIsTooltipVisible(false);
+
+  const [setTimeout] = useTimeout();
+  useEffect(() => {
+    setTimeout(hideTooltip, 3000);
+  }, []);
 
   return (
-    <Tooltip isVisible={isTooltipVisible} text='Set a color' onClick={onClickTooltip} placement='left'>
+    <Tooltip isVisible={isTooltipVisible} text='Set a color' onClick={hideTooltip} placement='top-end'>
       <StyledColorInput label='Color' value={value} onChange={onChangeColor} />
     </Tooltip>
   );

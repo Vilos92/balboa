@@ -240,20 +240,21 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
 
   const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
 
+  const [style, animate] = useSpring(() => {
+    const height: number = 290;
+
+    return {
+      height: `${height}px`
+    };
+  });
+
   const onResizeCard = (_resizeWidth?: number, resizeHeight?: number) => {
     animate({
       height: `${resizeHeight}px`
     });
   };
 
-  const {height: cardHeight, ref} = useResizeDetector({onResize: onResizeCard});
-  const [style, animate] = useSpring(() => {
-    const height: number = cardHeight ?? 290;
-
-    return {
-      height: `${height}px`
-    };
-  });
+  const {ref} = useResizeDetector({onResize: onResizeCard});
 
   if (!plan || error) return <PageSkeleton />;
 
