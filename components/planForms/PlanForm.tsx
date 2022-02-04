@@ -43,6 +43,11 @@ interface ColorInputWithTooltipProps {
   onChange: (newColor: string) => void;
 }
 
+interface LocationVisualizerAccordionProps {
+  isExpanded: boolean;
+  location: string;
+}
+
 enum PlanFormInputsEnum {
   TITLE = 'title',
   LOCATION = 'location',
@@ -317,7 +322,24 @@ export const PlanForm: FC<PlanFormProps> = props => {
   );
 };
 
-const LocationVisualizerAccordion: FC<{isExpanded: boolean; location: string}> = ({isExpanded, location}) => {
+const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({value, onChange}) => {
+  const [isTooltipVisible, setIsTooltipVisible] = useState(true);
+
+  const onChangeColor = (newColor: string) => {
+    setIsTooltipVisible(false);
+    onChange(newColor);
+  };
+
+  const onClickTooltip = () => setIsTooltipVisible(false);
+
+  return (
+    <Tooltip isVisible={isTooltipVisible} text='Set a color' onClick={onClickTooltip} placement='left'>
+      <StyledColorInput label='Color' value={value} onChange={onChangeColor} />
+    </Tooltip>
+  );
+};
+
+const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> = ({isExpanded, location}) => {
   const [style, animate] = useSpring(() => ({
     height: '0px',
     opacity: 0
@@ -339,23 +361,6 @@ const LocationVisualizerAccordion: FC<{isExpanded: boolean; location: string}> =
         <LocationVisualizer location={location} />
       </animated.div>
     </>
-  );
-};
-
-const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({value, onChange}) => {
-  const [isTooltipVisible, setIsTooltipVisible] = useState(true);
-
-  const onChangeColor = (newColor: string) => {
-    setIsTooltipVisible(false);
-    onChange(newColor);
-  };
-
-  const onClickTooltip = () => setIsTooltipVisible(false);
-
-  return (
-    <Tooltip isVisible={isTooltipVisible} text='Set a color' onClick={onClickTooltip} placement='left'>
-      <StyledColorInput label='Color' value={value} onChange={onChangeColor} />
-    </Tooltip>
   );
 };
 
