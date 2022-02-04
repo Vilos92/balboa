@@ -102,7 +102,7 @@ const StyledTextAreaInput = styled(TextAreaInput)`
 
 export const PlanForm: FC<PlanFormProps> = props => {
   const {
-    shouldShowColorHint = true,
+    shouldShowColorHint,
     planId,
     title: planTitle,
     color: planColor,

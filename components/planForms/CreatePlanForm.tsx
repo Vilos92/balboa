@@ -41,6 +41,7 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({isAuthenticated, providers, cr
   return (
     <>
       <PlanForm
+        shouldShowColorHint
         title={planDraft.title}
         color={planDraft.color}
         start={planDraft.start}
