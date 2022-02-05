@@ -4,6 +4,10 @@ import {FC} from 'react';
  * Types.
  */
 
+export interface DateTimeProps {
+  date: string;
+}
+
 interface DateTimeRangeProps {
   start: string;
   end: string;
@@ -41,7 +45,7 @@ export const DateTimeRange: FC<DateTimeRangeProps> = ({start, end}) => {
  * Helpers.
  */
 
-function formatLocaleString(date: Date) {
+export function formatLocaleString(date: Date) {
   const dateString = date.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',

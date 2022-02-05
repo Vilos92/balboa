@@ -5,10 +5,12 @@ import tw from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
 import {Card, ColumnJustified} from '../../components/Commons';
+import {DateTime} from '../../components/DateTime';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
+import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlansForUser} from '../../models/plan';
 import {getSessionUser} from '../../utils/auth';
 
@@ -165,7 +167,9 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
           <VisualPlan plan={plan} />
         </StyledTitleH2>
         <StyledDateTimeRangeH3>
-          📅 <DateTimeRange start={plan.start} end={plan.end} />
+          <HoverTooltip text={<DateTimeRange start={plan.start} end={plan.end} />} visibilityDuration={0}>
+            📅 <DateTime date={plan.start} />
+          </HoverTooltip>
         </StyledDateTimeRangeH3>
         <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
         <VisualUser user={hostUser} />

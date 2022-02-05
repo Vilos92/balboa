@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, ReactNode} from 'react';
 import tw from 'twin.macro';
 
 import {Popover, PopoverProps} from './Popover';
@@ -8,7 +8,7 @@ import {Popover, PopoverProps} from './Popover';
  */
 
 export interface TooltipProps extends Omit<PopoverProps, 'popoverChildren'> {
-  text: string;
+  text: ReactNode;
 }
 
 /*
