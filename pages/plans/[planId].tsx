@@ -75,11 +75,13 @@ interface AttendeesProps {
 
 const StyledCard = tw(Card)`
   mt-4
+  mb-4
   flex
   flex-col
   gap-4
   overflow-y-hidden
   sm:mt-8
+  sm:mb-8
   sm:w-7/12
   sm:max-w-xl
 `;
