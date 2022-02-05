@@ -82,7 +82,7 @@ const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
 
 export default LocationVisualizer;
 
-export const LocationVisualizerMock: FC = () => {
+const LocationVisualizerMock: FC = () => {
   return (
     <StyledMapDiv>
       <StyledMockDiv />

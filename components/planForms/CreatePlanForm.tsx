@@ -13,6 +13,7 @@ import {PlanForm} from './PlanForm';
 
 interface CreatePlanFormProps {
   isAuthenticated: boolean;
+  isSubmitDisabled: boolean;
   providers: Providers;
   createPlan: (planDraft: PostPlan) => void;
 }
@@ -21,7 +22,12 @@ interface CreatePlanFormProps {
  * Components.
  */
 
-const CreatePlanForm: FC<CreatePlanFormProps> = ({isAuthenticated, providers, createPlan}) => {
+const CreatePlanForm: FC<CreatePlanFormProps> = ({
+  isAuthenticated,
+  isSubmitDisabled,
+  providers,
+  createPlan
+}) => {
   const planDraft = useRecoilValue(planFormValue);
   const [_, setPlanDraft] = useRecoilState(planFormState);
 
@@ -42,6 +48,7 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({isAuthenticated, providers, cr
     <>
       <PlanForm
         shouldShowColorHint
+        isSubmitDisabled={isSubmitDisabled}
         title={planDraft.title}
         color={planDraft.color}
         start={planDraft.start}
@@ -59,10 +66,16 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({isAuthenticated, providers, cr
 
 export const CreatePlanFormContainer: FC<CreatePlanFormProps> = ({
   isAuthenticated,
+  isSubmitDisabled,
   providers,
   createPlan
 }) => (
   <RecoilRoot>
-    <CreatePlanForm isAuthenticated={isAuthenticated} providers={providers} createPlan={createPlan} />
+    <CreatePlanForm
+      isAuthenticated={isAuthenticated}
+      isSubmitDisabled={isSubmitDisabled}
+      providers={providers}
+      createPlan={createPlan}
+    />
   </RecoilRoot>
 );

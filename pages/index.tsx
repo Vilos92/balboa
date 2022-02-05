@@ -1,11 +1,10 @@
-import {GetServerSideProps as GetStaticProps, NextPage} from 'next';
+import {GetStaticProps, NextPage} from 'next';
 import {useRouter} from 'next/router';
 import tw from 'twin.macro';
 
 import {AccountFooter} from '../components/AccountFooter';
 import {Card, ColumnHorizontalCentered} from '../components/Commons';
 import {Header} from '../components/Header';
-import {PageSkeleton} from '../components/PageSkeleton';
 import {CreatePlanFormContainer} from '../components/planForms/CreatePlanForm';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 import {PostPlan, postPlan} from './api/plans';
@@ -57,7 +56,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
 
   const {status, isAuthenticated} = useAuthSession();
 
-  if (status === SessionStatusesEnum.LOADING) return <PageSkeleton />;
+  const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
 
   const createPlan = async (planDraft: PostPlan) => {
     const plan = await postPlan(planDraft);
@@ -71,11 +70,12 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
         <StyledLandingH2>Enter your event details here</StyledLandingH2>
         <CreatePlanFormContainer
           isAuthenticated={isAuthenticated}
+          isSubmitDisabled={isLoadingSessionStatus}
           providers={providers}
           createPlan={createPlan}
         />
       </StyledCard>
-      <AccountFooter isAuthenticated={isAuthenticated} providers={providers} />
+      <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
     </ColumnHorizontalCentered>
   );
 };

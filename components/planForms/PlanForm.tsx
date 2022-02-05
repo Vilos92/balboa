@@ -8,7 +8,6 @@ import {PatchPlan, PostPlan} from '../../pages/api/plans';
 import {swatchColors} from '../../utils/color';
 import {useDebounce, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
-import {LocationVisualizerMock} from '../LocationVisualizer';
 import {ColorInput} from '../inputs/ColorInput';
 import {DateInput} from '../inputs/DateInput';
 import {TextAreaInput} from '../inputs/TextAreaInput';
@@ -17,7 +16,7 @@ import {TimeInput} from '../inputs/TimeInput';
 import {Tooltip} from '../popovers/Tooltip';
 
 const LocationVisualizer = dynamic(() => import('../LocationVisualizer'), {
-  loading: () => <LocationVisualizerMock />,
+  loading: () => <></>,
   ssr: false
 });
 
@@ -27,6 +26,7 @@ const LocationVisualizer = dynamic(() => import('../LocationVisualizer'), {
 
 interface PlanFormProps {
   shouldShowColorHint: boolean;
+  isSubmitDisabled?: boolean;
   planId?: number;
   title?: string;
   color?: string;
@@ -103,6 +103,7 @@ const StyledTextAreaInput = styled(TextAreaInput)`
 export const PlanForm: FC<PlanFormProps> = props => {
   const {
     shouldShowColorHint,
+    isSubmitDisabled,
     planId,
     title: planTitle,
     color: planColor,
@@ -330,7 +331,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
         />
       </StyledGroupDiv>
 
-      <Button type='submit' backgroundColor={color}>
+      <Button type='submit' backgroundColor={color} disabled={isSubmitDisabled}>
         Go time!
       </Button>
     </form>

@@ -10,7 +10,7 @@ import {LoginModal} from './LoginModal';
  */
 
 interface AccountFooterProps {
-  isAuthenticated: boolean;
+  isHidden: boolean;
   providers: Providers;
 }
 
@@ -88,8 +88,8 @@ const StyledFooterButton = tw(Button)`
  * Components.
  */
 
-export const AccountFooter: FC<AccountFooterProps> = ({isAuthenticated, providers}) => {
-  if (isAuthenticated) return <StyledFooterSpacerDiv />;
+export const AccountFooter: FC<AccountFooterProps> = ({isHidden, providers}) => {
+  if (isHidden) return <StyledFooterSpacerDiv />;
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
