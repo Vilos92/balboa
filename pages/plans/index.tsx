@@ -73,6 +73,7 @@ const StyledRightDiv = tw.div`
   flex
   flex-col
   items-center
+  w-20
 `;
 
 const StyledDaysUntilDiv = tw.div`
