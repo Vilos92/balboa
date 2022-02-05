@@ -4,13 +4,22 @@ import {recoilPersist} from 'recoil-persist';
 import {PatchPlan, PostPlan} from '../pages/api/plans';
 
 /*
+ * Types.
+ */
+
+enum RecoilKeysEnum {
+  PLAN_FORM_STATE = 'planFormState',
+  PLAN_FORM_VALUE = 'planFormValue'
+}
+
+/*
  * State.
  */
 
 const {persistAtom} = recoilPersist();
 
 export const planFormState = atom<PostPlan | PatchPlan | undefined>({
-  key: 'planFormState',
+  key: RecoilKeysEnum.PLAN_FORM_STATE,
   default: undefined,
   effects_UNSTABLE: [persistAtom]
 });
@@ -20,7 +29,7 @@ export const planFormState = atom<PostPlan | PatchPlan | undefined>({
  */
 
 export const planFormValue = selector<Partial<PostPlan | PatchPlan>>({
-  key: 'planFormValue',
+  key: RecoilKeysEnum.PLAN_FORM_VALUE,
   get: ({get}) => {
     const plan = get(planFormState);
 
