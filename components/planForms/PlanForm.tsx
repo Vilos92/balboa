@@ -125,10 +125,13 @@ export const PlanForm: FC<PlanFormProps> = props => {
     setTitle(event.target.value);
   };
 
-  const [color, setColor] = useState(planColor ?? '#ffffff');
+  const [color, setColor] = useState('#ffffff');
   const onChangeColor = (newColor: string) => setColor(newColor);
   useEffect(() => {
-    if (planColor) return;
+    if (planColor) {
+      setColor(planColor);
+      return;
+    }
 
     const randColor = swatchColors[Math.floor(Math.random() * swatchColors.length)];
     setColor(randColor);
