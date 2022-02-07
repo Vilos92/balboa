@@ -51,7 +51,7 @@ async function getHandler(req: NextApiRequest, res: NetResponse<Plan>) {
  * Hooks.
  */
 
-export function useNetGetPlan(planId: number) {
+export function useNetGetPlan(planId: string) {
   const url = computePlanUrl(planId);
 
   return useNetGet<Plan>(url);
@@ -61,6 +61,6 @@ export function useNetGetPlan(planId: number) {
  * Helpers.
  */
 
-function computePlanUrl(planId: number) {
+function computePlanUrl(planId: string) {
   return planUrl.replace(':planId', planId.toString());
 }
