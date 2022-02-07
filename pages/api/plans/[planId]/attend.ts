@@ -2,7 +2,7 @@ import {NextApiRequest, NextApiResponse} from 'next';
 
 import {Plan, deleteUserOnPlan, encodeDraftUserOnPlan, saveUserOnPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
-import {NetResponse, netDelete, netPost, parseQueryNumber} from '../../../../utils/net';
+import {NetResponse, netDelete, netPost, parseQueryNumber, parseQueryString} from '../../../../utils/net';
 
 /*
  * Constants.
@@ -41,7 +41,7 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const user = await getSessionUser(req);
 
   const {planId: planIdParam} = req.query;
-  const planId = parseQueryNumber(planIdParam);
+  const planId = parseQueryString(planIdParam);
 
   if (!user) {
     res.status(401).send({error: 'Unauthorized'});
@@ -60,7 +60,7 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const user = await getSessionUser(req);
 
   const {planId: planIdParam} = req.query;
-  const planId = parseQueryNumber(planIdParam);
+  const planId = parseQueryString(planIdParam);
 
   if (!user) {
     res.status(401).send({error: 'Unauthorized'});

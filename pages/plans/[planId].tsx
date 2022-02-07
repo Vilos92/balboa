@@ -26,7 +26,7 @@ import {
   useAuthSession
 } from '../../utils/auth';
 import {usePrevious} from '../../utils/hooks';
-import {parseQueryNumber} from '../../utils/net';
+import {parseQueryString} from '../../utils/net';
 import {PatchPlan, patchPlan} from '../api/plans';
 import {useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
@@ -231,7 +231,7 @@ const PlanPageContainer: FC<PlanPageContainerProps> = ({providers}) => {
   const {planId: planIdParam} = query;
   if (!planIdParam) return <PageSkeleton />;
 
-  const planId = parseQueryNumber(planIdParam);
+  const planId = parseQueryString(planIdParam);
 
   return <PlanPage providers={providers} authSession={authSession} planId={planId} />;
 };

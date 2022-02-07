@@ -38,9 +38,8 @@ export async function netDelete<T, V>(url: string, body?: T): Promise<V> {
   return response.data;
 }
 
-export function parseQueryNumber(queryParam: string | string[]): number {
-  const param = typeof queryParam === 'string' ? queryParam : queryParam[0];
-  return parseInt(param, 10);
+export function parseQueryString(queryParam: string | string[]): string {
+  return typeof queryParam === 'string' ? queryParam : queryParam[0];
 }
 
 /*

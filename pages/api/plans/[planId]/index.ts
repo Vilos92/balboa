@@ -1,7 +1,7 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 
 import {Plan, findPlan} from '../../../../models/plan';
-import {NetResponse, parseQueryNumber, useNetGet} from '../../../../utils/net';
+import {NetResponse, parseQueryString, useNetGet} from '../../../../utils/net';
 
 /*
  * Constants.
@@ -35,7 +35,7 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
 
 async function getHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const {planId: planIdParam} = req.query;
-  const planId = parseQueryNumber(planIdParam);
+  const planId = parseQueryString(planIdParam);
 
   const plan = await findPlan(planId);
 

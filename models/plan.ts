@@ -10,15 +10,15 @@ import {userSchema} from './user';
 // Schema for user on plan retrieved from the database using prisma.
 const dbUserOnPlanSchema = z.object({
   createdAt: z.date(),
-  planId: z.number(),
-  userId: z.number(),
+  planId: z.string(),
+  userId: z.string(),
   user: userSchema
 });
 
 // Schema for plans retrieved from the database using prisma.
 const dbPlanSchema = z.object({
-  id: z.number(),
-  hostUserId: z.number(),
+  id: z.string(),
+  hostUserId: z.string(),
   createdAt: z.date(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
@@ -30,9 +30,15 @@ const dbPlanSchema = z.object({
   users: z.array(dbUserOnPlanSchema)
 });
 
+// Schema for user on plan drafts.
+const userOnPlanDraftSchema = z.object({
+  userId: z.string(),
+  planId: z.string()
+});
+
 // Schema for plans used by the server and client.
 const planSchema = z.object({
-  id: z.number(),
+  id: z.string(),
   createdAt: z.string(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
@@ -52,20 +58,14 @@ const planInclude = {
 
 // Schema for plan drafts. This is used to validate data which will be sent to the DB.
 export const planDraftSchema = z.object({
-  id: z.number().optional(),
-  hostUserId: z.number(),
+  id: z.string().optional(),
+  hostUserId: z.string(),
   title: z.string().min(3).max(60),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
   start: z.string().min(13).max(30),
   end: z.string().min(13).max(30),
   location: z.string().min(3).max(60),
   description: z.string().max(1000)
-});
-
-// Schema for user on plan drafts.
-const userOnPlanDraftSchema = z.object({
-  userId: z.number(),
-  planId: z.number()
 });
 
 /*
@@ -84,7 +84,7 @@ type UserOnPlanDraft = z.infer<typeof userOnPlanDraftSchema>;
 /**
  * Select a single plan by id.
  */
-export async function findPlan(planId: number) {
+export async function findPlan(planId: string) {
   const prisma = makePrismaClient();
 
   const data = await prisma.plan.findUnique({
@@ -103,7 +103,7 @@ export async function findPlan(planId: number) {
 /**
  * Select plans which have not yet started or ended.
  */
-export async function findPlansForUser(userId: number) {
+export async function findPlansForUser(userId: string) {
   const prisma = makePrismaClient();
 
   const data = await prisma.plan.findMany({
@@ -187,7 +187,7 @@ export async function saveUserOnPlan(userOnPlanDraft: UserOnPlanDraft) {
   return encodePlan(dbPlan);
 }
 
-export async function deleteUserOnPlan(planId: number, userId: number) {
+export async function deleteUserOnPlan(planId: string, userId: string) {
   const prisma = makePrismaClient();
 
   await prisma.userOnPlan.delete({
