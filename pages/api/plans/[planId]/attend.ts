@@ -2,7 +2,7 @@ import {NextApiRequest, NextApiResponse} from 'next';
 
 import {Plan, deleteUserOnPlan, encodeDraftUserOnPlan, saveUserOnPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
-import {NetResponse, netDelete, netPost, parseQueryNumber, parseQueryString} from '../../../../utils/net';
+import {NetResponse, netDelete, netPost, parseQueryString} from '../../../../utils/net';
 
 /*
  * Constants.
