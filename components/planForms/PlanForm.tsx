@@ -27,7 +27,7 @@ const LocationVisualizer = dynamic(() => import('../LocationVisualizer'), {
 interface PlanFormProps {
   shouldShowColorHint: boolean;
   isSubmitDisabled?: boolean;
-  planId?: string;
+  planId?: number;
   title?: string;
   color?: string;
   start?: string;
