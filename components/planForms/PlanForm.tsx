@@ -27,7 +27,7 @@ const LocationVisualizer = dynamic(() => import('../LocationVisualizer'), {
 interface PlanFormProps {
   shouldShowColorHint: boolean;
   isSubmitDisabled?: boolean;
-  planId?: number;
+  planId?: string;
   title?: string;
   color?: string;
   start?: string;
@@ -472,7 +472,7 @@ function computePlanFormErrors(zodErrors: readonly ZodIssue[]): PlanFormErrors {
 }
 
 function computePlanDraft(
-  planId: number | undefined,
+  planId: string | undefined,
   title: string,
   color: string,
   startDate: string,
