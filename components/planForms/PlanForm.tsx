@@ -27,7 +27,7 @@ const LocationVisualizer = dynamic(() => import('../LocationVisualizer'), {
 interface PlanFormProps {
   shouldShowColorHint: boolean;
   isSubmitDisabled?: boolean;
-  planId?: number;
+  planId?: string;
   title?: string;
   color?: string;
   start?: string;
@@ -35,7 +35,7 @@ interface PlanFormProps {
   location?: string;
   description?: string;
   validatePlan: (planDraft: PostPlan | PatchPlan) => readonly ZodIssue[] | undefined;
-  submitPlan: (planDraft: PostPlan | PatchPlan) => void;
+  submitPlan: (planDraft: PostPlan | PatchPlan) => Promise<void>;
   persistPlan?: (planDraft: PostPlan | PatchPlan) => void;
 }
 
@@ -59,6 +59,12 @@ enum PlanFormInputsEnum {
 type PlanFormErrors = {
   [key in PlanFormInputsEnum]?: string;
 };
+
+/*
+ * Constants.
+ */
+
+const defaultColor = '#ffffff';
 
 /*
  * Styles.
@@ -125,9 +131,11 @@ export const PlanForm: FC<PlanFormProps> = props => {
     setTitle(event.target.value);
   };
 
-  const [color, setColor] = useState('#ffffff');
+  const [color, setColor] = useState(defaultColor);
   const onChangeColor = (newColor: string) => setColor(newColor);
   useEffect(() => {
+    if (color !== defaultColor) return;
+
     if (planColor) {
       setColor(planColor);
       return;
@@ -263,7 +271,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
       return;
     }
 
-    submitPlan(planDraft);
+    await submitPlan(planDraft);
   };
 
   const onSubmit = (event: FormEvent) => {

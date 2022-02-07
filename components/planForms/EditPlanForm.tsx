@@ -10,7 +10,7 @@ import {PlanForm} from './PlanForm';
 
 interface EditPlanFormProps {
   plan: Plan;
-  editPlan: (planDraft: PatchPlan) => void;
+  editPlan: (planDraft: PatchPlan) => Promise<void>;
 }
 
 /*

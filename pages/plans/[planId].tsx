@@ -57,7 +57,7 @@ interface PlanDetailsProps {
 }
 
 interface AttendButtonProps {
-  planId: number;
+  planId: string;
   isHosting: boolean;
   isAttending: boolean;
   isDisabled: boolean;

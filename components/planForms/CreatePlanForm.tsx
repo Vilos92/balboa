@@ -15,7 +15,7 @@ interface CreatePlanFormProps {
   isAuthenticated: boolean;
   isSubmitDisabled: boolean;
   providers: Providers;
-  createPlan: (planDraft: PostPlan) => void;
+  createPlan: (planDraft: PostPlan) => Promise<void>;
 }
 
 /*
@@ -34,13 +34,13 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
-  const authCheckSubmitPlan = (plan: PostPlan) => {
+  const authCheckSubmitPlan = async (plan: PostPlan) => {
     if (!isAuthenticated) {
       setIsLoginModalVisible(true);
       return;
     }
 
-    createPlan(plan);
+    await createPlan(plan);
     setPlanDraft(undefined);
   };
 
