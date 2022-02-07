@@ -47,7 +47,7 @@ interface PlanPageContainerProps {
 interface PlanPageProps {
   providers: Providers;
   authSession: AuthSession;
-  planId: number;
+  planId: string;
 }
 
 interface PlanDetailsProps {
@@ -66,7 +66,7 @@ interface AttendButtonProps {
 
 interface AttendeesProps {
   users: readonly User[];
-  hostUserId: number;
+  hostUserId: string;
 }
 
 /*
