@@ -68,10 +68,5 @@
     "twin": {
       "preset": "styled-components"
     }
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pnpm run pretty && pnpm run lint && pnpm run test"
-    }
   }
 }
