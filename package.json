@@ -2,12 +2,15 @@
   "name": "balboa",
   "private": true,
   "scripts": {
+    "prepare-husky": "husky install",
     "local": "dotenv -e .env.local -- next dev",
     "dev": "dotenv -e .env.dev -- next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "jest --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "pretty": "prettier --write ./**/*.ts",
     "prisma-generate-client": "npx prisma generate",
     "prisma-migrate:local": "dotenv -e .env.local -- npx prisma migrate dev --name postgres-init",
     "prisma-migrate:dev": "dotenv -e .env.dev -- npx prisma migrate dev --name postgres-init"
@@ -51,6 +54,7 @@
     "eslint-config-next": "12.0.3",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.4",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^27.4.7",
     "prettier": "^2.4.1",
@@ -63,6 +67,11 @@
   "babelMacros": {
     "twin": {
       "preset": "styled-components"
+    }
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pnpm run pretty && pnpm run lint && pnpm run test"
     }
   }
 }
