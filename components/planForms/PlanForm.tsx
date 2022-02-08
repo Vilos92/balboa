@@ -377,20 +377,26 @@ const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> = ({isEx
     opacity: 0
   }));
 
+  // Local state is required to keep rendered content consistent with SSR.
+  const [isLocalExpanded, setIsLocalExpanded] = useState(false);
   useEffect(() => {
-    if (!isExpanded) return;
+    setIsLocalExpanded(isExpanded);
+  }, [isExpanded]);
+
+  useEffect(() => {
+    if (!isLocalExpanded) return;
 
     animate({
       height: '$200px',
       opacity: 100
     });
-  }, [isExpanded]);
+  }, [isLocalExpanded]);
 
   return (
     <>
       {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
       <animated.div style={style}>
-        <StyledLocationDiv $isExpanded={isExpanded}>
+        <StyledLocationDiv $isExpanded={isLocalExpanded}>
           <LocationVisualizer location={location} />
         </StyledLocationDiv>
       </animated.div>

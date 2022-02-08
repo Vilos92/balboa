@@ -1,4 +1,3 @@
-import {AxiosError} from 'axios';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import {FC, useState} from 'react';
 import ReactMapGL, {Marker, ViewportProps} from 'react-map-gl';
