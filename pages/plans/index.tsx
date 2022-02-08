@@ -59,15 +59,23 @@ const StyledTitleH2 = tw.h2`
   text-lg
 `;
 
-const StyledDateTimeRangeH3 = tw.h3`
+const StyledDateTimeH3 = tw.h3`
   font-bold
   text-sm
   mb-1
+
+  flex
+  flex-row
+  gap-2.5
 `;
 
 const StyledLocationH3 = tw.h3`
   text-sm
   mb-1.5
+
+  flex
+  flex-row
+  gap-2.5
 `;
 
 const StyledRightDiv = tw.div`
@@ -166,12 +174,18 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
         <StyledTitleH2>
           <VisualPlan plan={plan} />
         </StyledTitleH2>
-        <StyledDateTimeRangeH3>
-          <HoverTooltip text={<DateTimeRange start={plan.start} end={plan.end} />} visibilityDuration={0}>
-            📅 <DateTime date={plan.start} />
-          </HoverTooltip>
-        </StyledDateTimeRangeH3>
-        <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
+        <HoverTooltip text={<DateTimeRange start={plan.start} end={plan.end} />} visibilityDuration={0}>
+          <StyledDateTimeH3>
+            <span>📅</span>{' '}
+            <span>
+              <DateTime date={plan.start} />
+            </span>
+          </StyledDateTimeH3>
+        </HoverTooltip>
+        <StyledLocationH3>
+          <span>🌎</span> <span>{plan.location}</span>
+        </StyledLocationH3>
+
         <VisualUser user={hostUser} />
       </div>
       <StyledRightDiv>{renderDaysAwayOrSince(plan.start)}</StyledRightDiv>
