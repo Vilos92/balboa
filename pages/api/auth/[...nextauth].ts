@@ -1,7 +1,8 @@
 import {PrismaAdapter} from '@next-auth/prisma-adapter';
-import {PrismaClient} from '@prisma/client';
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
+
+import {makePrismaClient} from '../../../utils/prisma';
 
 /*
  * Constants.
@@ -14,7 +15,7 @@ const nextAuthSecret = process.env.NEXTAUTH_SECRET;
 const googleClientId = process.env.GOOGLE_CLIENT_ID ?? '';
 const googleClientSecret = process.env.GOOGLE_SECRET ?? '';
 
-const prisma = new PrismaClient();
+const prisma = makePrismaClient();
 
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
