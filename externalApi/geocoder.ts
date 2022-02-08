@@ -4,31 +4,34 @@ import {netGet} from '../utils/net';
  * Types.
  */
 
-export interface Geolocation {
-  latitude: number;
-  longitude: number;
-  label: string;
+export interface MapboxFeature {
+  geometry: {
+    coordinates: [number, number];
+  };
 }
 
-export interface GetPositionStackResponse {
-  data: readonly Geolocation[];
+interface GetMapboxGeocodingResponse {
+  features: readonly MapboxFeature[];
 }
 
 /*
  * Constants.
  */
 
-const positionStackForwardApi = 'http://api.positionstack.com/v1/forward';
-const positionStackAccessKey = process.env.POSITIONSTACK_ACCESS_KEY ?? '';
+const mapboxGeocodingApi = 'https://api.mapbox.com/geocoding/v5/mapbox.places/:query.json';
+const mapboxAccessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ?? '';
 
 /*
  * Network.
  */
 
-export function getPositionStack(query: string): Promise<GetPositionStackResponse> {
-  const url = new URL(positionStackForwardApi);
-  url.searchParams.set('access_key', positionStackAccessKey);
-  url.searchParams.set('query', query);
+export function getMapboxGeocoding(query: string): Promise<GetMapboxGeocodingResponse> {
+  const url = new URL(computeMapboxGeocodingUrl(query));
 
-  return netGet<GetPositionStackResponse>(url.href);
+  url.searchParams.set('access_token', mapboxAccessToken);
+  return netGet<GetMapboxGeocodingResponse>(url.href);
+}
+
+function computeMapboxGeocodingUrl(query: string) {
+  return mapboxGeocodingApi.replace(':query', query);
 }

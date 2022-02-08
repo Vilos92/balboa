@@ -53,10 +53,10 @@ const LocationVisualizer: FC<LocationVisualizerProps> = ({location}) => {
   const debouncedLocation = useDebounceValue(location, 1000);
   const geolocationUrl = computeGeolocationUrl(debouncedLocation) ?? '';
 
-  const {data, error} = useNetGet<GetGeolocationResponse>(geolocationUrl);
-  if (!data || error) return <LocationVisualizerMock />;
+  const {data: mapboxFeatures, error} = useNetGet<GetGeolocationResponse>(geolocationUrl);
+  if (!mapboxFeatures || error) return <LocationVisualizerMock />;
 
-  const [latitude, longitude] = computeLatLongFromResponse(data);
+  const [latitude, longitude] = computeLatLongFromResponse(mapboxFeatures);
 
   return (
     <StyledMapDiv>
@@ -104,9 +104,11 @@ function computeGeolocationUrl(location: string): string | null {
   return url.href;
 }
 
-function computeLatLongFromResponse(data: GetGeolocationResponse): [number, number] {
-  if (!data || data.length === 0) return [45.41, -122.66];
+function computeLatLongFromResponse(mapboxFeatures: GetGeolocationResponse): [number, number] {
+  if (!mapboxFeatures || mapboxFeatures.length === 0) return [45.41, -122.66];
 
-  const {latitude, longitude} = data[0];
+  const [longitude, latitude] = mapboxFeatures[0].geometry.coordinates;
+
+  // Return as lat/long for standard convention.
   return [latitude, longitude];
 }

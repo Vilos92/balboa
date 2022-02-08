@@ -1,13 +1,13 @@
 import {NextApiRequest} from 'next';
 
-import {Geolocation, getPositionStack} from '../../../externalApi/geocoder';
+import {MapboxFeature, getMapboxGeocoding} from '../../../externalApi/geocoder';
 import {NetResponse} from '../../../utils/net';
 
 /*
  * Types.
  */
 
-export type GetGeolocationResponse = readonly Geolocation[];
+export type GetGeolocationResponse = readonly MapboxFeature[];
 
 /*
  * Constants.
@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NetResponse<GetG
 
   const queryString = typeof query === 'string' ? query : query[0];
 
-  const geolocation = await getPositionStack(queryString);
+  const geolocation = await getMapboxGeocoding(queryString);
 
-  res.status(200).json(geolocation.data);
+  res.status(200).json(geolocation.features);
 }
