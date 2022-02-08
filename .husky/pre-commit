@@ -3,4 +3,4 @@
 
 pnpm run pretty
 # pnpm run lint
-pnpm run test
+# pnpm run test
