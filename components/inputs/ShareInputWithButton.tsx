@@ -11,10 +11,14 @@ import {TextInput} from './TextInput';
  * Types.
  */
 
-type ShareInputWithButtonProps = StaticTypeInputProps;
+interface ShareInputWithButtonProps extends StaticTypeInputProps {
+  shareUrl: string;
+  shareText: string;
+}
 
 interface ShareButtonProps {
-  shareValue: string;
+  shareUrl: string;
+  shareText: string;
 }
 
 /*
@@ -50,7 +54,8 @@ const StyledShareButton = tw(Button)`
 
 export const ShareInputWithButton: FC<ShareInputWithButtonProps> = ({
   label,
-  value,
+  shareUrl,
+  shareText,
   onChange,
   onFocus,
   className
@@ -59,27 +64,32 @@ export const ShareInputWithButton: FC<ShareInputWithButtonProps> = ({
     <TextInput
       disabled
       label={label}
-      value={value}
+      value={shareUrl}
       onChange={onChange}
       onFocus={onFocus}
       className={className}
     />
-    <ShareButton shareValue={value ? value.toString() : ''} />
+    <ShareButton shareUrl={shareUrl} shareText={shareText} />
   </StyledShareDiv>
 );
 
-const ShareButton: FC<ShareButtonProps> = ({shareValue}) => {
+const ShareButton: FC<ShareButtonProps> = ({shareUrl, shareText}) => {
   const [isShareTooltipVisible, setIsShareTooltipVisible] = useState(false);
   const [setShareTimeout] = useTimeout();
+
+  const title = `[Grueplan] ${shareText}`;
+
+  // This is prefixed by the navigator API (used by mobile devices).
+  const text = `${shareText} - `;
 
   const onShareValue = async () => {
     setIsShareTooltipVisible(false);
 
     // Attempt to use share API, otherwise copy to clipboard and show tooltip.
     try {
-      await navigator.share({title: 'Grueplan', text: 'Share this plan!', url: shareValue});
+      await navigator.share({title, text, url: shareUrl});
     } catch {
-      await navigator.clipboard.writeText(shareValue);
+      await navigator.clipboard.writeText(shareUrl);
       setIsShareTooltipVisible(true);
       setShareTimeout(() => setIsShareTooltipVisible(false), tooltipVisibilityDuration);
     }

@@ -334,7 +334,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
   return (
     <>
       <div>
-        <ShareInputWithButton label='Share' value={shareUrl} />
+        <ShareInputWithButton label='Share' shareUrl={shareUrl} shareText={plan.title} />
       </div>
       <StyledPlanDetailsDiv>
         <StyledPlanTitleH2>
