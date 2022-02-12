@@ -1,18 +1,16 @@
 import dynamic from 'next/dynamic';
-import Image from 'next/image';
 import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
-import {mutate} from 'swr';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
-import restartSvg from '../../public/remixIcon/restart-line.svg';
 import {Handler} from '../../types/common';
 import {swatchColors} from '../../utils/color';
 import {useDebounce, useHover, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
 import {ChromelessButton} from '../ChromelessButton';
+import {Icon, IconTypesEnum} from '../Icon';
 import {ColorInput} from '../inputs/ColorInput';
 import {DateInput} from '../inputs/DateInput';
 import {TextAreaInput} from '../inputs/TextAreaInput';
@@ -446,7 +444,7 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
   return (
     <animated.div style={animatedStyle}>
       <ChromelessButton ref={hoverRef} onClick={onClick}>
-        <Image width={24} src={restartSvg} priority />
+        <Icon iconType={IconTypesEnum.RESTART} width={24} />
       </ChromelessButton>
     </animated.div>
   );
