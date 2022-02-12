@@ -12,7 +12,7 @@ import {PageSkeleton} from '../../components/PageSkeleton';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
-import {Plan, findPlansForUser} from '../../models/plan';
+import {Plan} from '../../models/plan';
 import {getSessionUser} from '../../utils/auth';
 import {useNetGetPlans} from '../api/plans';
 

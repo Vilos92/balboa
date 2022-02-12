@@ -1,13 +1,17 @@
 import dynamic from 'next/dynamic';
+import Image from 'next/image';
 import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
+import restartSvg from '../../public/remixIcon/restart-line.svg';
+import {Handler} from '../../types/common';
 import {swatchColors} from '../../utils/color';
 import {useDebounce, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
+import {ChromelessButton} from '../ChromelessButton';
 import {ColorInput} from '../inputs/ColorInput';
 import {DateInput} from '../inputs/DateInput';
 import {TextAreaInput} from '../inputs/TextAreaInput';
@@ -19,6 +23,13 @@ const LocationVisualizer = dynamic(() => import('../LocationVisualizer'), {
   loading: () => <></>,
   ssr: false
 });
+
+/*
+ * Constants.
+ */
+
+const defaultStartTime = '14:00';
+const defaultEndTime = '17:00';
 
 /*
  * Types.
@@ -48,6 +59,10 @@ interface ColorInputWithTooltipProps {
 interface LocationVisualizerAccordionProps {
   isExpanded: boolean;
   location: string;
+}
+
+interface ClearFormButtonProps {
+  onClick: Handler;
 }
 
 enum PlanFormInputsEnum {
@@ -102,6 +117,12 @@ const StyledTextAreaInput = styled(TextAreaInput)`
   min-height: 72px;
 `;
 
+const StyledFooterDiv = tw.div`
+  flex
+  flex-row
+  justify-between
+`;
+
 /*
  * Components.
  */
@@ -141,12 +162,12 @@ export const PlanForm: FC<PlanFormProps> = props => {
       return;
     }
 
-    const randColor = swatchColors[Math.floor(Math.random() * swatchColors.length)];
+    const randColor = computeRandomColor();
     setColor(randColor);
   }, [planColor]);
 
   const [startDate, setStartDate] = useState('');
-  const [startTime, setStartTime] = useState('14:00');
+  const [startTime, setStartTime] = useState(defaultStartTime);
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
     try {
       const start = computeDateTime(event.target.value, startTime);
@@ -177,7 +198,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
   };
 
   const [endDate, setEndDate] = useState('');
-  const [endTime, setEndTime] = useState('17:00');
+  const [endTime, setEndTime] = useState(defaultEndTime);
   const onChangeEndDate = (event: ChangeEvent<HTMLInputElement>) => {
     try {
       const start = computeDateTime(startDate, startTime);
@@ -291,6 +312,17 @@ export const PlanForm: FC<PlanFormProps> = props => {
     debouncedPersistPlan();
   }, [title, color, startDate, startTime, endDate, endTime, location, description]);
 
+  const clearForm = () => {
+    setTitle('');
+    setColor(computeRandomColor());
+    setStartDate(computeDefaultDate());
+    setStartTime(defaultStartTime);
+    setEndDate(computeDefaultDate());
+    setEndTime(defaultEndTime);
+    setLocation('');
+    setDescription('');
+  };
+
   return (
     <form onSubmit={onSubmit}>
       <StyledColorTitleGroupDiv>
@@ -342,9 +374,13 @@ export const PlanForm: FC<PlanFormProps> = props => {
         />
       </StyledGroupDiv>
 
-      <Button type='submit' backgroundColor={color} disabled={isSubmitDisabled}>
-        Go time!
-      </Button>
+      <StyledFooterDiv>
+        <Button type='submit' backgroundColor={color} disabled={isSubmitDisabled}>
+          Go time!
+        </Button>
+
+        <ClearFormButton onClick={clearForm} />
+      </StyledFooterDiv>
     </form>
   );
 };
@@ -404,9 +440,19 @@ const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> = ({isEx
   );
 };
 
+const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => (
+  <ChromelessButton onClick={onClick}>
+    <Image width={24} src={restartSvg} priority />
+  </ChromelessButton>
+);
+
 /*
  * Helpers.
  */
+
+function computeRandomColor(): string {
+  return swatchColors[Math.floor(Math.random() * swatchColors.length)];
+}
 
 function computeDefaultDate(): string {
   const start = new Date();
