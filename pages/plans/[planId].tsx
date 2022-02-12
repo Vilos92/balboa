@@ -5,7 +5,7 @@ import {useResizeDetector} from 'react-resize-detector';
 import {animated, useSpring} from 'react-spring';
 import tw, {TwStyle, styled} from 'twin.macro';
 
-import {AccountFooter, FooterSpacer} from '../../components/AccountFooter';
+import {AccountFooter} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
 import {ChromelessButton} from '../../components/ChromelessButton';
 import {Card, ColumnHorizontalCentered} from '../../components/Commons';

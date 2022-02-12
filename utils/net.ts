@@ -10,7 +10,7 @@ import useSWR, {SWRResponse} from 'swr';
 export type NetResponse<T> = NextApiResponse<
   | T
   | {
-      error: string;
+      error: string | unknown;
     }
 >;
 

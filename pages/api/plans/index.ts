@@ -1,9 +1,16 @@
-import {NextApiRequest, NextApiResponse} from 'next';
+import {NextApiRequest} from 'next';
 import {ZodIssue, z} from 'zod';
 
-import {Plan, encodeDraftPlan, planDraftSchema, savePlan, updatePlan} from '../../../models/plan';
+import {
+  Plan,
+  encodeDraftPlan,
+  findPlansForUser,
+  planDraftSchema,
+  savePlan,
+  updatePlan
+} from '../../../models/plan';
 import {getSessionUser} from '../../../utils/auth';
-import {NetResponse, netPatch, netPost} from '../../../utils/net';
+import {NetResponse, netPatch, netPost, useNetGet} from '../../../utils/net';
 import {validateSchema} from '../../../utils/schema';
 
 /*
@@ -22,7 +29,7 @@ const patchPlanSchema = planDraftSchema.omit({hostUserId: true});
  * Types.
  */
 
-type ApiResponse = NextApiResponse<Plan | {error: unknown}>;
+type ApiResponse = NetResponse<Plan | readonly Plan[]>;
 
 export type PostPlan = z.infer<typeof postPlanSchema>;
 export type PatchPlan = z.infer<typeof patchPlanSchema>;
@@ -34,6 +41,9 @@ export type PatchPlan = z.infer<typeof patchPlanSchema>;
 export default async function handler(req: NextApiRequest, res: ApiResponse) {
   try {
     switch (req.method) {
+      case 'GET':
+        await getHandler(req, res);
+        break;
       case 'POST':
         await postHandler(req, res);
         break;
@@ -48,6 +58,19 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
   }
 }
 
+async function getHandler(req: NextApiRequest, res: NetResponse<readonly Plan[]>) {
+  const user = await getSessionUser(req);
+
+  if (!user) {
+    res.status(401).send({error: 'Unauthorized'});
+    return;
+  }
+
+  const plans = await findPlansForUser(user.id);
+
+  res.status(200).json(plans);
+}
+
 async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const user = await getSessionUser(req);
 
@@ -55,6 +78,7 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
     res.status(401).send({error: 'Unauthorized'});
     return;
   }
+
   const {title, color, start, end, location, description} = req.body;
 
   const planBlob = {hostUserId: user.id, title, color, start, end, location, description};
@@ -92,6 +116,14 @@ export function postPlan(planBlob: PostPlan) {
 
 export function patchPlan(planBlob: PatchPlan) {
   return netPatch<PatchPlan, Plan>(plansUrl, planBlob);
+}
+
+/*
+ * Hooks.
+ */
+
+export function useNetGetPlans() {
+  return useNetGet<readonly Plan[]>(plansUrl);
 }
 
 /*

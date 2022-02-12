@@ -8,19 +8,17 @@ import {Card, ColumnJustified} from '../../components/Commons';
 import {DateTime} from '../../components/DateTime';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
+import {PageSkeleton} from '../../components/PageSkeleton';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlansForUser} from '../../models/plan';
 import {getSessionUser} from '../../utils/auth';
+import {useNetGetPlans} from '../api/plans';
 
 /*
  * Types.
  */
-
-interface PlansPageProps {
-  plans: readonly Plan[];
-}
 
 interface PlanCardProps {
   plan: Plan;
@@ -96,12 +94,7 @@ const StyledDaysUntilDiv = tw.div`
  * Server-side props.
  */
 
-export const getServerSideProps: GetServerSideProps<PlansPageProps> = async ({req, res}) => {
-  // Consider all requests fresh within 10s of last.
-  // Return stale between 10 and 59, but compute new page for next request.
-  // After 60 always compute new page.
-  res.setHeader('Cache-Control', 'private, s-maxage=10, stale-while-revalidate=59');
-
+export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
   const user = await getSessionUser(req);
   if (!user)
     return {
@@ -111,12 +104,8 @@ export const getServerSideProps: GetServerSideProps<PlansPageProps> = async ({re
       }
     };
 
-  const plans = await findPlansForUser(user.id);
-
   return {
-    props: {
-      plans
-    }
+    props: {}
   };
 };
 
@@ -124,7 +113,10 @@ export const getServerSideProps: GetServerSideProps<PlansPageProps> = async ({re
  * Page.
  */
 
-const PlansPage: FC<PlansPageProps> = ({plans}) => {
+const PlansPage: FC = () => {
+  const {data: plans, error} = useNetGetPlans();
+  if (!plans || error) return <PageSkeleton />;
+
   const now = new Date();
 
   const currentPlans = plans

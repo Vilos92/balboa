@@ -1,4 +1,4 @@
-import {NextApiRequest, NextApiResponse} from 'next';
+import {NextApiRequest} from 'next';
 
 import {Plan, deleteUserOnPlan, encodeDraftUserOnPlan, saveUserOnPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
@@ -14,7 +14,7 @@ const planAttendUrl = '/api/plans/:planId/attend';
  * Types.
  */
 
-type ApiResponse = NextApiResponse<Plan | {error: unknown}>;
+type ApiResponse = NetResponse<Plan>;
 
 /*
  * Request handler.

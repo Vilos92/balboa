@@ -1,4 +1,4 @@
-import {NextApiRequest, NextApiResponse} from 'next';
+import {NextApiRequest} from 'next';
 
 import {Plan, findPlan} from '../../../../models/plan';
 import {NetResponse, parseQueryString, useNetGet} from '../../../../utils/net';
@@ -13,7 +13,7 @@ const planUrl = '/api/plans/:planId';
  * Types.
  */
 
-type ApiResponse = NextApiResponse<Plan | {error: unknown}>;
+type ApiResponse = NetResponse<Plan>;
 
 /*
  * Request handler.
