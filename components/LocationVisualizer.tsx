@@ -31,10 +31,13 @@ const StyledMapDiv = styled.div`
   position: relative;
 `;
 
-const StyledMockDiv = tw.div`
-  h-full
-  w-full
-  bg-blue-300
+const StyledMockDiv = styled.div`
+  ${tw`
+    h-full
+    w-full
+  `}
+
+  background-color: #DEDEDE;
 `;
 
 /*

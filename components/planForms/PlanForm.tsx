@@ -2,6 +2,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
+import {mutate} from 'swr';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
@@ -321,6 +322,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
     setEndTime(defaultEndTime);
     setLocation('');
     setDescription('');
+    setHasLocationFocused(false);
   };
 
   return (
@@ -408,31 +410,24 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorH
 };
 
 const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> = ({isExpanded, location}) => {
-  const [style, animate] = useSpring(() => ({
-    height: '0px',
-    opacity: 0
-  }));
-
   // Local state is required to keep rendered content consistent with SSR.
   const [isLocalExpanded, setIsLocalExpanded] = useState(false);
   useEffect(() => {
+    if (isExpanded === isLocalExpanded) return;
     setIsLocalExpanded(isExpanded);
   }, [isExpanded]);
 
-  useEffect(() => {
-    if (!isLocalExpanded) return;
-
-    animate({
-      height: '$200px',
-      opacity: 100
-    });
-  }, [isLocalExpanded]);
+  const style = useSpring({
+    from: {height: '0px', opacity: 0},
+    to: {height: '200px', opacity: 100},
+    reverse: !isExpanded
+  });
 
   return (
     <>
       {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
       <animated.div style={style}>
-        <StyledLocationDiv $isExpanded={isLocalExpanded}>
+        <StyledLocationDiv $isExpanded={isExpanded}>
           <LocationVisualizer location={location} />
         </StyledLocationDiv>
       </animated.div>
