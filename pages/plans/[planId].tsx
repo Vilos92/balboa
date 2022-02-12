@@ -5,7 +5,7 @@ import {useResizeDetector} from 'react-resize-detector';
 import {animated, useSpring} from 'react-spring';
 import tw, {TwStyle, styled} from 'twin.macro';
 
-import {FooterSpacer} from '../../components/AccountFooter';
+import {AccountFooter, FooterSpacer} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
 import {ChromelessButton} from '../../components/ChromelessButton';
 import {Card, ColumnHorizontalCentered} from '../../components/Commons';
@@ -281,6 +281,9 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
     return;
   };
 
+  const {status, isAuthenticated} = authSession;
+  const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
+
   return (
     <ColumnHorizontalCentered>
       <Header providers={providers} />
@@ -310,7 +313,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
         </animated.div>
       </StyledCard>
 
-      <FooterSpacer />
+      <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
     </ColumnHorizontalCentered>
   );
 };
@@ -324,12 +327,13 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
     setShareUrl(`${protocol}//${hostname}${pathname}`);
   });
 
+  const {isAuthenticated} = authSession;
   const {hostUser, users} = plan;
 
   const isHosting = computeIsHosting(authSession, plan);
-  const isAttendButtonDisabled = !authSession.isAuthenticated || isHosting;
+  const isAttendButtonDisabled = !isAuthenticated || isHosting;
 
-  const isAttending = authSession.isAuthenticated && users.some(user => user.id === authSession.user.id);
+  const isAttending = isAuthenticated && users.some(user => user.id === authSession.user.id);
 
   return (
     <>
@@ -342,13 +346,15 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
         </StyledPlanTitleH2>
 
         <StyledAttendButtonDiv>
-          <AttendButton
-            planId={plan.id}
-            isAttending={isAttending}
-            isHosting={isHosting}
-            isDisabled={isAttendButtonDisabled}
-            mutateAttending={mutateAttending}
-          />
+          {isAuthenticated && (
+            <AttendButton
+              planId={plan.id}
+              isAttending={isAttending}
+              isHosting={isHosting}
+              isDisabled={isAttendButtonDisabled}
+              mutateAttending={mutateAttending}
+            />
+          )}
         </StyledAttendButtonDiv>
 
         <StyledDateTimeRangeH3>
