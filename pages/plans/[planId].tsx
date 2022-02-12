@@ -32,6 +32,12 @@ import {useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
 
 /*
+ * Constants.
+ */
+
+const defaultCardHeight = 290;
+
+/*
  * Types.
  */
 
@@ -242,19 +248,15 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   const {data: plan, error, mutate} = useNetGetPlan(planId);
 
   const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
+  const [cardHeight, setCardHeight] = useState(defaultCardHeight);
 
-  const [style, animate] = useSpring(() => {
-    const height: number = 290;
-
-    return {
-      height: `${height}px`
-    };
+  const style = useSpring({
+    from: {height: `${defaultCardHeight}px`, opacity: 0},
+    to: {height: `${cardHeight}px`, opacity: 100}
   });
 
   const onResizeCard = (_resizeWidth?: number, resizeHeight?: number) => {
-    animate({
-      height: `${resizeHeight}px`
-    });
+    if (resizeHeight) setCardHeight(resizeHeight);
   };
 
   const {ref} = useResizeDetector({onResize: onResizeCard});
