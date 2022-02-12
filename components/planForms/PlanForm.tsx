@@ -413,16 +413,9 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorH
 };
 
 const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> = ({isExpanded, location}) => {
-  // Local state is required to keep rendered content consistent with SSR.
-  const [isLocalExpanded, setIsLocalExpanded] = useState(false);
-  useEffect(() => {
-    if (isExpanded === isLocalExpanded) return;
-    setIsLocalExpanded(isExpanded);
-  }, [isExpanded]);
-
   const style = useSpring({
     from: {height: '0px', opacity: 0},
-    to: {height: '200px', opacity: 100},
+    to: {height: isExpanded ? '200px' : '0', opacity: 100},
     reverse: !isExpanded
   });
 
@@ -448,7 +441,7 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
     reverse: !hasHover
   });
 
-  const animatedStyle = {...style, 'transform-origin': '12px 12px'};
+  const animatedStyle = {...style, transformOrigin: '12px 12px'};
 
   return (
     <animated.div style={animatedStyle}>

@@ -4,6 +4,7 @@ import {FC} from 'react';
 import tw from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
+import {ChromelessButton} from '../../components/ChromelessButton';
 import {Card, ColumnJustified} from '../../components/Commons';
 import {DateTime} from '../../components/DateTime';
 import {DateTimeRange} from '../../components/DateTimeRange';
@@ -19,6 +20,14 @@ import {useNetGetPlans} from '../api/plans';
 /*
  * Types.
  */
+
+interface UpcomingPlansProps {
+  plans: readonly Plan[];
+}
+
+interface PastPlansProps {
+  plans: readonly Plan[];
+}
 
 interface PlanCardProps {
   plan: Plan;
@@ -119,7 +128,7 @@ const PlansPage: FC = () => {
 
   const now = new Date();
 
-  const currentPlans = plans
+  const upcomingPlans = plans
     .filter(plan => new Date(plan.end) >= now)
     .sort((planA, planB) => calculateDateDifference(planB.start, planA.start));
 
@@ -132,15 +141,8 @@ const PlansPage: FC = () => {
       <Header />
 
       <StyledContentDiv>
-        <StyledSectionH1>Upcoming</StyledSectionH1>
-        {currentPlans.map(plan => (
-          <PlanCard key={plan.id} plan={plan} />
-        ))}
-
-        <StyledSectionH1>Past</StyledSectionH1>
-        {pastPlans.map(plan => (
-          <PlanCard key={plan.id} plan={plan} />
-        ))}
+        <UpcomingPlans plans={upcomingPlans} />
+        <PastPlans plans={pastPlans} />
       </StyledContentDiv>
       <FooterSpacer />
     </ColumnJustified>
@@ -152,6 +154,42 @@ export default PlansPage;
 /*
  * Components.
  */
+
+const UpcomingPlans: FC<UpcomingPlansProps> = ({plans}) => {
+  const router = useRouter();
+
+  const onClickCreateNow = () => router.push('/');
+
+  if (plans.length === 0)
+    return (
+      <StyledSectionH1>
+        You have no upcoming events,{' '}
+        <ChromelessButton onClick={onClickCreateNow}>plan something</ChromelessButton> new!
+      </StyledSectionH1>
+    );
+
+  return (
+    <>
+      <StyledSectionH1>Upcoming</StyledSectionH1>
+      {plans.map(plan => (
+        <PlanCard key={plan.id} plan={plan} />
+      ))}
+    </>
+  );
+};
+
+const PastPlans: FC<PastPlansProps> = ({plans}) => {
+  if (plans.length === 0) return null;
+
+  return (
+    <>
+      <StyledSectionH1>Past</StyledSectionH1>
+      {plans.map(plan => (
+        <PlanCard key={plan.id} plan={plan} />
+      ))}
+    </>
+  );
+};
 
 const PlanCard: FC<PlanCardProps> = ({plan}) => {
   const router = useRouter();
