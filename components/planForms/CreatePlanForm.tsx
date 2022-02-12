@@ -49,6 +49,7 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
       <PlanForm
         shouldShowColorHint
         isSubmitDisabled={isSubmitDisabled}
+        isClearButtonVisible
         title={planDraft.title}
         color={planDraft.color}
         start={planDraft.start}

@@ -10,7 +10,7 @@ import {PatchPlan, PostPlan} from '../../pages/api/plans';
 import restartSvg from '../../public/remixIcon/restart-line.svg';
 import {Handler} from '../../types/common';
 import {swatchColors} from '../../utils/color';
-import {useDebounce, useTimeout} from '../../utils/hooks';
+import {useDebounce, useHover, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
 import {ChromelessButton} from '../ChromelessButton';
 import {ColorInput} from '../inputs/ColorInput';
@@ -39,6 +39,7 @@ const defaultEndTime = '17:00';
 interface PlanFormProps {
   shouldShowColorHint: boolean;
   isSubmitDisabled?: boolean;
+  isClearButtonVisible?: boolean;
   planId?: string;
   title?: string;
   color?: string;
@@ -122,6 +123,7 @@ const StyledFooterDiv = tw.div`
   flex
   flex-row
   justify-between
+  items-center
 `;
 
 /*
@@ -132,6 +134,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const {
     shouldShowColorHint,
     isSubmitDisabled,
+    isClearButtonVisible,
     planId,
     title: planTitle,
     color: planColor,
@@ -381,7 +384,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
           Go time!
         </Button>
 
-        <ClearFormButton onClick={clearForm} />
+        {isClearButtonVisible && <ClearFormButton onClick={clearForm} />}
       </StyledFooterDiv>
     </form>
   );
@@ -435,11 +438,26 @@ const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> = ({isEx
   );
 };
 
-const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => (
-  <ChromelessButton onClick={onClick}>
-    <Image width={24} src={restartSvg} priority />
-  </ChromelessButton>
-);
+const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
+  const [hoverRef, hasHover] = useHover<HTMLButtonElement>();
+
+  const degrees = hasHover ? 180 : 0;
+
+  const style = useSpring({
+    transform: `rotate(${degrees}deg)`,
+    reverse: !hasHover
+  });
+
+  const animatedStyle = {...style, 'transform-origin': '12px 12px'};
+
+  return (
+    <animated.div style={animatedStyle}>
+      <ChromelessButton ref={hoverRef} onClick={onClick}>
+        <Image width={24} src={restartSvg} priority />
+      </ChromelessButton>
+    </animated.div>
+  );
+};
 
 /*
  * Helpers.

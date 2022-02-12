@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {PropsWithChildren, forwardRef} from 'react';
 import tw from 'twin.macro';
 
 /*
@@ -22,20 +22,17 @@ const StyledButton = tw.button`
  * Component.
  */
 
-export const ChromelessButton: FC<ChromelessButtonProps> = ({
-  children,
-  className,
-  onClick,
-  onMouseEnter,
-  onMouseLeave
-}) => (
-  <StyledButton
-    type='button'
-    className={className}
-    onClick={onClick}
-    onMouseEnter={onMouseEnter}
-    onMouseLeave={onMouseLeave}
-  >
-    {children}
-  </StyledButton>
+export const ChromelessButton = forwardRef<HTMLButtonElement, PropsWithChildren<ChromelessButtonProps>>(
+  ({children, className, onClick, onMouseEnter, onMouseLeave}, ref) => (
+    <StyledButton
+      ref={ref}
+      type='button'
+      className={className}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+    >
+      {children}
+    </StyledButton>
+  )
 );

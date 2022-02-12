@@ -52,20 +52,18 @@ const StyledCardDiv = tw.div`
  * Components.
  */
 
-export const ColumnJustified: FC = ({children}) => {
-  return <StyledColumnJustifiedDiv>{children}</StyledColumnJustifiedDiv>;
-};
+export const ColumnJustified: FC = ({children}) => (
+  <StyledColumnJustifiedDiv>{children}</StyledColumnJustifiedDiv>
+);
 
-export const ColumnHorizontalCentered: FC = ({children}) => {
-  return <StyledColumnHorizontalCenteredDiv>{children}</StyledColumnHorizontalCenteredDiv>;
-};
+export const ColumnHorizontalCentered: FC = ({children}) => (
+  <StyledColumnHorizontalCenteredDiv>{children}</StyledColumnHorizontalCenteredDiv>
+);
 
 export const Card = forwardRef<HTMLDivElement, PropsWithChildren<CardProps>>(
-  ({children, className, onClick}, ref) => {
-    return (
-      <StyledCardDiv className={className} onClick={onClick} ref={ref}>
-        {children}
-      </StyledCardDiv>
-    );
-  }
+  ({children, className, onClick}, ref) => (
+    <StyledCardDiv className={className} onClick={onClick} ref={ref}>
+      {children}
+    </StyledCardDiv>
+  )
 );

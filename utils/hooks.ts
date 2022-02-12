@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useRef, useState} from 'react';
+import {RefObject, useCallback, useEffect, useRef, useState} from 'react';
 
 import {Handler} from '../types/common';
 
@@ -82,4 +82,27 @@ export function useClickWindow<T extends HTMLElement>(onClick: () => void) {
   }, [onClickWindow]);
 
   return elementRef;
+}
+
+export function useHover<T extends HTMLElement>(): [RefObject<T>, boolean] {
+  const ref = useRef<T>(null);
+
+  const [hasHover, setHasHover] = useState(false);
+
+  const handleMouseOver = () => setHasHover(true);
+  const handleMouseOut = () => setHasHover(false);
+
+  useEffect(() => {
+    if (!ref.current) return;
+    ref.current.addEventListener('mouseover', handleMouseOver);
+    ref.current.addEventListener('mouseout', handleMouseOut);
+
+    return () => {
+      if (!ref.current) return;
+      ref.current.removeEventListener('mouseover', handleMouseOver);
+      ref.current.removeEventListener('mouseout', handleMouseOut);
+    };
+  });
+
+  return [ref, hasHover];
 }
