@@ -65,6 +65,7 @@ const StyledCard = tw(Card)`
 
 const StyledTitleH2 = tw.h2`
   text-lg
+  mb-1.5
 `;
 
 const StyledDateTimeH3 = tw.h3`
