@@ -1,3 +1,4 @@
+import {google} from 'calendar-link';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {useRouter} from 'next/router';
 import React, {FC, useEffect, useState} from 'react';
@@ -17,6 +18,7 @@ import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {ShareInputWithButton} from '../../components/inputs/ShareInputWithButton';
 import {EditPlanForm} from '../../components/planForms/EditPlanForm';
+import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan} from '../../models/plan';
 import {User} from '../../models/user';
 import {
@@ -26,6 +28,7 @@ import {
   getAuthProviders,
   useAuthSession
 } from '../../utils/auth';
+import {openGoogleCalendarLink} from '../../utils/calendar';
 import {usePrevious} from '../../utils/hooks';
 import {parseQueryString} from '../../utils/net';
 import {PatchPlan, patchPlan} from '../api/plans';
@@ -337,6 +340,8 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
 
   const isAttending = isAuthenticated && users.some(user => user.id === authSession.user.id);
 
+  const onClickDateRange = () => openGoogleCalendarLink(plan);
+
   return (
     <>
       <div>
@@ -361,10 +366,13 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
 
         <StyledInfoLineDiv>
           <Icon type={IconTypesEnum.CALENDAR_EVENT} size={20} />
-          <span>
-            <DateTimeRange start={plan.start} end={plan.end} />
-          </span>
+          <HoverTooltip text='Create a Google Calendar event'>
+            <ChromelessButton onClick={onClickDateRange}>
+              <DateTimeRange start={plan.start} end={plan.end} />
+            </ChromelessButton>
+          </HoverTooltip>
         </StyledInfoLineDiv>
+
         <StyledInfoLineDiv>
           <Icon type={IconTypesEnum.MAP_PIN} size={20} />
           <span>{plan.location}</span>
