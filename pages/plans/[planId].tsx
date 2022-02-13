@@ -11,6 +11,7 @@ import {ChromelessButton} from '../../components/ChromelessButton';
 import {Card, ColumnHorizontalCentered} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
+import {Icon, IconTypesEnum} from '../../components/Icon';
 import {PageSkeleton} from '../../components/PageSkeleton';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
@@ -150,16 +151,15 @@ const StyledPlanTitleH2 = tw.h2`
   text-xl
 `;
 
-const StyledDateTimeRangeH3 = tw.h3`
+const StyledInfoLineDiv = tw.div`
   col-start-1
   col-span-3
-  text-sm
-  mt-1
-`;
 
-const StyledLocationH3 = tw.h3`
-  col-start-1
-  col-span-3
+  flex
+  flex-row
+  items-center
+  gap-2.5
+
   text-sm
   mt-1
 `;
@@ -359,10 +359,16 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
           )}
         </StyledAttendButtonDiv>
 
-        <StyledDateTimeRangeH3>
-          📅 <DateTimeRange start={plan.start} end={plan.end} />
-        </StyledDateTimeRangeH3>
-        <StyledLocationH3>🌎 {plan.location}</StyledLocationH3>
+        <StyledInfoLineDiv>
+          <Icon type={IconTypesEnum.CALENDAR_EVENT} size={20} />
+          <span>
+            <DateTimeRange start={plan.start} end={plan.end} />
+          </span>
+        </StyledInfoLineDiv>
+        <StyledInfoLineDiv>
+          <Icon type={IconTypesEnum.MAP_PIN} size={20} />
+          <span>{plan.location}</span>
+        </StyledInfoLineDiv>
 
         <StyledDescriptionP>{plan.description}</StyledDescriptionP>
       </StyledPlanDetailsDiv>

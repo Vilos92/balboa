@@ -444,7 +444,7 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
   return (
     <animated.div style={animatedStyle}>
       <ChromelessButton ref={hoverRef} onClick={onClick}>
-        <Icon iconType={IconTypesEnum.RESTART} width={24} />
+        <Icon type={IconTypesEnum.RESTART} size={24} />
       </ChromelessButton>
     </animated.div>
   );

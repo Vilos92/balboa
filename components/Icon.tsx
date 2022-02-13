@@ -1,33 +1,32 @@
 import Image from 'next/image';
 import {FC} from 'react';
 
+import calendarEventSvg from '../public/remixIcon/calendar-event-line.svg';
+import mapPinSvg from '../public/remixIcon/map-pin-line.svg';
 import restartSvg from '../public/remixIcon/restart-line.svg';
-import {AtLeastOne} from '../types/common';
 
 /*
  * Types.
  */
 
 export enum IconTypesEnum {
+  CALENDAR_EVENT = 'calendarEvent',
+  MAP_PIN = 'mapPin',
   RESTART = 'restart'
 }
 
-interface BasicIconProps {
-  iconType: IconTypesEnum;
+interface IconProps {
+  type: IconTypesEnum;
+  size: number;
 }
-
-interface IconDimensionProps {
-  width: number;
-  height: number;
-}
-
-type IconProps = BasicIconProps & AtLeastOne<IconDimensionProps>;
 
 /*
  * Constants.
  */
 
 const iconSourceMap = {
+  [IconTypesEnum.CALENDAR_EVENT]: calendarEventSvg,
+  [IconTypesEnum.MAP_PIN]: mapPinSvg,
   [IconTypesEnum.RESTART]: restartSvg
 };
 
@@ -35,6 +34,6 @@ const iconSourceMap = {
  * Component.
  */
 
-export const Icon: FC<IconProps> = ({iconType, width, height}) => (
-  <Image src={iconSourceMap[iconType]} width={width} height={height} priority />
+export const Icon: FC<IconProps> = ({type, size}) => (
+  <Image src={iconSourceMap[type]} width={size} height={size} priority />
 );
