@@ -3,10 +3,10 @@ import {FC, useState} from 'react';
 import ReactMapGL, {Marker, ViewportProps} from 'react-map-gl';
 import tw, {styled} from 'twin.macro';
 
-import {GetGeolocationResponse, geolocationApi} from '../pages/api/geolocation';
-import MapStyle from '../styles/map-style-basic-v8.json';
-import {useDebounceValue} from '../utils/hooks';
-import {useNetGet} from '../utils/net';
+import {GetGeolocationResponse, geolocationApi} from '../../pages/api/geolocation';
+import MapStyle from '../../styles/map-style-basic-v8.json';
+import {useDebounceValue} from '../../utils/hooks';
+import {useNetGet} from '../../utils/net';
 
 /*
  * Types.

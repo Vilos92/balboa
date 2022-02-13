@@ -323,6 +323,10 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   );
 };
 
+/*
+ * Components.
+ */
+
 const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending}) => {
   const [shareUrl, setShareUrl] = useState('');
   // window.location is not available in SSR, so set this in an effect.

@@ -1,4 +1,3 @@
-import dynamic from 'next/dynamic';
 import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
@@ -17,11 +16,7 @@ import {TextAreaInput} from '../inputs/TextAreaInput';
 import {TextInput} from '../inputs/TextInput';
 import {TimeInput} from '../inputs/TimeInput';
 import {Tooltip} from '../popovers/Tooltip';
-
-const LocationVisualizer = dynamic(() => import('../LocationVisualizer'), {
-  loading: () => <></>,
-  ssr: false
-});
+import {LocationVisualizerAccordion} from './LocationVisualizerAccordion';
 
 /*
  * Constants.
@@ -54,11 +49,6 @@ interface ColorInputWithTooltipProps {
   shouldShowColorHint: boolean;
   value: string;
   onChange: (newColor: string) => void;
-}
-
-interface LocationVisualizerAccordionProps {
-  isExpanded: boolean;
-  location: string;
 }
 
 interface ClearFormButtonProps {
@@ -109,7 +99,7 @@ const StyledDateTimeDiv = tw.div`
 interface StyledLocationDivProps {
   $isExpanded: boolean;
 }
-const StyledLocationDiv = styled.div<StyledLocationDivProps>`
+export const StyledLocationDiv = styled.div<StyledLocationDivProps>`
   ${({$isExpanded}) => !$isExpanded && tw`invisible`}
 `;
 
@@ -410,25 +400,6 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorH
   );
 };
 
-const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> = ({isExpanded, location}) => {
-  const style = useSpring({
-    from: {height: '0px', opacity: 0},
-    to: {height: isExpanded ? '200px' : '0', opacity: 100},
-    reverse: !isExpanded
-  });
-
-  return (
-    <>
-      {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
-      <animated.div style={style}>
-        <StyledLocationDiv $isExpanded={isExpanded}>
-          <LocationVisualizer location={location} />
-        </StyledLocationDiv>
-      </animated.div>
-    </>
-  );
-};
-
 const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
   const [hoverRef, hasHover] = useHover<HTMLButtonElement>();
 
@@ -442,11 +413,14 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
   const animatedStyle = {...style, transformOrigin: '12px 12px'};
 
   return (
-    <animated.div style={animatedStyle}>
-      <ChromelessButton ref={hoverRef} onClick={onClick}>
-        <Icon type={IconTypesEnum.RESTART} size={24} />
-      </ChromelessButton>
-    </animated.div>
+    <>
+      {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
+      <animated.div style={animatedStyle}>
+        <ChromelessButton ref={hoverRef} onClick={onClick}>
+          <Icon type={IconTypesEnum.RESTART} size={24} />
+        </ChromelessButton>
+      </animated.div>
+    </>
   );
 };
 
