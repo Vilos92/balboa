@@ -158,7 +158,7 @@ const StyledInfoLineDiv = tw.div`
   flex
   flex-row
   items-center
-  gap-2.5
+  gap-2
 
   text-sm
   mt-1

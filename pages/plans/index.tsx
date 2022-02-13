@@ -9,6 +9,7 @@ import {Card, ColumnJustified} from '../../components/Commons';
 import {DateTime} from '../../components/DateTime';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
+import {Icon, IconTypesEnum} from '../../components/Icon';
 import {PageSkeleton} from '../../components/PageSkeleton';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
@@ -73,7 +74,7 @@ const StyledDateTimeH3 = tw.h3`
 
   flex
   flex-row
-  gap-2.5
+  gap-2
 `;
 
 const StyledLocationH3 = tw.h3`
@@ -82,7 +83,7 @@ const StyledLocationH3 = tw.h3`
 
   flex
   flex-row
-  gap-2.5
+  gap-2
 `;
 
 const StyledRightDiv = tw.div`
@@ -206,14 +207,14 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
         </StyledTitleH2>
         <HoverTooltip text={<DateTimeRange start={plan.start} end={plan.end} />} visibilityDuration={0}>
           <StyledDateTimeH3>
-            <span>📅</span>{' '}
+            <Icon type={IconTypesEnum.CALENDAR_EVENT} size={20} />{' '}
             <span>
               <DateTime date={plan.start} />
             </span>
           </StyledDateTimeH3>
         </HoverTooltip>
         <StyledLocationH3>
-          <span>🌎</span> <span>{plan.location}</span>
+          <Icon type={IconTypesEnum.MAP_PIN} size={20} /> <span>{plan.location}</span>
         </StyledLocationH3>
 
         <VisualUser user={hostUser} />
