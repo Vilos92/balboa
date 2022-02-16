@@ -2,6 +2,7 @@ lockfileVersion: 5.3
 
 specifiers:
   '@next-auth/prisma-adapter': ^0.5.2-next.19
+  '@next/eslint-plugin-next': ^12.0.10
   '@popperjs/core': ^2.10.2
   '@prisma/client': ^3.6.0
   '@testing-library/jest-dom': ^5.16.1
@@ -78,6 +79,7 @@ dependencies:
   zod: 3.11.6
 
 devDependencies:
+  '@next/eslint-plugin-next': 12.0.10
   '@testing-library/jest-dom': 5.16.1
   '@trivago/prettier-plugin-sort-imports': 3.1.1_prettier@2.4.1
   '@types/enzyme': 3.10.11
@@ -1159,6 +1161,12 @@ packages:
   /@next/env/12.0.3:
     resolution: {integrity: sha512-QcdlpcwIH9dYcVlNAU+gXaqHA/omskbRlb+R3vN7LlB2EgLt+9WQwbokcHOsNyt4pI7kDM67W4tr9l7dWnlGdQ==}
     dev: false
+
+  /@next/eslint-plugin-next/12.0.10:
+    resolution: {integrity: sha512-PbGRnV5HGSfRGLjf8uTh1MaWgLwnjKjWiGVjK752ifITJbZ28/5AmLAFT2shDYeux8BHgpgVll5QXu7GN3YLFw==}
+    dependencies:
+      glob: 7.1.7
+    dev: true
 
   /@next/eslint-plugin-next/12.0.3:
     resolution: {integrity: sha512-P7i+bMypneQcoRN+CX79xssvvIJCaw7Fndzbe7/lB0+LyRbVvGVyMUsFmLLbSxtZq4hvFMJ1p8wML/gsulMZWQ==}
