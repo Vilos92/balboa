@@ -6,7 +6,7 @@
   },
   "rules": {
     "@typescript-eslint/ban-ts-comment": "off",
-    "no-console": "error",
+    "no-console": ["error", {"allow": ["warn", "error"]}],
     "import/first": "error",
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off"

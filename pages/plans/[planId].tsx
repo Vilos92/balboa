@@ -333,7 +333,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
     const {protocol, hostname, pathname} = window.location;
 
     setShareUrl(`${protocol}//${hostname}${pathname}`);
-  });
+  }, []);
 
   const {isAuthenticated} = authSession;
   const {hostUser, users} = plan;
