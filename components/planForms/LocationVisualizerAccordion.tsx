@@ -31,7 +31,7 @@ export const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> =
 
   useEffect(() => {
     if (isExpanded !== isExpandedLocal) setIsExpandedLocal(isExpanded);
-  }, [isExpanded]);
+  }, [isExpanded, isExpandedLocal]);
 
   const style = useSpring({
     from: {height: '0px', opacity: 0},

@@ -89,9 +89,9 @@ const StyledFooterButton = tw(Button)`
  */
 
 export const AccountFooter: FC<AccountFooterProps> = ({isHidden, providers}) => {
-  if (isHidden) return <StyledFooterSpacerDiv />;
-
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+
+  if (isHidden) return <StyledFooterSpacerDiv />;
 
   const openLoginModal = () => {
     setIsLoginModalVisible(true);

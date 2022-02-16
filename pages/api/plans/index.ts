@@ -111,11 +111,11 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Plan>) {
  */
 
 export function postPlan(planBlob: PostPlan) {
-  return netPost<PostPlan, Plan>(plansUrl, planBlob);
+  return netPost<Plan, PostPlan>(plansUrl, planBlob);
 }
 
 export function patchPlan(planBlob: PatchPlan) {
-  return netPatch<PatchPlan, Plan>(plansUrl, planBlob);
+  return netPatch<Plan, PatchPlan>(plansUrl, planBlob);
 }
 
 /*

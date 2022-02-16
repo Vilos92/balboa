@@ -5,7 +5,7 @@ import tw from 'twin.macro';
  * Types.
  */
 
-interface ChromelessButtonProps extends React.HTMLProps<HTMLButtonElement> {}
+type ChromelessButtonProps = React.HTMLProps<HTMLButtonElement>;
 
 /*
  * Styles.
@@ -23,16 +23,18 @@ const StyledButton = tw.button`
  */
 
 export const ChromelessButton = forwardRef<HTMLButtonElement, PropsWithChildren<ChromelessButtonProps>>(
-  ({children, className, onClick, onMouseEnter, onMouseLeave}, ref) => (
-    <StyledButton
-      ref={ref}
-      type='button'
-      className={className}
-      onClick={onClick}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-    >
-      {children}
-    </StyledButton>
-  )
+  function ChromelessButton({children, className, onClick, onMouseEnter, onMouseLeave}, ref) {
+    return (
+      <StyledButton
+        ref={ref}
+        type='button'
+        className={className}
+        onClick={onClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      >
+        {children}
+      </StyledButton>
+    );
+  }
 );

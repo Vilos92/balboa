@@ -29,7 +29,7 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
   createPlan
 }) => {
   const planDraft = useRecoilValue(planFormValue);
-  const [_, setPlanDraft] = useRecoilState(planFormState);
+  const [, setPlanDraft] = useRecoilState(planFormState);
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const closeLoginModal = () => setIsLoginModalVisible(false);

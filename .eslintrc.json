@@ -5,9 +5,11 @@
     "jest": true
   },
   "rules": {
-    "no-console": "error",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "no-console": ["error", {"allow": ["warn", "error"]}],
     "import/first": "error",
-    "react/prop-types": "off"
+    "react/prop-types": "off",
+    "react/react-in-jsx-scope": "off"
   },
   "extends": [
     "react-app",
@@ -16,7 +18,8 @@
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:react-hooks/recommended",
-    "prettier"
+    "prettier",
+    "plugin:@next/next/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "root": true,

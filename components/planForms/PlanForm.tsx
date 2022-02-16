@@ -156,7 +156,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
 
     const randColor = computeRandomColor();
     setColor(randColor);
-  }, [planColor]);
+  }, [color, planColor]);
 
   const [startDate, setStartDate] = useState('');
   const [startTime, setStartTime] = useState(defaultStartTime);
@@ -302,7 +302,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
 
   useEffect(() => {
     debouncedPersistPlan();
-  }, [title, color, startDate, startTime, endDate, endTime, location, description]);
+  }, [debouncedPersistPlan, title, color, startDate, startTime, endDate, endTime, location, description]);
 
   const clearForm = () => {
     setTitle('');
@@ -391,7 +391,7 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorH
   const [setTimeout] = useTimeout();
   useEffect(() => {
     setTimeout(hideTooltip, 3000);
-  }, []);
+  }, [setTimeout]);
 
   return (
     <Tooltip isVisible={isTooltipVisible} text='Set a color' onClick={hideTooltip} placement='top-end'>

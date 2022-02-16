@@ -79,13 +79,13 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse<Plan>) {
 export function postPlanAttend(planId: string) {
   const url = computePlanAttendUrl(planId);
 
-  return netPost<{}, Plan>(url);
+  return netPost<Plan>(url);
 }
 
 export function deletePlanAttend(planId: string) {
   const url = computePlanAttendUrl(planId);
 
-  return netDelete<{}, Plan>(url);
+  return netDelete<undefined, Plan>(url);
 }
 
 /*
