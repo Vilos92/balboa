@@ -60,10 +60,13 @@ export const ColumnHorizontalCentered: FC = ({children}) => (
   <StyledColumnHorizontalCenteredDiv>{children}</StyledColumnHorizontalCenteredDiv>
 );
 
-export const Card = forwardRef<HTMLDivElement, PropsWithChildren<CardProps>>(
-  ({children, className, onClick}, ref) => (
+export const Card = forwardRef<HTMLDivElement, PropsWithChildren<CardProps>>(function Card(
+  {children, className, onClick},
+  ref
+) {
+  return (
     <StyledCardDiv className={className} onClick={onClick} ref={ref}>
       {children}
     </StyledCardDiv>
-  )
-);
+  );
+});
