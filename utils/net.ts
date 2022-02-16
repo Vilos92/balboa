@@ -23,18 +23,18 @@ export async function netGet<T>(url: string): Promise<T> {
   return response.data;
 }
 
-export async function netPost<T, V>(url: string, body?: T): Promise<V> {
-  const response = await axios.post<V>(url, body);
+export async function netPost<T, V = undefined>(url: string, body?: V): Promise<T> {
+  const response = await axios.post<T>(url, body);
   return response.data;
 }
 
-export async function netPatch<T, V>(url: string, body?: T): Promise<V> {
-  const response = await axios.patch<V>(url, body);
+export async function netPatch<T, V = undefined>(url: string, body?: V): Promise<T> {
+  const response = await axios.patch<T>(url, body);
   return response.data;
 }
 
-export async function netDelete<T, V>(url: string, body?: T): Promise<V> {
-  const response = await axios.delete<V>(url, body);
+export async function netDelete<T, V = undefined>(url: string, body?: V): Promise<T> {
+  const response = await axios.delete<T>(url, body);
   return response.data;
 }
 
