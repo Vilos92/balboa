@@ -1,4 +1,3 @@
-import {google} from 'calendar-link';
 import {GetStaticPaths, GetStaticProps} from 'next';
 import {useRouter} from 'next/router';
 import React, {FC, useEffect, useState} from 'react';
@@ -394,7 +393,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
 
 const AttendButton: FC<AttendButtonProps> = ({
   planId,
-  isAttending: isAttending,
+  isAttending,
   isDisabled,
   isHosting,
   mutateAttending

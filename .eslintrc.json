@@ -5,6 +5,7 @@
     "jest": true
   },
   "rules": {
+    "@typescript-eslint/ban-ts-comment": "off",
     "no-console": "error",
     "import/first": "error",
     "react/prop-types": "off",
