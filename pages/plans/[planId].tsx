@@ -30,6 +30,7 @@ import {
 import {openGoogleCalendarLink} from '../../utils/calendar';
 import {usePrevious} from '../../utils/hooks';
 import {parseQueryString} from '../../utils/net';
+import {formatLocationString} from '../../utils/window';
 import {PatchPlan, patchPlan} from '../api/plans';
 import {useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
@@ -330,9 +331,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
   const [shareUrl, setShareUrl] = useState('');
   // window.location is not available in SSR, so set this in an effect.
   useEffect(() => {
-    const {protocol, hostname, pathname} = window.location;
-
-    setShareUrl(`${protocol}//${hostname}${pathname}`);
+    setShareUrl(formatLocationString());
   }, []);
 
   const {isAuthenticated} = authSession;
