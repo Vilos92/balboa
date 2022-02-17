@@ -33,6 +33,7 @@ specifiers:
   mapbox-gl: ^2.6.1
   next: 12.0.3
   next-auth: ^4.0.2
+  next-seo: ^5.1.0
   nextjs-progressbar: ^0.0.13
   prettier: ^2.4.1
   prisma: ^3.6.0
@@ -64,6 +65,7 @@ dependencies:
   mapbox-gl: 2.6.1
   next: 12.0.3_react-dom@17.0.2+react@17.0.2
   next-auth: 4.0.2_react-dom@17.0.2+react@17.0.2
+  next-seo: 5.1.0_72b2f1fb664d51f286fb64a58e104b48
   nextjs-progressbar: 0.0.13_next@12.0.3+react@17.0.2
   react: 17.0.2
   react-colorful: 5.5.1_react-dom@17.0.2+react@17.0.2
@@ -5458,6 +5460,18 @@ packages:
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
       uuid: 8.3.2
+    dev: false
+
+  /next-seo/5.1.0_72b2f1fb664d51f286fb64a58e104b48:
+    resolution: {integrity: sha512-ampuQfNTOi1x+xtRIb6CZGunIo6rQXtMo2Tyu861d5GjJFIwfOXsA4lzCa4+e2rLkyXDyVpavNNUZWa3US9ELw==}
+    peerDependencies:
+      next: ^8.1.1-canary.54 || >=9.0.0
+      react: '>=16.0.0'
+      react-dom: '>=16.0.0'
+    dependencies:
+      next: 12.0.3_react-dom@17.0.2+react@17.0.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
     dev: false
 
   /next/12.0.3_react-dom@17.0.2+react@17.0.2:

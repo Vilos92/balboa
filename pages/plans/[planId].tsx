@@ -13,6 +13,7 @@ import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {Icon, IconTypesEnum} from '../../components/Icon';
 import {PageSkeleton} from '../../components/PageSkeleton';
+import {SearchEngineOptimizer} from '../../components/SearchEngineOptimizer';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {ShareInputWithButton} from '../../components/inputs/ShareInputWithButton';
@@ -290,36 +291,39 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
 
   return (
-    <ColumnHorizontalCentered>
-      <Header providers={providers} />
+    <>
+      <SearchEngineOptimizer title={plan.title} description={plan.description} />
+      <ColumnHorizontalCentered>
+        <Header providers={providers} />
 
-      <StyledCard>
-        {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
-        <animated.div style={style}>
-          <div ref={ref}>
-            {isHosting && (
-              <StyledTabsDiv>
-                <StyledTabButton onClick={() => setTabView(TabViewsEnum.DETAILS)}>Details</StyledTabButton>
-                <StyledTabButton onClick={() => setTabView(TabViewsEnum.EDIT)}>Edit</StyledTabButton>
-              </StyledTabsDiv>
-            )}
+        <StyledCard>
+          {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
+          <animated.div style={style}>
+            <div ref={ref}>
+              {isHosting && (
+                <StyledTabsDiv>
+                  <StyledTabButton onClick={() => setTabView(TabViewsEnum.DETAILS)}>Details</StyledTabButton>
+                  <StyledTabButton onClick={() => setTabView(TabViewsEnum.EDIT)}>Edit</StyledTabButton>
+                </StyledTabsDiv>
+              )}
 
-            {tabView === TabViewsEnum.DETAILS && (
-              <PlanDetails authSession={authSession} plan={plan} mutateAttending={mutateAttending} />
-            )}
+              {tabView === TabViewsEnum.DETAILS && (
+                <PlanDetails authSession={authSession} plan={plan} mutateAttending={mutateAttending} />
+              )}
 
-            {tabView === TabViewsEnum.EDIT && (
-              <>
-                <StyledEditH2>Edit your event details</StyledEditH2>
-                <EditPlanForm plan={plan} editPlan={updatePlan} />
-              </>
-            )}
-          </div>
-        </animated.div>
-      </StyledCard>
+              {tabView === TabViewsEnum.EDIT && (
+                <>
+                  <StyledEditH2>Edit your event details</StyledEditH2>
+                  <EditPlanForm plan={plan} editPlan={updatePlan} />
+                </>
+              )}
+            </div>
+          </animated.div>
+        </StyledCard>
 
-      <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
-    </ColumnHorizontalCentered>
+        <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
+      </ColumnHorizontalCentered>
+    </>
   );
 };
 

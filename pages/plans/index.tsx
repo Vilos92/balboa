@@ -11,6 +11,7 @@ import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {Icon, IconTypesEnum} from '../../components/Icon';
 import {PageSkeleton} from '../../components/PageSkeleton';
+import {SearchEngineOptimizer} from '../../components/SearchEngineOptimizer';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
@@ -139,15 +140,18 @@ const PlansPage: FC = () => {
     .sort((planA, planB) => calculateDateDifference(planA.start, planB.start));
 
   return (
-    <ColumnJustified>
-      <Header />
+    <>
+      <SearchEngineOptimizer title='Grueplan' description='Upcoming and past plans' />
+      <ColumnJustified>
+        <Header />
 
-      <StyledContentDiv>
-        <UpcomingPlans plans={upcomingPlans} />
-        <PastPlans plans={pastPlans} />
-      </StyledContentDiv>
-      <FooterSpacer />
-    </ColumnJustified>
+        <StyledContentDiv>
+          <UpcomingPlans plans={upcomingPlans} />
+          <PastPlans plans={pastPlans} />
+        </StyledContentDiv>
+        <FooterSpacer />
+      </ColumnJustified>
+    </>
   );
 };
 
