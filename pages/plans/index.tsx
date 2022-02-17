@@ -106,7 +106,7 @@ const StyledDaysUntilDiv = tw.div`
  * Server-side props.
  */
 
-export const getServerSideProps: GetServerSideProps = async ({req, res}) => {
+export const getServerSideProps: GetServerSideProps = async ({req}) => {
   const user = await getSessionUser(req);
   if (!user)
     return {

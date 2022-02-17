@@ -15,6 +15,11 @@ interface SearchEngineOptimizerProps {
  * Components.
  */
 
+/**
+ * Attaches parameters to the head of the document to set the current title and to
+ * allow preview links. If preview links are desired this must only be used with
+ * server-side rendered props.
+ */
 export const SearchEngineOptimizer: FC<SearchEngineOptimizerProps> = ({title, description}) => {
   const openGraph: OpenGraph = {
     title,
