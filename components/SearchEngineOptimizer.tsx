@@ -12,6 +12,13 @@ interface SearchEngineOptimizerProps {
 }
 
 /*
+ * Constants.
+ */
+
+const defaultTitle = 'Grueplan';
+const defaultDescription = ' Keep track of your plans';
+
+/*
  * Components.
  */
 
@@ -24,10 +31,11 @@ export const SearchEngineOptimizer: FC<SearchEngineOptimizerProps> = ({
   title: titleArg,
   description: descriptionArg
 }) => {
-  const title = titleArg ? `[Grueplan] ${titleArg}` : 'Grueplan';
-  const description = descriptionArg ?? 'Keep track of your plans';
+  const title = titleArg ? `[Grueplan] ${titleArg}` : defaultTitle;
+  const description = descriptionArg ?? defaultDescription;
 
   const openGraph: OpenGraph = {
+    type: 'website',
     title,
     description
   };
