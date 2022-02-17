@@ -28,16 +28,18 @@ const defaultDescription = ' Keep track of your plans';
  * server-side rendered props.
  */
 export const SearchEngineOptimizer: FC<SearchEngineOptimizerProps> = ({
-  title: titleArg,
+  title,
   description: descriptionArg
 }) => {
-  const title = titleArg ? `[Grueplan] ${titleArg}` : defaultTitle;
-  const description = descriptionArg ?? defaultDescription;
+  const pageTitle = title ? `${title} | Grueplan` : defaultTitle;
+
+  const previewTitle = title ? `${title}` : defaultTitle;
+  const previewDescription = descriptionArg ?? defaultDescription;
 
   const openGraph: OpenGraph = {
     type: 'website',
-    title,
-    description
+    title: previewTitle,
+    description: previewDescription
   };
 
   const twitter: Twitter = {
@@ -46,5 +48,7 @@ export const SearchEngineOptimizer: FC<SearchEngineOptimizerProps> = ({
     cardType: 'summary_large_image'
   };
 
-  return <NextSeo title={title} description={description} openGraph={openGraph} twitter={twitter} />;
+  return (
+    <NextSeo title={pageTitle} description={previewDescription} openGraph={openGraph} twitter={twitter} />
+  );
 };
