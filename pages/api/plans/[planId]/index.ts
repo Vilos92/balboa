@@ -61,6 +61,6 @@ export function useNetGetPlan(planId: string) {
  * Helpers.
  */
 
-function computePlanUrl(planId: string) {
+export function computePlanUrl(planId: string) {
   return planUrl.replace(':planId', planId.toString());
 }

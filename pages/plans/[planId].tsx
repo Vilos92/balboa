@@ -1,8 +1,9 @@
-import {GetStaticPaths, GetStaticProps} from 'next';
+import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
 import React, {FC, useEffect, useState} from 'react';
 import {useResizeDetector} from 'react-resize-detector';
 import {animated, useSpring} from 'react-spring';
+import {SWRConfig} from 'swr';
 import tw, {TwStyle, styled} from 'twin.macro';
 
 import {AccountFooter} from '../../components/AccountFooter';
@@ -19,7 +20,7 @@ import {VisualUser} from '../../components/VisualUser';
 import {ShareInputWithButton} from '../../components/inputs/ShareInputWithButton';
 import {EditPlanForm} from '../../components/planForms/EditPlanForm';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
-import {Plan} from '../../models/plan';
+import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {
   AuthSession,
@@ -33,7 +34,7 @@ import {usePrevious} from '../../utils/hooks';
 import {parseQueryString} from '../../utils/net';
 import {formatLocationString} from '../../utils/window';
 import {PatchPlan, patchPlan} from '../api/plans';
-import {useNetGetPlan} from '../api/plans/[planId]';
+import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
 
 /*
@@ -53,11 +54,14 @@ enum TabViewsEnum {
 
 interface PlanPageContainerProps {
   providers: Providers;
+  planId: string;
+  fallback: {
+    [url: string]: Plan;
+  };
 }
 
 interface PlanPageProps {
   providers: Providers;
-  authSession: AuthSession;
   planId: string;
 }
 
@@ -210,17 +214,26 @@ const StyledEditH2 = tw.h2`
  * Server-side props.
  */
 
-export const getStaticPaths: GetStaticPaths = async () => ({
-  paths: [],
-  fallback: true
-});
-
-export const getStaticProps: GetStaticProps<PlanPageContainerProps> = async () => {
+export const getServerSideProps: GetServerSideProps<PlanPageContainerProps> = async ({query}) => {
   const providers = await getAuthProviders();
+
+  const {planId: planIdParam} = query;
+  if (!planIdParam) return {notFound: true};
+
+  const planId = parseQueryString(planIdParam);
+
+  const plan = await findPlan(planId);
+  if (!plan) return {notFound: true};
+
+  const planUrl = computePlanUrl(planId);
 
   return {
     props: {
-      providers
+      providers,
+      planId,
+      fallback: {
+        [planUrl]: plan
+      }
     }
   };
 };
@@ -229,26 +242,17 @@ export const getStaticProps: GetStaticProps<PlanPageContainerProps> = async () =
  * Page.
  */
 
-const PlanPageContainer: FC<PlanPageContainerProps> = ({providers}) => {
-  const router = useRouter();
-  const authSession = useAuthSession();
-
-  if (router.isFallback) return <PageSkeleton />;
-  if (authSession.status === SessionStatusesEnum.LOADING) return <PageSkeleton />;
-
-  const {query} = router;
-
-  const {planId: planIdParam} = query;
-  if (!planIdParam) return <PageSkeleton />;
-
-  const planId = parseQueryString(planIdParam);
-
-  return <PlanPage providers={providers} authSession={authSession} planId={planId} />;
-};
+const PlanPageContainer: FC<PlanPageContainerProps> = ({providers, fallback, planId}) => (
+  <SWRConfig value={{fallback}}>
+    <PlanPage providers={providers} planId={planId} />;
+  </SWRConfig>
+);
 
 export default PlanPageContainer;
 
-const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
+const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
+  const authSession = useAuthSession();
+
   const {data: plan, error, mutate} = useNetGetPlan(planId);
 
   const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
@@ -264,10 +268,6 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
   };
 
   const {ref} = useResizeDetector({onResize: onResizeCard});
-
-  if (!plan || error) return <PageSkeleton />;
-
-  const isHosting = computeIsHosting(authSession, plan);
 
   const updatePlan = async (planDraft: PatchPlan) => {
     const plan = await patchPlan(planDraft);
@@ -289,6 +289,18 @@ const PlanPage: FC<PlanPageProps> = ({providers, authSession, planId}) => {
 
   const {status, isAuthenticated} = authSession;
   const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
+
+  if (!plan || error) return <PageSkeleton />;
+
+  if (isLoadingSessionStatus)
+    return (
+      <>
+        <SearchEngineOptimizer title={plan.title} description={plan.description} />
+        <PageSkeleton />
+      </>
+    );
+
+  const isHosting = computeIsHosting(authSession, plan);
 
   return (
     <>
