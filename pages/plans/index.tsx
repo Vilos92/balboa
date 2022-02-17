@@ -141,7 +141,7 @@ const PlansPage: FC = () => {
 
   return (
     <>
-      <SearchEngineOptimizer title='Grueplan' description='Upcoming and past plans' />
+      <SearchEngineOptimizer title='Plans' description='Upcoming and past plans' />
       <ColumnJustified>
         <Header />
 

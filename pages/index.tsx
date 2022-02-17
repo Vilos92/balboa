@@ -68,7 +68,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
 
   return (
     <>
-      <SearchEngineOptimizer title='Grueplan' description='Keep track of your plans' />
+      <SearchEngineOptimizer />
       <ColumnHorizontalCentered>
         <Header providers={providers} />
         <StyledCard>

@@ -7,8 +7,8 @@ import React, {FC} from 'react';
  */
 
 interface SearchEngineOptimizerProps {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
 }
 
 /*
@@ -20,7 +20,13 @@ interface SearchEngineOptimizerProps {
  * allow preview links. If preview links are desired this must only be used with
  * server-side rendered props.
  */
-export const SearchEngineOptimizer: FC<SearchEngineOptimizerProps> = ({title, description}) => {
+export const SearchEngineOptimizer: FC<SearchEngineOptimizerProps> = ({
+  title: titleArg,
+  description: descriptionArg
+}) => {
+  const title = titleArg ? `[Grueplan] ${titleArg}` : 'Grueplan';
+  const description = descriptionArg ?? 'Keep track of your plans';
+
   const openGraph: OpenGraph = {
     title,
     description
