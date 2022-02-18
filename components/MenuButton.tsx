@@ -27,6 +27,12 @@ interface MenuProps {
  * Styles.
  */
 
+const StyledMenuWrapperDiv = tw.div`
+  flex
+  flex-col
+  justify-center
+`;
+
 const StyledMenuButton = tw(ChromelessButton)`
   flex
   flex-col
@@ -111,20 +117,22 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
   return (
-    <StyledMenuButton onClick={openMenu}>
+    <StyledMenuWrapperDiv>
       <Popover
         placement='bottom-end'
         isVisible={isMenuVisible}
         popoverChildren={<Menu openLoginModal={openLoginModal} closeMenu={closeMenu} />}
       >
-        <StyledHamburgerDiv>
-          <StyledHamburgerPattyDiv />
-          <StyledHamburgerPattyDiv />
-          <StyledHamburgerPattyDiv />
-        </StyledHamburgerDiv>
+        <StyledMenuButton onClick={openMenu}>
+          <StyledHamburgerDiv>
+            <StyledHamburgerPattyDiv />
+            <StyledHamburgerPattyDiv />
+            <StyledHamburgerPattyDiv />
+          </StyledHamburgerDiv>
+        </StyledMenuButton>
       </Popover>
       {isLoginModalVisible && providers && <LoginModal providers={providers} closeModal={closeLoginModal} />}
-    </StyledMenuButton>
+    </StyledMenuWrapperDiv>
   );
 };
 
