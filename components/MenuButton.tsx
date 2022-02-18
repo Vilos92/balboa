@@ -1,7 +1,7 @@
 import {signOut} from 'next-auth/react';
 import {useRouter} from 'next/router';
 import React, {FC, useState} from 'react';
-import tw, {styled} from 'twin.macro';
+import tw from 'twin.macro';
 
 import {Handler} from '../types/common';
 import {Providers, useAuthSession} from '../utils/auth';

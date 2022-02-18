@@ -1,5 +1,4 @@
 import {GetServerSideProps} from 'next';
-import {useRouter} from 'next/router';
 import React, {FC, useEffect, useState} from 'react';
 import {useResizeDetector} from 'react-resize-detector';
 import {animated, useSpring} from 'react-spring';
