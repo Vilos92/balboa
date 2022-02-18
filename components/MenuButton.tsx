@@ -27,7 +27,7 @@ interface MenuProps {
  * Styles.
  */
 
-const StyledMenuButton = tw.button`
+const StyledMenuButton = tw(ChromelessButton)`
   flex
   flex-col
   justify-center
@@ -78,15 +78,13 @@ const StyledMenuItemDiv = tw.div`
   hover:bg-gray-100
 `;
 
-const StyledMenuItemButton = styled(ChromelessButton)`
-  ${tw`
-    w-full
-    h-full
-    text-gray-500
-    active:text-purple-400
-    focus:text-purple-400
-    hover:text-purple-400
-  `}
+const StyledMenuItemButton = tw(ChromelessButton)`
+  w-full
+  h-full
+  text-gray-500
+  active:text-purple-400
+  focus:text-purple-400
+  hover:text-purple-400
 `;
 
 /*

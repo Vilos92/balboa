@@ -53,14 +53,17 @@ const StyledSectionH1 = tw.h1`
   mb-1
 `;
 
-const StyledCard = tw(Card)`
+const StyledChromelessButton = tw(ChromelessButton)`
   sm:w-7/12
   sm:max-w-xl
+  mb-2
+  hover:cursor-pointer
+`;
+
+const StyledCard = tw(Card)`
   flex
   flex-row
   items-center 
-  mb-2
-  hover:cursor-pointer
   hover:bg-gray-200
 `;
 
@@ -205,27 +208,29 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
   const {hostUser} = plan;
 
   return (
-    <StyledCard onClick={onClickCard}>
-      <div>
-        <StyledTitleH2>
-          <VisualPlan plan={plan} />
-        </StyledTitleH2>
-        <HoverTooltip text={<DateTimeRange start={plan.start} end={plan.end} />} visibilityDuration={0}>
-          <StyledDateTimeH3>
-            <Icon type={IconTypesEnum.CALENDAR_EVENT} size={20} />{' '}
-            <span>
-              <DateTime date={plan.start} />
-            </span>
-          </StyledDateTimeH3>
-        </HoverTooltip>
-        <StyledLocationH3>
-          <Icon type={IconTypesEnum.MAP_PIN} size={20} /> <span>{plan.location}</span>
-        </StyledLocationH3>
+    <StyledChromelessButton onClick={onClickCard}>
+      <StyledCard>
+        <div>
+          <StyledTitleH2>
+            <VisualPlan plan={plan} />
+          </StyledTitleH2>
+          <HoverTooltip text={<DateTimeRange start={plan.start} end={plan.end} />} visibilityDuration={0}>
+            <StyledDateTimeH3>
+              <Icon type={IconTypesEnum.CALENDAR_EVENT} size={20} />{' '}
+              <span>
+                <DateTime date={plan.start} />
+              </span>
+            </StyledDateTimeH3>
+          </HoverTooltip>
+          <StyledLocationH3>
+            <Icon type={IconTypesEnum.MAP_PIN} size={20} /> <span>{plan.location}</span>
+          </StyledLocationH3>
 
-        <VisualUser user={hostUser} />
-      </div>
-      <StyledRightDiv>{renderDaysAwayOrSince(plan.start)}</StyledRightDiv>
-    </StyledCard>
+          <VisualUser user={hostUser} />
+        </div>
+        <StyledRightDiv>{renderDaysAwayOrSince(plan.start)}</StyledRightDiv>
+      </StyledCard>
+    </StyledChromelessButton>
   );
 };
 
