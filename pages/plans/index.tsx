@@ -54,6 +54,7 @@ const StyledSectionH1 = tw.h1`
 `;
 
 const StyledChromelessButton = tw(ChromelessButton)`
+  w-full
   sm:w-7/12
   sm:max-w-xl
   mb-2
@@ -69,6 +70,9 @@ const StyledCard = tw(Card)`
   flex-row
   items-center 
   hover:bg-purple-100
+  overflow-hidden
+  whitespace-nowrap
+  overflow-ellipsis
 `;
 
 const StyledTitleH2 = tw.h2`
