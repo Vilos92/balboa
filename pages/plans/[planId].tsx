@@ -21,7 +21,6 @@ import {EditPlanForm} from '../../components/planForms/EditPlanForm';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
-import {Handler} from '../../types/common';
 import {
   AuthSession,
   Providers,
