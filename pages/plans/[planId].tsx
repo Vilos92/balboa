@@ -3,7 +3,7 @@ import React, {FC, useEffect, useState} from 'react';
 import {useResizeDetector} from 'react-resize-detector';
 import {animated, useSpring} from 'react-spring';
 import {SWRConfig} from 'swr';
-import tw, {TwStyle, styled} from 'twin.macro';
+import tw, {TwStyle, css, styled} from 'twin.macro';
 
 import {AccountFooter} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
@@ -21,6 +21,7 @@ import {EditPlanForm} from '../../components/planForms/EditPlanForm';
 import {HoverTooltip} from '../../components/popovers/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
+import {Handler} from '../../types/common';
 import {
   AuthSession,
   Providers,
@@ -70,6 +71,11 @@ interface PlanDetailsProps {
   mutateAttending: (isAttending: boolean) => void;
 }
 
+interface TabButtonProps {
+  isActive: boolean;
+  onClick: Handler;
+}
+
 interface AttendButtonProps {
   planId: string;
   isHosting: boolean;
@@ -108,12 +114,35 @@ const StyledTabsDiv = tw.div`
   mb-2
 `;
 
-const StyledTabButton = styled(ChromelessButton)`
+const StyledHoverCss = css`
+  & > span {
+    ${tw`bg-purple-400 text-white`}
+  }
+`;
+
+interface StyledTabButtonProps {
+  $isActive: boolean;
+}
+const StyledTabButton = styled(ChromelessButton)<StyledTabButtonProps>`
   ${tw`
     w-full
     pb-2
     first:border-r-2
   `}
+
+  &:hover {
+    ${StyledHoverCss}
+  }
+
+  ${({$isActive}) => $isActive && StyledHoverCss}
+`;
+
+const StyledTabTextSpan = tw.span`
+  pt-2
+  pb-2
+  pr-8
+  pl-8
+  rounded-full
 `;
 
 // Plan details.
@@ -313,8 +342,18 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
             <div ref={ref}>
               {isHosting && (
                 <StyledTabsDiv>
-                  <StyledTabButton onClick={() => setTabView(TabViewsEnum.DETAILS)}>Details</StyledTabButton>
-                  <StyledTabButton onClick={() => setTabView(TabViewsEnum.EDIT)}>Edit</StyledTabButton>
+                  <TabButton
+                    isActive={tabView === TabViewsEnum.DETAILS}
+                    onClick={() => setTabView(TabViewsEnum.DETAILS)}
+                  >
+                    Details
+                  </TabButton>
+                  <TabButton
+                    isActive={tabView === TabViewsEnum.EDIT}
+                    onClick={() => setTabView(TabViewsEnum.EDIT)}
+                  >
+                    Edit
+                  </TabButton>
                 </StyledTabsDiv>
               )}
 
@@ -404,6 +443,12 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
     </>
   );
 };
+
+const TabButton: FC<TabButtonProps> = ({children, isActive, onClick}) => (
+  <StyledTabButton $isActive={isActive} onClick={onClick}>
+    <StyledTabTextSpan>{children}</StyledTabTextSpan>
+  </StyledTabButton>
+);
 
 const AttendButton: FC<AttendButtonProps> = ({
   planId,
