@@ -58,13 +58,17 @@ const StyledChromelessButton = tw(ChromelessButton)`
   sm:max-w-xl
   mb-2
   hover:cursor-pointer
+  text-black
+  active:text-black
+  focus:text-black
+  hover:text-black
 `;
 
 const StyledCard = tw(Card)`
   flex
   flex-row
   items-center 
-  hover:bg-gray-200
+  hover:bg-purple-100
 `;
 
 const StyledTitleH2 = tw.h2`
