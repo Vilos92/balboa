@@ -27,7 +27,7 @@ interface MenuProps {
  * Styles.
  */
 
-const StyledMenuDiv = tw.div`
+const StyledMenuButton = tw.button`
   flex
   flex-col
   justify-center
@@ -78,7 +78,7 @@ const StyledMenuItemDiv = tw.div`
   hover:bg-gray-100
 `;
 
-const StyledMenuButton = styled(ChromelessButton)`
+const StyledMenuItemButton = styled(ChromelessButton)`
   ${tw`
     w-full
     h-full
@@ -113,7 +113,7 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
   return (
-    <StyledMenuDiv onClick={openMenu}>
+    <StyledMenuButton onClick={openMenu}>
       <Popover
         placement='bottom-end'
         isVisible={isMenuVisible}
@@ -126,7 +126,7 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
         </StyledHamburgerDiv>
       </Popover>
       {isLoginModalVisible && providers && <LoginModal providers={providers} closeModal={closeLoginModal} />}
-    </StyledMenuDiv>
+    </StyledMenuButton>
   );
 };
 
@@ -147,7 +147,7 @@ const Menu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
   return (
     <StyledMenuCard ref={menuRef}>
       <StyledMenuItemDiv>
-        <StyledMenuButton onClick={onClickCreate}>Create</StyledMenuButton>
+        <StyledMenuItemButton onClick={onClickCreate}>Create</StyledMenuItemButton>
       </StyledMenuItemDiv>
       {menuItems}
     </StyledMenuCard>
@@ -163,7 +163,7 @@ function renderUnauthenticatedRoutes(openLoginModal?: Handler) {
 
   return (
     <StyledMenuItemDiv>
-      <StyledMenuButton onClick={openLoginModal}>Login</StyledMenuButton>
+      <StyledMenuItemButton onClick={openLoginModal}>Login</StyledMenuItemButton>
     </StyledMenuItemDiv>
   );
 }
@@ -172,10 +172,10 @@ function renderAuthenticatedRoutes(onClickPlans: Handler, onClickLogout: Handler
   return (
     <>
       <StyledMenuItemDiv>
-        <StyledMenuButton onClick={onClickPlans}>Plans</StyledMenuButton>
+        <StyledMenuItemButton onClick={onClickPlans}>Plans</StyledMenuItemButton>
       </StyledMenuItemDiv>
       <StyledMenuItemDiv>
-        <StyledMenuButton onClick={onClickLogout}>Logout</StyledMenuButton>
+        <StyledMenuItemButton onClick={onClickLogout}>Logout</StyledMenuItemButton>
       </StyledMenuItemDiv>
     </>
   );
