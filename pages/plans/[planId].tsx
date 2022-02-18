@@ -71,11 +71,6 @@ interface PlanDetailsProps {
   mutateAttending: (isAttending: boolean) => void;
 }
 
-interface TabButtonProps {
-  isActive: boolean;
-  onClick: Handler;
-}
-
 interface AttendButtonProps {
   planId: string;
   isHosting: boolean;
@@ -107,15 +102,23 @@ const StyledCard = tw(Card)`
 `;
 
 const StyledTabsDiv = tw.div`
+  h-8
   flex
   flex-row
   justify-evenly
   border-b-2
+  pb-2
   mb-2
 `;
 
+const StyledTabSeparatorDiv = tw.div`
+  h-full
+  w-0.5
+  bg-gray-200
+`;
+
 const StyledHoverCss = css`
-  & > span {
+  & {
     ${tw`bg-purple-400 text-white`}
   }
 `;
@@ -125,9 +128,9 @@ interface StyledTabButtonProps {
 }
 const StyledTabButton = styled(ChromelessButton)<StyledTabButtonProps>`
   ${tw`
-    w-full
-    pb-2
-    first:border-r-2
+    w-20
+    rounded-full
+  pb-2
   `}
 
   &:hover {
@@ -135,14 +138,6 @@ const StyledTabButton = styled(ChromelessButton)<StyledTabButtonProps>`
   }
 
   ${({$isActive}) => $isActive && StyledHoverCss}
-`;
-
-const StyledTabTextSpan = tw.span`
-  pt-2
-  pb-2
-  pr-8
-  pl-8
-  rounded-full
 `;
 
 // Plan details.
@@ -342,18 +337,19 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
             <div ref={ref}>
               {isHosting && (
                 <StyledTabsDiv>
-                  <TabButton
-                    isActive={tabView === TabViewsEnum.DETAILS}
+                  <StyledTabButton
+                    $isActive={tabView === TabViewsEnum.DETAILS}
                     onClick={() => setTabView(TabViewsEnum.DETAILS)}
                   >
                     Details
-                  </TabButton>
-                  <TabButton
-                    isActive={tabView === TabViewsEnum.EDIT}
+                  </StyledTabButton>
+                  <StyledTabSeparatorDiv />
+                  <StyledTabButton
+                    $isActive={tabView === TabViewsEnum.EDIT}
                     onClick={() => setTabView(TabViewsEnum.EDIT)}
                   >
                     Edit
-                  </TabButton>
+                  </StyledTabButton>
                 </StyledTabsDiv>
               )}
 
@@ -443,12 +439,6 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
     </>
   );
 };
-
-const TabButton: FC<TabButtonProps> = ({children, isActive, onClick}) => (
-  <StyledTabButton $isActive={isActive} onClick={onClick}>
-    <StyledTabTextSpan>{children}</StyledTabTextSpan>
-  </StyledTabButton>
-);
 
 const AttendButton: FC<AttendButtonProps> = ({
   planId,
