@@ -11,6 +11,8 @@ const CustomStyles = createGlobalStyle`
       bg-gray-800
       antialiased
     `}
+
+    font-family: 'Alegreya Sans', sans-serif;
   }
 `;
 
