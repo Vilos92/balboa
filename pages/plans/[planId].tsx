@@ -116,10 +116,8 @@ const StyledTabSeparatorDiv = tw.div`
   bg-gray-200
 `;
 
-const StyledHoverCss = css`
-  & {
-    ${tw`bg-purple-400 text-white`}
-  }
+const StyledActiveCss = css`
+  ${tw`bg-purple-400 text-white`}
 `;
 
 interface StyledTabButtonProps {
@@ -129,14 +127,14 @@ const StyledTabButton = styled(ChromelessButton)<StyledTabButtonProps>`
   ${tw`
     w-20
     rounded-full
-  pb-2
+    pb-2
   `}
 
-  &:hover {
-    ${StyledHoverCss}
+  &:hover, &:focus {
+    ${StyledActiveCss}
   }
 
-  ${({$isActive}) => $isActive && StyledHoverCss}
+  ${({$isActive}) => $isActive && StyledActiveCss}
 `;
 
 // Plan details.
