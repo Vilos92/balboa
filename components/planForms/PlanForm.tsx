@@ -8,6 +8,7 @@ import {PatchPlan, PostPlan} from '../../pages/api/plans';
 import {Handler} from '../../types/common';
 import {swatchColors} from '../../utils/color';
 import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
+import {makeDispatchAction} from '../../utils/state';
 import {Button} from '../Button';
 import {ChromelessButton} from '../ChromelessButton';
 import {Icon, IconTypesEnum} from '../Icon';
@@ -202,38 +203,58 @@ export const PlanForm: FC<PlanFormProps> = props => {
 
   const {title, color, startDate, startTime, endDate, endTime, location, description} = state;
 
+  const [
+    setTitle,
+    setColor,
+    setStartDate,
+    setStartTime,
+    setEndDate,
+    setEndTime,
+    setLocation,
+    setDescription
+  ] = [
+    setTitleAction,
+    setColorAction,
+    setStartDateAction,
+    setStartTimeAction,
+    setEndDateAction,
+    setEndTimeAction,
+    setLocationAction,
+    setDescriptionAction
+  ].map(action => makeDispatchAction(dispatch, action));
+
   const initializeColor = () => {
     if (color !== defaultColor) return;
     if (planColor) {
-      dispatch(setColorAction(planColor));
+      setColor(planColor);
       return;
     }
     const randColor = computeRandomColor();
-    dispatch(setColorAction(randColor));
+    setColor(randColor);
   };
 
   const initializePlanStart = () => {
     if (!planStart) {
-      dispatch(setStartDateAction(computeDefaultDate()));
+      setStartDate(computeDefaultDate());
       return;
     }
 
     const start = new Date(planStart);
 
-    dispatch(setStartDateAction(computeInputDateFromObject(start)));
-    dispatch(setStartTimeAction(computeInputTimeFromObject(start)));
+    setStartDate(computeInputDateFromObject(start));
+    setStartTime(computeInputTimeFromObject(start));
   };
 
   const initializePlanEnd = () => {
     if (!planEnd) {
-      dispatch(setEndDateAction(computeDefaultDate()));
+      setEndDate(computeDefaultDate());
       return;
     }
 
     const end = new Date(planEnd);
 
-    dispatch(setEndDateAction(computeInputDateFromObject(end)));
-    dispatch(setEndTimeAction(computeInputTimeFromObject(end)));
+    setEndDate(computeInputDateFromObject(end));
+    setEndTime(computeInputTimeFromObject(end));
   };
 
   useInitialEffect(() => {
@@ -248,20 +269,20 @@ export const PlanForm: FC<PlanFormProps> = props => {
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     clearError(PlanFormInputsEnum.TITLE);
-    dispatch(setTitleAction(event.target.value));
+    setTitle(event.target.value);
   };
 
-  const onChangeColor = (newColor: string) => dispatch(setColorAction(newColor));
+  const onChangeColor = (newColor: string) => setColor(newColor);
 
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
     try {
       const start = computeDateTime(event.target.value, startTime);
       const end = computeDateTime(endDate, endTime);
 
-      dispatch(setStartDateAction(event.target.value));
+      setStartDate(event.target.value);
       if (start > end) {
-        dispatch(setEndDateAction(event.target.value));
-        dispatch(setEndTimeAction(startTime));
+        setEndDate(event.target.value);
+        setEndTime(startTime);
       }
     } catch (exception) {
       // Ignore invalid dates.
@@ -272,10 +293,10 @@ export const PlanForm: FC<PlanFormProps> = props => {
       const start = computeDateTime(startDate, event.target.value);
       const end = computeDateTime(endDate, endTime);
 
-      dispatch(setStartTimeAction(event.target.value));
+      setStartTime(event.target.value);
       if (start > end) {
-        dispatch(setEndDateAction(startDate));
-        dispatch(setEndTimeAction(event.target.value));
+        setEndDate(startDate);
+        setEndTime(event.target.value);
       }
     } catch (exception) {
       // Ignore invalid dates.
@@ -287,10 +308,10 @@ export const PlanForm: FC<PlanFormProps> = props => {
       const start = computeDateTime(startDate, startTime);
       const end = computeDateTime(event.target.value, endTime);
 
-      dispatch(setEndDateAction(event.target.value));
+      setEndDate(event.target.value);
       if (end < start) {
-        dispatch(setStartDateAction(event.target.value));
-        dispatch(setStartTimeAction(endTime));
+        setStartDate(event.target.value);
+        setStartTime(endTime);
       }
     } catch (exception) {
       // Ignore invalid dates.
@@ -301,10 +322,10 @@ export const PlanForm: FC<PlanFormProps> = props => {
       const start = computeDateTime(startDate, startTime);
       const end = computeDateTime(endDate, event.target.value);
 
-      dispatch(setEndTimeAction(event.target.value));
+      setEndTime(event.target.value);
       if (end < start) {
-        dispatch(setStartDateAction(endDate));
-        dispatch(setStartTimeAction(event.target.value));
+        setStartDate(endDate);
+        setStartTime(event.target.value);
       }
     } catch (exception) {
       // Ignore invalid dates.
@@ -313,14 +334,14 @@ export const PlanForm: FC<PlanFormProps> = props => {
 
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => {
     clearError(PlanFormInputsEnum.LOCATION);
-    dispatch(setLocationAction(event.target.value));
+    setLocation(event.target.value);
   };
   const [hasLocationFocused, setHasLocationFocused] = useState(false);
   const onFocusLocation = () => setHasLocationFocused(true);
 
   const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
     clearError(PlanFormInputsEnum.DESCRIPTION);
-    dispatch(setDescriptionAction(event.target.value));
+    setDescription(event.target.value);
   };
 
   const submit = async () => {
@@ -365,14 +386,14 @@ export const PlanForm: FC<PlanFormProps> = props => {
   }, [debouncedPersistPlan, title, color, startDate, startTime, endDate, endTime, location, description]);
 
   const clearForm = () => {
-    dispatch(setTitleAction(''));
-    dispatch(setColorAction(computeRandomColor()));
-    dispatch(setStartDateAction(computeDefaultDate()));
-    dispatch(setStartTimeAction(defaultStartTime));
-    dispatch(setEndDateAction(computeDefaultDate()));
-    dispatch(setEndTimeAction(defaultEndTime));
-    dispatch(setLocationAction(''));
-    dispatch(setDescriptionAction(''));
+    setTitle('');
+    setColor(computeRandomColor());
+    setStartDate(computeDefaultDate());
+    setStartTime(defaultStartTime);
+    setEndDate(computeDefaultDate());
+    setEndTime(defaultEndTime);
+    setLocation('');
+    setDescription('');
     setHasLocationFocused(false);
   };
 
