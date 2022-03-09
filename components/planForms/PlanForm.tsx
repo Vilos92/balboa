@@ -47,16 +47,6 @@ interface PlanFormProps {
   persistPlan?: (planDraft: PostPlan | PatchPlan) => void;
 }
 
-interface ColorInputWithTooltipProps {
-  shouldShowColorHint: boolean;
-  value: string;
-  onChange: (newColor: string) => void;
-}
-
-interface ClearFormButtonProps {
-  onClick: Handler;
-}
-
 enum PlanFormInputsEnum {
   TITLE = 'title',
   LOCATION = 'location',
@@ -66,6 +56,28 @@ enum PlanFormInputsEnum {
 type PlanFormErrors = {
   [key in PlanFormInputsEnum]?: string;
 };
+
+interface PlanFormState {
+  title: string;
+  color: string;
+  startDate: string;
+  startTime: string;
+  endDate: string;
+  endTime: string;
+  location: string;
+  description: string;
+  errors: PlanFormErrors;
+}
+
+interface ColorInputWithTooltipProps {
+  shouldShowColorHint: boolean;
+  value: string;
+  onChange: (newColor: string) => void;
+}
+
+interface ClearFormButtonProps {
+  onClick: Handler;
+}
 
 /*
  * Constants.
@@ -120,7 +132,7 @@ const StyledFooterDiv = tw.div`
  * Reducer.
  */
 
-const initialPlanFormState = {
+const initialPlanFormState: PlanFormState = {
   title: '',
   color: defaultColor,
   startDate: '',
@@ -128,7 +140,8 @@ const initialPlanFormState = {
   endDate: '',
   endTime: defaultEndTime,
   location: '',
-  description: ''
+  description: '',
+  errors: {}
 };
 
 const planFormSlice = createSlice({
@@ -136,6 +149,7 @@ const planFormSlice = createSlice({
   initialState: initialPlanFormState,
   reducers: {
     setTitleAction: (state, action: PayloadAction<string>) => {
+      state.errors[PlanFormInputsEnum.TITLE] = undefined;
       state.title = action.payload;
     },
     setColorAction: (state, action: PayloadAction<string>) => {
@@ -154,10 +168,15 @@ const planFormSlice = createSlice({
       state.endTime = action.payload;
     },
     setLocationAction: (state, action: PayloadAction<string>) => {
+      state.errors[PlanFormInputsEnum.LOCATION] = undefined;
       state.location = action.payload;
     },
     setDescriptionAction: (state, action: PayloadAction<string>) => {
+      state.errors[PlanFormInputsEnum.DESCRIPTION] = undefined;
       state.description = action.payload;
+    },
+    setErrorsAction: (state, action: PayloadAction<PlanFormErrors>) => {
+      state.errors = action.payload;
     }
   }
 });
@@ -170,7 +189,8 @@ const {
   setEndDateAction,
   setEndTimeAction,
   setLocationAction,
-  setDescriptionAction
+  setDescriptionAction,
+  setErrorsAction
 } = planFormSlice.actions;
 
 /*
@@ -201,7 +221,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
     description: planDescription ?? ''
   });
 
-  const {title, color, startDate, startTime, endDate, endTime, location, description} = state;
+  const {title, color, startDate, startTime, endDate, endTime, location, description, errors} = state;
 
   const [
     setTitle,
@@ -222,6 +242,8 @@ export const PlanForm: FC<PlanFormProps> = props => {
     setLocationAction,
     setDescriptionAction
   ].map(action => makeDispatchAction(dispatch, action));
+
+  const setErrors = makeDispatchAction(dispatch, setErrorsAction);
 
   const initializeColor = () => {
     if (color !== defaultColor) return;
@@ -264,11 +286,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
     initializePlanEnd();
   });
 
-  const [errors, setErrors] = useState<PlanFormErrors>();
-  const clearError = (inputName: PlanFormInputsEnum) => setErrors({...errors, [inputName]: undefined});
-
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
-    clearError(PlanFormInputsEnum.TITLE);
     setTitle(event.target.value);
   };
 
@@ -333,14 +351,12 @@ export const PlanForm: FC<PlanFormProps> = props => {
   };
 
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => {
-    clearError(PlanFormInputsEnum.LOCATION);
     setLocation(event.target.value);
   };
   const [hasLocationFocused, setHasLocationFocused] = useState(false);
   const onFocusLocation = () => setHasLocationFocused(true);
 
   const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    clearError(PlanFormInputsEnum.DESCRIPTION);
     setDescription(event.target.value);
   };
 
@@ -395,6 +411,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
     setLocation('');
     setDescription('');
     setHasLocationFocused(false);
+    setErrors({});
   };
 
   // Cannot select dates before today.
