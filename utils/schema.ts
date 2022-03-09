@@ -5,7 +5,7 @@ import {ZodError, ZodIssue, ZodObject, extendShape} from 'zod';
  */
 
 export function validateSchema<T>(
-  schema: ZodObject<extendShape<T, {}>>,
+  schema: ZodObject<extendShape<T, unknown>>,
   blob: unknown
 ): readonly ZodIssue[] | undefined {
   try {
