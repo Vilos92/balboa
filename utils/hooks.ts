@@ -24,6 +24,17 @@ export function usePrevious<T>(value: T) {
   return ref.current;
 }
 
+export function useInitialEffect(handler: Handler) {
+  const isMounted = useRef(false);
+
+  useEffect(() => {
+    if (isMounted.current === true) return;
+
+    handler();
+    isMounted.current = true;
+  });
+}
+
 export function useTimeout(): [SetTimeout, ClearTimeout] {
   const timeoutRef = useRef<number>();
   useEffect(() => () => window.clearTimeout(timeoutRef.current), []);
