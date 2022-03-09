@@ -1,4 +1,5 @@
-import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
+import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+import {ChangeEvent, FC, FormEvent, useEffect, useReducer, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
@@ -115,6 +116,63 @@ const StyledFooterDiv = tw.div`
 `;
 
 /*
+ * Reducer.
+ */
+
+const initialPlanFormState = {
+  title: '',
+  color: defaultColor,
+  startDate: '',
+  startTime: defaultStartTime,
+  endDate: '',
+  endTime: defaultEndTime,
+  location: '',
+  description: ''
+};
+
+const planFormSlice = createSlice({
+  name: 'planForm',
+  initialState: initialPlanFormState,
+  reducers: {
+    setTitleAction: (state, action: PayloadAction<string>) => {
+      state.title = action.payload;
+    },
+    setColorAction: (state, action: PayloadAction<string>) => {
+      state.color = action.payload;
+    },
+    setStartDateAction: (state, action: PayloadAction<string>) => {
+      state.startDate = action.payload;
+    },
+    setStartTimeAction: (state, action: PayloadAction<string>) => {
+      state.startTime = action.payload;
+    },
+    setEndDateAction: (state, action: PayloadAction<string>) => {
+      state.endDate = action.payload;
+    },
+    setEndTimeAction: (state, action: PayloadAction<string>) => {
+      state.endTime = action.payload;
+    },
+    setLocationAction: (state, action: PayloadAction<string>) => {
+      state.location = action.payload;
+    },
+    setDescriptionAction: (state, action: PayloadAction<string>) => {
+      state.description = action.payload;
+    }
+  }
+});
+
+const {
+  setTitleAction,
+  setColorAction,
+  setStartDateAction,
+  setStartTimeAction,
+  setEndDateAction,
+  setEndTimeAction,
+  setLocationAction,
+  setDescriptionAction
+} = planFormSlice.actions;
+
+/*
  * Components.
  */
 
@@ -135,40 +193,45 @@ export const PlanForm: FC<PlanFormProps> = props => {
     persistPlan
   } = props;
 
+  const [planFormState, planFormDispatch] = useReducer(planFormSlice.reducer, {
+    ...initialPlanFormState,
+    title: planTitle ?? '',
+    location: planLocation ?? '',
+    description: planDescription ?? ''
+  });
+
+  const {title, color, startDate, startTime, endDate, endTime, location, description} = planFormState;
+
   const [errors, setErrors] = useState<PlanFormErrors>();
   const clearError = (inputName: PlanFormInputsEnum) => setErrors({...errors, [inputName]: undefined});
 
-  const [title, setTitle] = useState(planTitle ?? '');
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     clearError(PlanFormInputsEnum.TITLE);
-    setTitle(event.target.value);
+    planFormDispatch(setTitleAction(event.target.value));
   };
 
-  const [color, setColor] = useState(defaultColor);
-  const onChangeColor = (newColor: string) => setColor(newColor);
+  const onChangeColor = (newColor: string) => planFormDispatch(setColorAction(newColor));
   useEffect(() => {
     if (color !== defaultColor) return;
 
     if (planColor) {
-      setColor(planColor);
+      planFormDispatch(setColorAction(planColor));
       return;
     }
 
     const randColor = computeRandomColor();
-    setColor(randColor);
+    planFormDispatch(setColorAction(randColor));
   }, [color, planColor]);
 
-  const [startDate, setStartDate] = useState('');
-  const [startTime, setStartTime] = useState(defaultStartTime);
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
     try {
       const start = computeDateTime(event.target.value, startTime);
       const end = computeDateTime(endDate, endTime);
 
-      setStartDate(event.target.value);
+      planFormDispatch(setStartDateAction(event.target.value));
       if (start > end) {
-        setEndDate(event.target.value);
-        setEndTime(startTime);
+        planFormDispatch(setEndDateAction(event.target.value));
+        planFormDispatch(setEndTimeAction(startTime));
       }
     } catch (exception) {
       // Ignore invalid dates.
@@ -179,27 +242,25 @@ export const PlanForm: FC<PlanFormProps> = props => {
       const start = computeDateTime(startDate, event.target.value);
       const end = computeDateTime(endDate, endTime);
 
-      setStartTime(event.target.value);
+      planFormDispatch(setStartTimeAction(event.target.value));
       if (start > end) {
-        setEndDate(startDate);
-        setEndTime(event.target.value);
+        planFormDispatch(setEndDateAction(startDate));
+        planFormDispatch(setEndTimeAction(event.target.value));
       }
     } catch (exception) {
       // Ignore invalid dates.
     }
   };
 
-  const [endDate, setEndDate] = useState('');
-  const [endTime, setEndTime] = useState(defaultEndTime);
   const onChangeEndDate = (event: ChangeEvent<HTMLInputElement>) => {
     try {
       const start = computeDateTime(startDate, startTime);
       const end = computeDateTime(event.target.value, endTime);
 
-      setEndDate(event.target.value);
+      planFormDispatch(setEndDateAction(event.target.value));
       if (end < start) {
-        setStartDate(event.target.value);
-        setStartTime(endTime);
+        planFormDispatch(setStartDateAction(event.target.value));
+        planFormDispatch(setStartTimeAction(endTime));
       }
     } catch (exception) {
       // Ignore invalid dates.
@@ -210,54 +271,52 @@ export const PlanForm: FC<PlanFormProps> = props => {
       const start = computeDateTime(startDate, startTime);
       const end = computeDateTime(endDate, event.target.value);
 
-      setEndTime(event.target.value);
+      planFormDispatch(setEndTimeAction(event.target.value));
       if (end < start) {
-        setStartDate(endDate);
-        setStartTime(event.target.value);
+        planFormDispatch(setStartDateAction(endDate));
+        planFormDispatch(setStartTimeAction(event.target.value));
       }
     } catch (exception) {
       // Ignore invalid dates.
     }
   };
 
-  const [location, setLocation] = useState(planLocation ?? '');
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => {
     clearError(PlanFormInputsEnum.LOCATION);
-    setLocation(event.target.value);
+    planFormDispatch(setLocationAction(event.target.value));
   };
   const [hasLocationFocused, setHasLocationFocused] = useState(false);
   const onFocusLocation = () => setHasLocationFocused(true);
 
-  const [description, setDescription] = useState(planDescription ?? '');
   const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
     clearError(PlanFormInputsEnum.DESCRIPTION);
-    setDescription(event.target.value);
+    planFormDispatch(setDescriptionAction(event.target.value));
   };
 
   useEffect(() => {
     if (planStart) {
       const start = new Date(planStart);
 
-      setStartDate(computeInputDateFromObject(start));
-      setStartTime(computeInputTimeFromObject(start));
+      planFormDispatch(setStartDateAction(computeInputDateFromObject(start)));
+      planFormDispatch(setStartTimeAction(computeInputTimeFromObject(start)));
       return;
     }
 
     // Initial default date should only be set on the client (no SSR).
-    setStartDate(computeDefaultDate());
+    planFormDispatch(setStartDateAction(computeDefaultDate()));
   }, [planStart]);
 
   useEffect(() => {
     if (planEnd) {
       const end = new Date(planEnd);
 
-      setEndDate(computeInputDateFromObject(end));
-      setEndTime(computeInputTimeFromObject(end));
+      planFormDispatch(setEndDateAction(computeInputDateFromObject(end)));
+      planFormDispatch(setEndTimeAction(computeInputTimeFromObject(end)));
       return;
     }
 
     // Initial default date should only be set on the client (no SSR).
-    setEndDate(computeDefaultDate());
+    planFormDispatch(setEndDateAction(computeDefaultDate()));
   }, [planEnd]);
 
   // Cannot select dates before today.
@@ -305,14 +364,14 @@ export const PlanForm: FC<PlanFormProps> = props => {
   }, [debouncedPersistPlan, title, color, startDate, startTime, endDate, endTime, location, description]);
 
   const clearForm = () => {
-    setTitle('');
-    setColor(computeRandomColor());
-    setStartDate(computeDefaultDate());
-    setStartTime(defaultStartTime);
-    setEndDate(computeDefaultDate());
-    setEndTime(defaultEndTime);
-    setLocation('');
-    setDescription('');
+    planFormDispatch(setTitleAction(''));
+    planFormDispatch(setColorAction(computeRandomColor()));
+    planFormDispatch(setStartDateAction(computeDefaultDate()));
+    planFormDispatch(setStartTimeAction(defaultStartTime));
+    planFormDispatch(setEndDateAction(computeDefaultDate()));
+    planFormDispatch(setEndTimeAction(defaultEndTime));
+    planFormDispatch(setLocationAction(''));
+    planFormDispatch(setDescriptionAction(''));
     setHasLocationFocused(false);
   };
 
