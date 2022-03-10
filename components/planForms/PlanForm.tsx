@@ -26,6 +26,7 @@ import {TextInput} from '../inputs/TextInput';
 import {TimeInput} from '../inputs/TimeInput';
 import {Tooltip} from '../popovers/Tooltip';
 import {LocationVisualizerAccordion} from './LocationVisualizerAccordion';
+import {computeDateTime} from './computeDateTime';
 
 /*
  * Types.
@@ -101,22 +102,6 @@ const StyledFooterDiv = tw.div`
 `;
 
 /*
- * Reducer.
- */
-
-const {
-  setTitle: setTitleAction,
-  setColor: setColorAction,
-  setStartDate: setStartDateAction,
-  setStartTime: setStartTimeAction,
-  setEndDate: setEndDateAction,
-  setEndTime: setEndTimeAction,
-  setLocation: setLocationAction,
-  setDescription: setDescriptionAction,
-  setErrors: setErrorsAction
-} = planFormSlice.actions;
-
-/*
  * Components.
  */
 
@@ -150,23 +135,25 @@ export const PlanForm: FC<PlanFormProps> = props => {
     setTitle,
     setColor,
     setStartDate,
+    changeStartDate,
     setStartTime,
     setEndDate,
     setEndTime,
     setLocation,
     setDescription
   ] = [
-    setTitleAction,
-    setColorAction,
-    setStartDateAction,
-    setStartTimeAction,
-    setEndDateAction,
-    setEndTimeAction,
-    setLocationAction,
-    setDescriptionAction
+    planFormSlice.actions.setTitle,
+    planFormSlice.actions.setColor,
+    planFormSlice.actions.setStartDate,
+    planFormSlice.actions.changeStartDate,
+    planFormSlice.actions.setStartTime,
+    planFormSlice.actions.setEndDate,
+    planFormSlice.actions.setEndTime,
+    planFormSlice.actions.setLocation,
+    planFormSlice.actions.setDescription
   ].map(action => wrapActionWithDispatch(dispatch, action));
 
-  const setErrors = wrapActionWithDispatch(dispatch, setErrorsAction);
+  const setErrors = wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors);
 
   const initializeColor = () => {
     if (color !== defaultColor) return;
@@ -216,18 +203,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const onChangeColor = (newColor: string) => setColor(newColor);
 
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const start = computeDateTime(event.target.value, startTime);
-      const end = computeDateTime(endDate, endTime);
-
-      setStartDate(event.target.value);
-      if (start > end) {
-        setEndDate(event.target.value);
-        setEndTime(startTime);
-      }
-    } catch (exception) {
-      // Ignore invalid dates.
-    }
+    changeStartDate(event.target.value);
   };
   const onChangeStartTime = (event: ChangeEvent<HTMLInputElement>) => {
     try {
@@ -472,35 +448,6 @@ function computeInputTimeFromObject(date: Date): string {
     minute: '2-digit',
     hour12: false
   });
-}
-
-/**
- * Creates a Date object from a date string and time string, in the user's current timezone.
- */
-function computeDateTime(date: string, time: string): Date {
-  const [yearString, monthString, dayString] = date.split('-');
-
-  const year = parseInt(yearString);
-  // JavaScript months are 0-indexed.
-  const month = parseInt(monthString) - 1;
-  const day = parseInt(dayString);
-
-  if (isNaN(year) || isNaN(month) || isNaN(day)) throw new Error(`Invalid date: ${date}`);
-
-  const [hourString, minuteString] = time.split(':');
-
-  const hours = parseInt(hourString);
-  const minutes = parseInt(minuteString);
-
-  if (isNaN(hours) || isNaN(minutes)) throw new Error(`Invalid time: ${time}`);
-
-  // Create dt without input to set timezone to the user's.
-  const dt = new Date();
-  dt.setFullYear(year, month, day);
-  // We also want to clear the seconds and milliseconds from our date.
-  dt.setHours(hours, minutes, 0, 0);
-
-  return dt;
 }
 
 function computePlanDraft(

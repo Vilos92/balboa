@@ -3,6 +3,7 @@ import {atom, selector} from 'recoil';
 import {recoilPersist} from 'recoil-persist';
 import {ZodIssue} from 'zod';
 
+import {computeDateTime} from '../components/planForms/computeDateTime';
 import {PatchPlan, PostPlan} from '../pages/api/plans';
 
 /*
@@ -98,6 +99,21 @@ export const planFormSlice = createSlice({
     },
     setStartDate: (state, action: PayloadAction<string>) => {
       state.startDate = action.payload;
+    },
+    changeStartDate: (state, action: PayloadAction<string>) => {
+      state.startDate = action.payload;
+      try {
+        const start = computeDateTime(action.payload, state.startTime);
+        const end = computeDateTime(state.endDate, state.endTime);
+
+        state.startDate = action.payload;
+        if (start > end) {
+          state.endDate = action.payload;
+          state.endTime = state.startTime;
+        }
+      } catch (exception) {
+        // Ignore invalid dates.
+      }
     },
     setStartTime: (state, action: PayloadAction<string>) => {
       state.startTime = action.payload;
