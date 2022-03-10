@@ -137,8 +137,11 @@ export const PlanForm: FC<PlanFormProps> = props => {
     setStartDate,
     changeStartDate,
     setStartTime,
+    changeStartTime,
     setEndDate,
+    changeEndDate,
     setEndTime,
+    changeEndTime,
     setLocation,
     setDescription
   ] = [
@@ -147,8 +150,11 @@ export const PlanForm: FC<PlanFormProps> = props => {
     planFormSlice.actions.setStartDate,
     planFormSlice.actions.changeStartDate,
     planFormSlice.actions.setStartTime,
+    planFormSlice.actions.changeStartTime,
     planFormSlice.actions.setEndDate,
+    planFormSlice.actions.changeEndDate,
     planFormSlice.actions.setEndTime,
+    planFormSlice.actions.changeEndTime,
     planFormSlice.actions.setLocation,
     planFormSlice.actions.setDescription
   ].map(action => wrapActionWithDispatch(dispatch, action));
@@ -206,47 +212,14 @@ export const PlanForm: FC<PlanFormProps> = props => {
     changeStartDate(event.target.value);
   };
   const onChangeStartTime = (event: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const start = computeDateTime(startDate, event.target.value);
-      const end = computeDateTime(endDate, endTime);
-
-      setStartTime(event.target.value);
-      if (start > end) {
-        setEndDate(startDate);
-        setEndTime(event.target.value);
-      }
-    } catch (exception) {
-      // Ignore invalid dates.
-    }
+    changeStartTime(event.target.value);
   };
 
   const onChangeEndDate = (event: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const start = computeDateTime(startDate, startTime);
-      const end = computeDateTime(event.target.value, endTime);
-
-      setEndDate(event.target.value);
-      if (end < start) {
-        setStartDate(event.target.value);
-        setStartTime(endTime);
-      }
-    } catch (exception) {
-      // Ignore invalid dates.
-    }
+    changeEndDate(event.target.value);
   };
   const onChangeEndTime = (event: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const start = computeDateTime(startDate, startTime);
-      const end = computeDateTime(endDate, event.target.value);
-
-      setEndTime(event.target.value);
-      if (end < start) {
-        setStartDate(endDate);
-        setStartTime(event.target.value);
-      }
-    } catch (exception) {
-      // Ignore invalid dates.
-    }
+    changeEndTime(event.target.value);
   };
 
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => {

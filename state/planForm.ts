@@ -101,7 +101,6 @@ export const planFormSlice = createSlice({
       state.startDate = action.payload;
     },
     changeStartDate: (state, action: PayloadAction<string>) => {
-      state.startDate = action.payload;
       try {
         const start = computeDateTime(action.payload, state.startTime);
         const end = computeDateTime(state.endDate, state.endTime);
@@ -118,11 +117,53 @@ export const planFormSlice = createSlice({
     setStartTime: (state, action: PayloadAction<string>) => {
       state.startTime = action.payload;
     },
+    changeStartTime: (state, action: PayloadAction<string>) => {
+      try {
+        const start = computeDateTime(state.startDate, action.payload);
+        const end = computeDateTime(state.endDate, state.endTime);
+
+        state.startTime = action.payload;
+        if (start > end) {
+          state.endDate = state.startDate;
+          state.endTime = action.payload;
+        }
+      } catch (exception) {
+        // Ignore invalid dates.
+      }
+    },
     setEndDate: (state, action: PayloadAction<string>) => {
       state.endDate = action.payload;
     },
+    changeEndDate: (state, action: PayloadAction<string>) => {
+      try {
+        const start = computeDateTime(state.startDate, state.startTime);
+        const end = computeDateTime(action.payload, state.endTime);
+
+        state.endDate = action.payload;
+        if (end < start) {
+          state.startDate = action.payload;
+          state.startTime = state.endTime;
+        }
+      } catch (exception) {
+        // Ignore invalid dates.
+      }
+    },
     setEndTime: (state, action: PayloadAction<string>) => {
       state.endTime = action.payload;
+    },
+    changeEndTime: (state, action: PayloadAction<string>) => {
+      try {
+        const start = computeDateTime(state.startDate, state.startTime);
+        const end = computeDateTime(state.endDate, action.payload);
+
+        state.endTime = action.payload;
+        if (end < start) {
+          state.startDate = state.endDate;
+          state.startTime = action.payload;
+        }
+      } catch (exception) {
+        // Ignore invalid dates.
+      }
     },
     setLocation: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.LOCATION] = undefined;
