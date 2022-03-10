@@ -1,10 +1,17 @@
-import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {ChangeEvent, FC, FormEvent, useEffect, useReducer, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
+import {
+  PlanFormInputsEnum,
+  defaultColor,
+  defaultEndTime,
+  defaultStartTime,
+  initialPlanFormState,
+  planFormSlice
+} from '../../state/planForm';
 import {Handler} from '../../types/common';
 import {swatchColors} from '../../utils/color';
 import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
@@ -19,13 +26,6 @@ import {TextInput} from '../inputs/TextInput';
 import {TimeInput} from '../inputs/TimeInput';
 import {Tooltip} from '../popovers/Tooltip';
 import {LocationVisualizerAccordion} from './LocationVisualizerAccordion';
-
-/*
- * Constants.
- */
-
-const defaultStartTime = '14:00';
-const defaultEndTime = '17:00';
 
 /*
  * Types.
@@ -47,28 +47,6 @@ interface PlanFormProps {
   persistPlan?: (planDraft: PostPlan | PatchPlan) => void;
 }
 
-enum PlanFormInputsEnum {
-  TITLE = 'title',
-  LOCATION = 'location',
-  DESCRIPTION = 'description'
-}
-
-type PlanFormErrors = {
-  [key in PlanFormInputsEnum]?: string;
-};
-
-interface PlanFormState {
-  title: string;
-  color: string;
-  startDate: string;
-  startTime: string;
-  endDate: string;
-  endTime: string;
-  location: string;
-  description: string;
-  errors: PlanFormErrors;
-}
-
 interface ColorInputWithTooltipProps {
   shouldShowColorHint: boolean;
   value: string;
@@ -78,12 +56,6 @@ interface ColorInputWithTooltipProps {
 interface ClearFormButtonProps {
   onClick: Handler;
 }
-
-/*
- * Constants.
- */
-
-const defaultColor = '#ffffff';
 
 /*
  * Styles.
@@ -131,55 +103,6 @@ const StyledFooterDiv = tw.div`
 /*
  * Reducer.
  */
-
-const initialPlanFormState: PlanFormState = {
-  title: '',
-  color: defaultColor,
-  startDate: '',
-  startTime: defaultStartTime,
-  endDate: '',
-  endTime: defaultEndTime,
-  location: '',
-  description: '',
-  errors: {}
-};
-
-const planFormSlice = createSlice({
-  name: 'planForm',
-  initialState: initialPlanFormState,
-  reducers: {
-    setTitle: (state, action: PayloadAction<string>) => {
-      state.errors[PlanFormInputsEnum.TITLE] = undefined;
-      state.title = action.payload;
-    },
-    setColor: (state, action: PayloadAction<string>) => {
-      state.color = action.payload;
-    },
-    setStartDate: (state, action: PayloadAction<string>) => {
-      state.startDate = action.payload;
-    },
-    setStartTime: (state, action: PayloadAction<string>) => {
-      state.startTime = action.payload;
-    },
-    setEndDate: (state, action: PayloadAction<string>) => {
-      state.endDate = action.payload;
-    },
-    setEndTime: (state, action: PayloadAction<string>) => {
-      state.endTime = action.payload;
-    },
-    setLocation: (state, action: PayloadAction<string>) => {
-      state.errors[PlanFormInputsEnum.LOCATION] = undefined;
-      state.location = action.payload;
-    },
-    setDescription: (state, action: PayloadAction<string>) => {
-      state.errors[PlanFormInputsEnum.DESCRIPTION] = undefined;
-      state.description = action.payload;
-    },
-    setErrors: (state, action: PayloadAction<PlanFormErrors>) => {
-      state.errors = action.payload;
-    }
-  }
-});
 
 const {
   setTitle: setTitleAction,
@@ -374,10 +297,9 @@ export const PlanForm: FC<PlanFormProps> = props => {
     );
 
     // Handle client-side validation errors in this form.
-    const error = validatePlan(planDraft);
-    if (error) {
-      const planFormErrors = computePlanFormErrors(error);
-      setErrors(planFormErrors);
+    const errors = validatePlan(planDraft);
+    if (errors) {
+      setErrors(errors);
       return;
     }
 
@@ -411,7 +333,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
     setLocation('');
     setDescription('');
     setHasLocationFocused(false);
-    setErrors({});
+    setErrors([]);
   };
 
   // Cannot select dates before today.
@@ -579,27 +501,6 @@ function computeDateTime(date: string, time: string): Date {
   dt.setHours(hours, minutes, 0, 0);
 
   return dt;
-}
-
-/**
- * Translates an array of zod errors into a PlanFormErrors object which can more easily
- * be used to pass the input components their error states.
- */
-function computePlanFormErrors(zodErrors: readonly ZodIssue[]): PlanFormErrors {
-  return zodErrors.reduce<PlanFormErrors>((currentPlanFormErrors, zodError) => {
-    const {path, message} = zodError;
-    const inputName = path[0];
-
-    // The plan form does not currently have any number inputs.
-    if (!inputName || typeof inputName !== 'string') return currentPlanFormErrors;
-
-    if (!Object.values(PlanFormInputsEnum).includes(inputName as PlanFormInputsEnum)) {
-      console.error(zodError);
-      return currentPlanFormErrors;
-    }
-
-    return {...currentPlanFormErrors, [inputName]: message};
-  }, {});
 }
 
 function computePlanDraft(
