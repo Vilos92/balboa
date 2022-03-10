@@ -12,7 +12,7 @@ const CustomStyles = createGlobalStyle`
       antialiased
     `}
 
-    font-family: 'Alegreya Sans', sans-serif;
+    font-family: Lato, sans-serif;
   }
 `;
 
