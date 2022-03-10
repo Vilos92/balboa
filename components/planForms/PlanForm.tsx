@@ -8,7 +8,7 @@ import {PatchPlan, PostPlan} from '../../pages/api/plans';
 import {Handler} from '../../types/common';
 import {swatchColors} from '../../utils/color';
 import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
-import {makeDispatchAction} from '../../utils/state';
+import {wrapActionWithDispatch} from '../../utils/state';
 import {Button} from '../Button';
 import {ChromelessButton} from '../ChromelessButton';
 import {Icon, IconTypesEnum} from '../Icon';
@@ -148,49 +148,49 @@ const planFormSlice = createSlice({
   name: 'planForm',
   initialState: initialPlanFormState,
   reducers: {
-    setTitleAction: (state, action: PayloadAction<string>) => {
+    setTitle: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.TITLE] = undefined;
       state.title = action.payload;
     },
-    setColorAction: (state, action: PayloadAction<string>) => {
+    setColor: (state, action: PayloadAction<string>) => {
       state.color = action.payload;
     },
-    setStartDateAction: (state, action: PayloadAction<string>) => {
+    setStartDate: (state, action: PayloadAction<string>) => {
       state.startDate = action.payload;
     },
-    setStartTimeAction: (state, action: PayloadAction<string>) => {
+    setStartTime: (state, action: PayloadAction<string>) => {
       state.startTime = action.payload;
     },
-    setEndDateAction: (state, action: PayloadAction<string>) => {
+    setEndDate: (state, action: PayloadAction<string>) => {
       state.endDate = action.payload;
     },
-    setEndTimeAction: (state, action: PayloadAction<string>) => {
+    setEndTime: (state, action: PayloadAction<string>) => {
       state.endTime = action.payload;
     },
-    setLocationAction: (state, action: PayloadAction<string>) => {
+    setLocation: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.LOCATION] = undefined;
       state.location = action.payload;
     },
-    setDescriptionAction: (state, action: PayloadAction<string>) => {
+    setDescription: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.DESCRIPTION] = undefined;
       state.description = action.payload;
     },
-    setErrorsAction: (state, action: PayloadAction<PlanFormErrors>) => {
+    setErrors: (state, action: PayloadAction<PlanFormErrors>) => {
       state.errors = action.payload;
     }
   }
 });
 
 const {
-  setTitleAction,
-  setColorAction,
-  setStartDateAction,
-  setStartTimeAction,
-  setEndDateAction,
-  setEndTimeAction,
-  setLocationAction,
-  setDescriptionAction,
-  setErrorsAction
+  setTitle: setTitleAction,
+  setColor: setColorAction,
+  setStartDate: setStartDateAction,
+  setStartTime: setStartTimeAction,
+  setEndDate: setEndDateAction,
+  setEndTime: setEndTimeAction,
+  setLocation: setLocationAction,
+  setDescription: setDescriptionAction,
+  setErrors: setErrorsAction
 } = planFormSlice.actions;
 
 /*
@@ -241,9 +241,9 @@ export const PlanForm: FC<PlanFormProps> = props => {
     setEndTimeAction,
     setLocationAction,
     setDescriptionAction
-  ].map(action => makeDispatchAction(dispatch, action));
+  ].map(action => wrapActionWithDispatch(dispatch, action));
 
-  const setErrors = makeDispatchAction(dispatch, setErrorsAction);
+  const setErrors = wrapActionWithDispatch(dispatch, setErrorsAction);
 
   const initializeColor = () => {
     if (color !== defaultColor) return;
