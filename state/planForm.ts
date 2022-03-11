@@ -1,11 +1,14 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+import {useReducer} from 'react';
 import {atom, selector} from 'recoil';
 import {recoilPersist} from 'recoil-persist';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../pages/api/plans';
 import {swatchColors} from '../utils/color';
-import {computeDateTime, computeInputDateFromObject} from '../utils/dateTime';
+import {computeDateTime, computeInputDateFromObject, computeInputTimeFromObject} from '../utils/dateTime';
+import {useInitialEffect} from '../utils/hooks';
+import {wrapActionWithDispatch} from '../utils/state';
 
 /*
  * Constants.
@@ -75,7 +78,7 @@ export const planFormValue = selector<Partial<PostPlan | PatchPlan>>({
  * Reducer.
  */
 
-export const initialPlanFormState: PlanFormState = {
+const initialPlanFormState: PlanFormState = {
   title: '',
   color: defaultColor,
   startDate: '',
@@ -87,7 +90,7 @@ export const initialPlanFormState: PlanFormState = {
   errors: {}
 };
 
-export const planFormSlice = createSlice({
+const planFormSlice = createSlice({
   name: 'planForm',
   initialState: initialPlanFormState,
   reducers: {
@@ -191,6 +194,87 @@ export const planFormSlice = createSlice({
     }
   }
 });
+
+/*
+ * Hooks.
+ */
+
+export function usePlanFormState(
+  planTitle?: string,
+  planColor?: string,
+  planStart?: string,
+  planEnd?: string,
+  planLocation?: string,
+  planDescription?: string
+) {
+  const planStartDt = planStart ? new Date(planStart) : undefined;
+  const planEndDt = planEnd ? new Date(planEnd) : undefined;
+
+  const [state, dispatch] = useReducer(planFormSlice.reducer, {
+    ...initialPlanFormState,
+    title: planTitle ?? '',
+    startDate: planStartDt ? computeInputDateFromObject(planStartDt) : '',
+    startTime: planStartDt ? computeInputTimeFromObject(planStartDt) : '',
+    endDate: planEndDt ? computeInputDateFromObject(planEndDt) : '',
+    endTime: planEndDt ? computeInputTimeFromObject(planEndDt) : '',
+    location: planLocation ?? '',
+    description: planDescription ?? ''
+  });
+
+  const {title, color, startDate, startTime, endDate, endTime, location, description, errors} = state;
+
+  const [
+    setTitle,
+    setColor,
+    changeStartDate,
+    changeStartTime,
+    changeEndDate,
+    changeEndTime,
+    setLocation,
+    setDescription
+  ] = [
+    planFormSlice.actions.setTitle,
+    planFormSlice.actions.setColor,
+    planFormSlice.actions.changeStartDate,
+    planFormSlice.actions.changeStartTime,
+    planFormSlice.actions.changeEndDate,
+    planFormSlice.actions.changeEndTime,
+    planFormSlice.actions.setLocation,
+    planFormSlice.actions.setDescription
+  ].map(action => wrapActionWithDispatch(dispatch, action));
+
+  // TODO: Improve typing of wrapActionWithDispatch to handle this.
+  const setErrors = wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors);
+  const clearForm = () => dispatch(planFormSlice.actions.clearForm());
+
+  // These initial values should only be set on the client (no SSR).
+  useInitialEffect(() => {
+    dispatch(planFormSlice.actions.initialize());
+    if (planColor) setColor(planColor);
+  });
+
+  return {
+    title,
+    color,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    location,
+    description,
+    errors,
+    setTitle,
+    setColor,
+    changeStartDate,
+    changeStartTime,
+    changeEndDate,
+    changeEndTime,
+    setLocation,
+    setDescription,
+    setErrors,
+    clearForm
+  };
+}
 
 /*
  * Helpers.

@@ -1,14 +1,13 @@
-import {ChangeEvent, FC, FormEvent, useEffect, useReducer, useState} from 'react';
+import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
-import {PlanFormInputsEnum, initialPlanFormState, planFormSlice} from '../../state/planForm';
+import {PlanFormInputsEnum, usePlanFormState} from '../../state/planForm';
 import {Handler} from '../../types/common';
-import {computeDateTime, computeInputDateFromObject, computeInputTimeFromObject} from '../../utils/dateTime';
-import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
-import {wrapActionWithDispatch} from '../../utils/state';
+import {computeDateTime, computeInputDateFromObject} from '../../utils/dateTime';
+import {useDebounce, useHover, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
 import {ChromelessButton} from '../ChromelessButton';
 import {Icon, IconTypesEnum} from '../Icon';
@@ -114,23 +113,16 @@ export const PlanForm: FC<PlanFormProps> = props => {
     persistPlan
   } = props;
 
-  const planStartDt = planStart ? new Date(planStart) : undefined;
-  const planEndDt = planEnd ? new Date(planEnd) : undefined;
-
-  const [state, dispatch] = useReducer(planFormSlice.reducer, {
-    ...initialPlanFormState,
-    title: planTitle ?? '',
-    startDate: planStartDt ? computeInputDateFromObject(planStartDt) : '',
-    startTime: planStartDt ? computeInputTimeFromObject(planStartDt) : '',
-    endDate: planEndDt ? computeInputDateFromObject(planEndDt) : '',
-    endTime: planEndDt ? computeInputTimeFromObject(planEndDt) : '',
-    location: planLocation ?? '',
-    description: planDescription ?? ''
-  });
-
-  const {title, color, startDate, startTime, endDate, endTime, location, description, errors} = state;
-
-  const [
+  const {
+    title,
+    color,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    location,
+    description,
+    errors,
     setTitle,
     setColor,
     changeStartDate,
@@ -138,35 +130,10 @@ export const PlanForm: FC<PlanFormProps> = props => {
     changeEndDate,
     changeEndTime,
     setLocation,
-    setDescription
-  ] = [
-    planFormSlice.actions.setTitle,
-    planFormSlice.actions.setColor,
-    planFormSlice.actions.changeStartDate,
-    planFormSlice.actions.changeStartTime,
-    planFormSlice.actions.changeEndDate,
-    planFormSlice.actions.changeEndTime,
-    planFormSlice.actions.setLocation,
-    planFormSlice.actions.setDescription
-  ].map(action => wrapActionWithDispatch(dispatch, action));
-
-  // TODO: Improve typing of wrapActionWithDispatch to handle this.
-  const initialize = () => dispatch(planFormSlice.actions.initialize());
-  const clearForm = () => dispatch(planFormSlice.actions.clearForm());
-  const setErrors = wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors);
-
-  // Cannot set color directly in the initial state due to SSR.
-  const initializeColor = () => {
-    if (!planColor) return;
-
-    setColor(planColor);
-  };
-
-  // These initial values should only be set on the client (no SSR).
-  useInitialEffect(() => {
-    initialize();
-    initializeColor();
-  });
+    setDescription,
+    setErrors,
+    clearForm
+  } = usePlanFormState(planTitle, planColor, planStart, planEnd, planLocation, planDescription);
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     setTitle(event.target.value);
