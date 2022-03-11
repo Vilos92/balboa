@@ -1,4 +1,4 @@
-import {PayloadAction, createSlice} from '@reduxjs/toolkit';
+import {ActionWithoutPayload, PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {useReducer} from 'react';
 import {atom, selector} from 'recoil';
 import {recoilPersist} from 'recoil-persist';
@@ -181,7 +181,7 @@ const planFormSlice = createSlice({
     setErrors: (state, action: PayloadAction<readonly ZodIssue[]>) => {
       state.errors = computePlanFormErrors(action.payload);
     },
-    clearForm: (state, _action: PayloadAction) => {
+    clearForm: (state, _action: ActionWithoutPayload) => {
       state.title = '';
       state.color = computeRandomColor();
       state.startDate = computeDefaultDate();
