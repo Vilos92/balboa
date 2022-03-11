@@ -206,7 +206,6 @@ export const PlanForm: FC<PlanFormProps> = props => {
   }, [debouncedPersistPlan, title, color, startDate, startTime, endDate, endTime, location, description]);
 
   const onClearForm = () => {
-    // TODO: Improve wrapActionWithDispatch such that passing empty payload is not required.
     clearForm(undefined);
     setHasLocationFocused(false);
   };
