@@ -4,14 +4,16 @@ import {recoilPersist} from 'recoil-persist';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../pages/api/plans';
+import {swatchColors} from '../utils/color';
+import {computeDateTime, computeInputDateFromObject} from '../utils/dateTime';
 
 /*
  * Constants.
  */
 
-export const defaultColor = '#ffffff';
-export const defaultStartTime = '14:00';
-export const defaultEndTime = '17:00';
+const defaultColor = '#ffffff';
+const defaultStartTime = '14:00';
+const defaultEndTime = '17:00';
 
 /*
  * Types.
@@ -89,6 +91,19 @@ export const planFormSlice = createSlice({
   name: 'planForm',
   initialState: initialPlanFormState,
   reducers: {
+    // This is not meant to clear the reducer, but to set values which are
+    // not available when rendering on the server.
+    initialize: (state, _action: PayloadAction) => {
+      if (state.color === defaultColor) {
+        state.color = computeRandomColor();
+      }
+      if (state.startDate === '') {
+        state.startDate = computeDefaultDate();
+      }
+      if (state.endDate === '') {
+        state.endDate = computeDefaultDate();
+      }
+    },
     setTitle: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.TITLE] = undefined;
       state.title = action.payload;
@@ -96,17 +111,61 @@ export const planFormSlice = createSlice({
     setColor: (state, action: PayloadAction<string>) => {
       state.color = action.payload;
     },
-    setStartDate: (state, action: PayloadAction<string>) => {
-      state.startDate = action.payload;
+    changeStartDate: (state, action: PayloadAction<string>) => {
+      try {
+        const start = computeDateTime(action.payload, state.startTime);
+        const end = computeDateTime(state.endDate, state.endTime);
+
+        state.startDate = action.payload;
+        if (start > end) {
+          state.endDate = action.payload;
+          state.endTime = state.startTime;
+        }
+      } catch (exception) {
+        // Ignore invalid dates.
+      }
     },
-    setStartTime: (state, action: PayloadAction<string>) => {
-      state.startTime = action.payload;
+    changeStartTime: (state, action: PayloadAction<string>) => {
+      try {
+        const start = computeDateTime(state.startDate, action.payload);
+        const end = computeDateTime(state.endDate, state.endTime);
+
+        state.startTime = action.payload;
+        if (start > end) {
+          state.endDate = state.startDate;
+          state.endTime = action.payload;
+        }
+      } catch (exception) {
+        // Ignore invalid dates.
+      }
     },
-    setEndDate: (state, action: PayloadAction<string>) => {
-      state.endDate = action.payload;
+    changeEndDate: (state, action: PayloadAction<string>) => {
+      try {
+        const start = computeDateTime(state.startDate, state.startTime);
+        const end = computeDateTime(action.payload, state.endTime);
+
+        state.endDate = action.payload;
+        if (end < start) {
+          state.startDate = action.payload;
+          state.startTime = state.endTime;
+        }
+      } catch (exception) {
+        // Ignore invalid dates.
+      }
     },
-    setEndTime: (state, action: PayloadAction<string>) => {
-      state.endTime = action.payload;
+    changeEndTime: (state, action: PayloadAction<string>) => {
+      try {
+        const start = computeDateTime(state.startDate, state.startTime);
+        const end = computeDateTime(state.endDate, action.payload);
+
+        state.endTime = action.payload;
+        if (end < start) {
+          state.startDate = state.endDate;
+          state.startTime = action.payload;
+        }
+      } catch (exception) {
+        // Ignore invalid dates.
+      }
     },
     setLocation: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.LOCATION] = undefined;
@@ -118,6 +177,17 @@ export const planFormSlice = createSlice({
     },
     setErrors: (state, action: PayloadAction<readonly ZodIssue[]>) => {
       state.errors = computePlanFormErrors(action.payload);
+    },
+    clearForm: (state, _action: PayloadAction) => {
+      state.title = '';
+      state.color = computeRandomColor();
+      state.startDate = computeDefaultDate();
+      state.startTime = defaultStartTime;
+      state.endDate = computeDefaultDate();
+      state.endTime = defaultEndTime;
+      state.location = '';
+      state.description = '';
+      state.errors = {};
     }
   }
 });
@@ -145,4 +215,14 @@ function computePlanFormErrors(zodErrors: readonly ZodIssue[]): PlanFormErrors {
 
     return {...currentPlanFormErrors, [inputName]: message};
   }, {});
+}
+
+function computeRandomColor(): string {
+  return swatchColors[Math.floor(Math.random() * swatchColors.length)];
+}
+
+function computeDefaultDate(): string {
+  const start = new Date();
+  start.setDate(start.getDate() + 7);
+  return computeInputDateFromObject(start);
 }

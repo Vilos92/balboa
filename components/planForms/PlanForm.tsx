@@ -4,16 +4,9 @@ import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
-import {
-  PlanFormInputsEnum,
-  defaultColor,
-  defaultEndTime,
-  defaultStartTime,
-  initialPlanFormState,
-  planFormSlice
-} from '../../state/planForm';
+import {PlanFormInputsEnum, initialPlanFormState, planFormSlice} from '../../state/planForm';
 import {Handler} from '../../types/common';
-import {swatchColors} from '../../utils/color';
+import {computeDateTime, computeInputDateFromObject, computeInputTimeFromObject} from '../../utils/dateTime';
 import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
 import {wrapActionWithDispatch} from '../../utils/state';
 import {Button} from '../Button';
@@ -101,22 +94,6 @@ const StyledFooterDiv = tw.div`
 `;
 
 /*
- * Reducer.
- */
-
-const {
-  setTitle: setTitleAction,
-  setColor: setColorAction,
-  setStartDate: setStartDateAction,
-  setStartTime: setStartTimeAction,
-  setEndDate: setEndDateAction,
-  setEndTime: setEndTimeAction,
-  setLocation: setLocationAction,
-  setDescription: setDescriptionAction,
-  setErrors: setErrorsAction
-} = planFormSlice.actions;
-
-/*
  * Components.
  */
 
@@ -137,9 +114,16 @@ export const PlanForm: FC<PlanFormProps> = props => {
     persistPlan
   } = props;
 
+  const planStartDt = planStart ? new Date(planStart) : undefined;
+  const planEndDt = planEnd ? new Date(planEnd) : undefined;
+
   const [state, dispatch] = useReducer(planFormSlice.reducer, {
     ...initialPlanFormState,
     title: planTitle ?? '',
+    startDate: planStartDt ? computeInputDateFromObject(planStartDt) : '',
+    startTime: planStartDt ? computeInputTimeFromObject(planStartDt) : '',
+    endDate: planEndDt ? computeInputDateFromObject(planEndDt) : '',
+    endTime: planEndDt ? computeInputTimeFromObject(planEndDt) : '',
     location: planLocation ?? '',
     description: planDescription ?? ''
   });
@@ -149,64 +133,39 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const [
     setTitle,
     setColor,
-    setStartDate,
-    setStartTime,
-    setEndDate,
-    setEndTime,
+    changeStartDate,
+    changeStartTime,
+    changeEndDate,
+    changeEndTime,
     setLocation,
     setDescription
   ] = [
-    setTitleAction,
-    setColorAction,
-    setStartDateAction,
-    setStartTimeAction,
-    setEndDateAction,
-    setEndTimeAction,
-    setLocationAction,
-    setDescriptionAction
+    planFormSlice.actions.setTitle,
+    planFormSlice.actions.setColor,
+    planFormSlice.actions.changeStartDate,
+    planFormSlice.actions.changeStartTime,
+    planFormSlice.actions.changeEndDate,
+    planFormSlice.actions.changeEndTime,
+    planFormSlice.actions.setLocation,
+    planFormSlice.actions.setDescription
   ].map(action => wrapActionWithDispatch(dispatch, action));
 
-  const setErrors = wrapActionWithDispatch(dispatch, setErrorsAction);
+  // TODO: Improve typing of wrapActionWithDispatch to handle this.
+  const initialize = () => dispatch(planFormSlice.actions.initialize());
+  const clearForm = () => dispatch(planFormSlice.actions.clearForm());
+  const setErrors = wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors);
 
+  // Cannot set color directly in the initial state due to SSR.
   const initializeColor = () => {
-    if (color !== defaultColor) return;
-    if (planColor) {
-      setColor(planColor);
-      return;
-    }
-    const randColor = computeRandomColor();
-    setColor(randColor);
+    if (!planColor) return;
+
+    setColor(planColor);
   };
 
-  const initializePlanStart = () => {
-    if (!planStart) {
-      setStartDate(computeDefaultDate());
-      return;
-    }
-
-    const start = new Date(planStart);
-
-    setStartDate(computeInputDateFromObject(start));
-    setStartTime(computeInputTimeFromObject(start));
-  };
-
-  const initializePlanEnd = () => {
-    if (!planEnd) {
-      setEndDate(computeDefaultDate());
-      return;
-    }
-
-    const end = new Date(planEnd);
-
-    setEndDate(computeInputDateFromObject(end));
-    setEndTime(computeInputTimeFromObject(end));
-  };
-
+  // These initial values should only be set on the client (no SSR).
   useInitialEffect(() => {
-    // These initial values should only be set on the client (no SSR).
+    initialize();
     initializeColor();
-    initializePlanStart();
-    initializePlanEnd();
   });
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
@@ -216,61 +175,17 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const onChangeColor = (newColor: string) => setColor(newColor);
 
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const start = computeDateTime(event.target.value, startTime);
-      const end = computeDateTime(endDate, endTime);
-
-      setStartDate(event.target.value);
-      if (start > end) {
-        setEndDate(event.target.value);
-        setEndTime(startTime);
-      }
-    } catch (exception) {
-      // Ignore invalid dates.
-    }
+    changeStartDate(event.target.value);
   };
   const onChangeStartTime = (event: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const start = computeDateTime(startDate, event.target.value);
-      const end = computeDateTime(endDate, endTime);
-
-      setStartTime(event.target.value);
-      if (start > end) {
-        setEndDate(startDate);
-        setEndTime(event.target.value);
-      }
-    } catch (exception) {
-      // Ignore invalid dates.
-    }
+    changeStartTime(event.target.value);
   };
 
   const onChangeEndDate = (event: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const start = computeDateTime(startDate, startTime);
-      const end = computeDateTime(event.target.value, endTime);
-
-      setEndDate(event.target.value);
-      if (end < start) {
-        setStartDate(event.target.value);
-        setStartTime(endTime);
-      }
-    } catch (exception) {
-      // Ignore invalid dates.
-    }
+    changeEndDate(event.target.value);
   };
   const onChangeEndTime = (event: ChangeEvent<HTMLInputElement>) => {
-    try {
-      const start = computeDateTime(startDate, startTime);
-      const end = computeDateTime(endDate, event.target.value);
-
-      setEndTime(event.target.value);
-      if (end < start) {
-        setStartDate(endDate);
-        setStartTime(event.target.value);
-      }
-    } catch (exception) {
-      // Ignore invalid dates.
-    }
+    changeEndTime(event.target.value);
   };
 
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => {
@@ -323,17 +238,9 @@ export const PlanForm: FC<PlanFormProps> = props => {
     debouncedPersistPlan();
   }, [debouncedPersistPlan, title, color, startDate, startTime, endDate, endTime, location, description]);
 
-  const clearForm = () => {
-    setTitle('');
-    setColor(computeRandomColor());
-    setStartDate(computeDefaultDate());
-    setStartTime(defaultStartTime);
-    setEndDate(computeDefaultDate());
-    setEndTime(defaultEndTime);
-    setLocation('');
-    setDescription('');
+  const onClearForm = () => {
+    clearForm();
     setHasLocationFocused(false);
-    setErrors([]);
   };
 
   // Cannot select dates before today.
@@ -395,7 +302,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
           Go time!
         </Button>
 
-        {isClearButtonVisible && <ClearFormButton onClick={clearForm} />}
+        {isClearButtonVisible && <ClearFormButton onClick={onClearForm} />}
       </StyledFooterDiv>
     </form>
   );
@@ -450,58 +357,6 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
 /*
  * Helpers.
  */
-
-function computeRandomColor(): string {
-  return swatchColors[Math.floor(Math.random() * swatchColors.length)];
-}
-
-function computeDefaultDate(): string {
-  const start = new Date();
-  start.setDate(start.getDate() + 7);
-  return computeInputDateFromObject(start);
-}
-
-function computeInputDateFromObject(date: Date): string {
-  const [month, day, year] = date.toLocaleDateString().split('/');
-  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-}
-
-function computeInputTimeFromObject(date: Date): string {
-  return date.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: false
-  });
-}
-
-/**
- * Creates a Date object from a date string and time string, in the user's current timezone.
- */
-function computeDateTime(date: string, time: string): Date {
-  const [yearString, monthString, dayString] = date.split('-');
-
-  const year = parseInt(yearString);
-  // JavaScript months are 0-indexed.
-  const month = parseInt(monthString) - 1;
-  const day = parseInt(dayString);
-
-  if (isNaN(year) || isNaN(month) || isNaN(day)) throw new Error(`Invalid date: ${date}`);
-
-  const [hourString, minuteString] = time.split(':');
-
-  const hours = parseInt(hourString);
-  const minutes = parseInt(minuteString);
-
-  if (isNaN(hours) || isNaN(minutes)) throw new Error(`Invalid time: ${time}`);
-
-  // Create dt without input to set timezone to the user's.
-  const dt = new Date();
-  dt.setFullYear(year, month, day);
-  // We also want to clear the seconds and milliseconds from our date.
-  dt.setHours(hours, minutes, 0, 0);
-
-  return dt;
-}
 
 function computePlanDraft(
   planId: string | undefined,
