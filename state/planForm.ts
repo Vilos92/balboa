@@ -3,12 +3,9 @@ import {atom, selector} from 'recoil';
 import {recoilPersist} from 'recoil-persist';
 import {ZodIssue} from 'zod';
 
-import {
-  computeDateTime,
-  computeDefaultDate,
-  computeRandomColor
-} from '../components/planForms/computeDateTime';
+import {computeDateTime, computeDefaultDate} from '../components/planForms/computeDateTime';
 import {PatchPlan, PostPlan} from '../pages/api/plans';
+import {swatchColors} from '../utils/color';
 
 /*
  * Constants.
@@ -94,6 +91,17 @@ export const planFormSlice = createSlice({
   name: 'planForm',
   initialState: initialPlanFormState,
   reducers: {
+    initialize: (state, _action: PayloadAction) => {
+      if (state.color === defaultColor) {
+        state.color = computeRandomColor();
+      }
+      if (state.startDate === '') {
+        state.startDate = computeDefaultDate();
+      }
+      if (state.endDate === '') {
+        state.endDate = computeDefaultDate();
+      }
+    },
     setTitle: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.TITLE] = undefined;
       state.title = action.payload;
@@ -217,4 +225,8 @@ function computePlanFormErrors(zodErrors: readonly ZodIssue[]): PlanFormErrors {
 
     return {...currentPlanFormErrors, [inputName]: message};
   }, {});
+}
+
+function computeRandomColor(): string {
+  return swatchColors[Math.floor(Math.random() * swatchColors.length)];
 }

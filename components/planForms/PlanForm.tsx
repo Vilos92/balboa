@@ -22,7 +22,7 @@ import {
   computeDateTime,
   computeDefaultDate,
   computeInputDateFromObject,
-  computeRandomColor
+  computeInputTimeFromObject
 } from './computeDateTime';
 
 /*
@@ -157,25 +157,19 @@ export const PlanForm: FC<PlanFormProps> = props => {
   ].map(action => wrapActionWithDispatch(dispatch, action));
 
   // TODO: Improve typing of wrapActionWithDispatch to handle this.
+  const initialize = () => dispatch(planFormSlice.actions.initialize());
   const clearForm = () => dispatch(planFormSlice.actions.clearForm());
   const setErrors = wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors);
 
-  // TODO: Move initializer functions to reducer action and just call that.
+  // // TODO: Move initializer functions to reducer action and just call that.
   const initializeColor = () => {
-    if (color !== defaultColor) return;
-    if (planColor) {
-      setColor(planColor);
-      return;
-    }
-    const randColor = computeRandomColor();
-    setColor(randColor);
+    if (!planColor) return;
+
+    setColor(planColor);
   };
 
   const initializePlanStart = () => {
-    if (!planStart) {
-      setStartDate(computeDefaultDate());
-      return;
-    }
+    if (!planStart) return;
 
     const start = new Date(planStart);
 
@@ -184,10 +178,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
   };
 
   const initializePlanEnd = () => {
-    if (!planEnd) {
-      setEndDate(computeDefaultDate());
-      return;
-    }
+    if (!planEnd) return;
 
     const end = new Date(planEnd);
 
@@ -197,6 +188,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
 
   useInitialEffect(() => {
     // These initial values should only be set on the client (no SSR).
+    initialize();
     initializeColor();
     initializePlanStart();
     initializePlanEnd();
@@ -391,14 +383,6 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
 /*
  * Helpers.
  */
-
-function computeInputTimeFromObject(date: Date): string {
-  return date.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: false
-  });
-}
 
 function computePlanDraft(
   planId: string | undefined,

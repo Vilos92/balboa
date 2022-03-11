@@ -1,5 +1,3 @@
-import {swatchColors} from '../../utils/color';
-
 /**
  * Creates a Date object from a date string and time string, in the user's current timezone.
  */
@@ -29,10 +27,6 @@ export function computeDateTime(date: string, time: string): Date {
   return dt;
 }
 
-export function computeRandomColor(): string {
-  return swatchColors[Math.floor(Math.random() * swatchColors.length)];
-}
-
 export function computeDefaultDate(): string {
   const start = new Date();
   start.setDate(start.getDate() + 7);
@@ -42,4 +36,12 @@ export function computeDefaultDate(): string {
 export function computeInputDateFromObject(date: Date): string {
   const [month, day, year] = date.toLocaleDateString().split('/');
   return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
+export function computeInputTimeFromObject(date: Date): string {
+  return date.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: false
+  });
 }
