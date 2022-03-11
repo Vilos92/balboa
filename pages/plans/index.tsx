@@ -8,6 +8,7 @@ import {ChromelessButton} from '../../components/ChromelessButton';
 import {Card, ColumnJustified} from '../../components/Commons';
 import {DateTime} from '../../components/DateTime';
 import {DateTimeRange} from '../../components/DateTimeRange';
+import {DaysAwayOrSince} from '../../components/DaysAwayOrSince';
 import {Header} from '../../components/Header';
 import {Icon, IconTypesEnum} from '../../components/Icon';
 import {PageSkeleton} from '../../components/PageSkeleton';
@@ -107,12 +108,6 @@ const StyledRightDiv = tw.div`
   w-20
 `;
 
-const StyledDaysUntilDiv = tw.div`
-  text-xs
-  text-gray-400
-  font-light
-`;
-
 /*
  * Server-side props.
  */
@@ -140,14 +135,14 @@ const PlansPage: FC = () => {
   const {data: plans, error} = useNetGetPlans();
   if (!plans || error) return <PageSkeleton />;
 
-  const now = new Date();
+  const startOfToday = computeStartOfToday();
 
   const upcomingPlans = plans
-    .filter(plan => new Date(plan.end) >= now)
+    .filter(plan => new Date(plan.end) >= startOfToday)
     .sort((planA, planB) => calculateDateDifference(planB.start, planA.start));
 
   const pastPlans = plans
-    .filter(plan => new Date(plan.end) < now)
+    .filter(plan => new Date(plan.end) < startOfToday)
     .sort((planA, planB) => calculateDateDifference(planA.start, planB.start));
 
   return (
@@ -236,7 +231,9 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
 
           <VisualUser user={hostUser} />
         </div>
-        <StyledRightDiv>{renderDaysAwayOrSince(plan.start)}</StyledRightDiv>
+        <StyledRightDiv>
+          <DaysAwayOrSince dateString={plan.start} />
+        </StyledRightDiv>
       </StyledCard>
     </StyledChromelessButton>
   );
@@ -246,28 +243,15 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
  * Helpers.
  */
 
+function computeStartOfToday(): Date {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  return now;
+}
+
 function calculateDateDifference(dateStringA: string, dateStringB: string) {
   const dateA = new Date(dateStringA);
   const dateB = new Date(dateStringB);
 
   return dateB.getTime() - dateA.getTime();
-}
-
-function renderDaysAwayOrSince(dateString: string) {
-  const date = new Date(dateString);
-  const differenceMs = date.getTime() - new Date().getTime();
-  const daysUntil = Math.ceil(differenceMs / 1000 / 3600 / 24);
-
-  const daysUntilString = daysUntil >= 0 ? daysUntil.toString() : (-daysUntil).toString();
-  const daysString = daysUntil === 1 ? 'day' : 'days';
-  const awayOrSince = daysUntil >= 0 ? 'away' : 'since';
-
-  return (
-    <>
-      {daysUntilString}
-      <StyledDaysUntilDiv>
-        {daysString} {awayOrSince}
-      </StyledDaysUntilDiv>
-    </>
-  );
 }
