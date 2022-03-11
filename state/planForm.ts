@@ -240,7 +240,7 @@ export function usePlanFormState(
     setLocation: wrapActionWithDispatch(dispatch, planFormSlice.actions.setLocation),
     setDescription: wrapActionWithDispatch(dispatch, planFormSlice.actions.setDescription),
     setErrors: wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors),
-    clearForm: wrapActionWithDispatch(dispatch, planFormSlice.actions.clearForm)
+    clearForm: () => dispatch(planFormSlice.actions.clearForm())
   };
 }
 

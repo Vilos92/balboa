@@ -206,7 +206,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
   }, [debouncedPersistPlan, title, color, startDate, startTime, endDate, endTime, location, description]);
 
   const onClearForm = () => {
-    clearForm(undefined);
+    clearForm();
     setHasLocationFocused(false);
   };
 
