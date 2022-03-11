@@ -3,7 +3,11 @@ import {atom, selector} from 'recoil';
 import {recoilPersist} from 'recoil-persist';
 import {ZodIssue} from 'zod';
 
-import {computeDateTime} from '../components/planForms/computeDateTime';
+import {
+  computeDateTime,
+  computeDefaultDate,
+  computeRandomColor
+} from '../components/planForms/computeDateTime';
 import {PatchPlan, PostPlan} from '../pages/api/plans';
 
 /*
@@ -11,8 +15,8 @@ import {PatchPlan, PostPlan} from '../pages/api/plans';
  */
 
 export const defaultColor = '#ffffff';
-export const defaultStartTime = '14:00';
-export const defaultEndTime = '17:00';
+const defaultStartTime = '14:00';
+const defaultEndTime = '17:00';
 
 /*
  * Types.
@@ -175,6 +179,17 @@ export const planFormSlice = createSlice({
     },
     setErrors: (state, action: PayloadAction<readonly ZodIssue[]>) => {
       state.errors = computePlanFormErrors(action.payload);
+    },
+    clearForm: (state, _action: PayloadAction) => {
+      state.title = '';
+      state.color = computeRandomColor();
+      state.startDate = computeDefaultDate();
+      state.startTime = defaultStartTime;
+      state.endDate = computeDefaultDate();
+      state.endTime = defaultEndTime;
+      state.location = '';
+      state.description = '';
+      state.errors = {};
     }
   }
 });

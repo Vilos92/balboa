@@ -4,16 +4,8 @@ import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
-import {
-  PlanFormInputsEnum,
-  defaultColor,
-  defaultEndTime,
-  defaultStartTime,
-  initialPlanFormState,
-  planFormSlice
-} from '../../state/planForm';
+import {PlanFormInputsEnum, defaultColor, initialPlanFormState, planFormSlice} from '../../state/planForm';
 import {Handler} from '../../types/common';
-import {swatchColors} from '../../utils/color';
 import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
 import {wrapActionWithDispatch} from '../../utils/state';
 import {Button} from '../Button';
@@ -26,7 +18,12 @@ import {TextInput} from '../inputs/TextInput';
 import {TimeInput} from '../inputs/TimeInput';
 import {Tooltip} from '../popovers/Tooltip';
 import {LocationVisualizerAccordion} from './LocationVisualizerAccordion';
-import {computeDateTime} from './computeDateTime';
+import {
+  computeDateTime,
+  computeDefaultDate,
+  computeInputDateFromObject,
+  computeRandomColor
+} from './computeDateTime';
 
 /*
  * Types.
@@ -159,8 +156,11 @@ export const PlanForm: FC<PlanFormProps> = props => {
     planFormSlice.actions.setDescription
   ].map(action => wrapActionWithDispatch(dispatch, action));
 
+  // TODO: Improve typing of wrapActionWithDispatch to handle this.
+  const clearForm = () => dispatch(planFormSlice.actions.clearForm());
   const setErrors = wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors);
 
+  // TODO: Move initializer functions to reducer action and just call that.
   const initializeColor = () => {
     if (color !== defaultColor) return;
     if (planColor) {
@@ -272,17 +272,9 @@ export const PlanForm: FC<PlanFormProps> = props => {
     debouncedPersistPlan();
   }, [debouncedPersistPlan, title, color, startDate, startTime, endDate, endTime, location, description]);
 
-  const clearForm = () => {
-    setTitle('');
-    setColor(computeRandomColor());
-    setStartDate(computeDefaultDate());
-    setStartTime(defaultStartTime);
-    setEndDate(computeDefaultDate());
-    setEndTime(defaultEndTime);
-    setLocation('');
-    setDescription('');
+  const onClearForm = () => {
+    clearForm();
     setHasLocationFocused(false);
-    setErrors([]);
   };
 
   // Cannot select dates before today.
@@ -344,7 +336,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
           Go time!
         </Button>
 
-        {isClearButtonVisible && <ClearFormButton onClick={clearForm} />}
+        {isClearButtonVisible && <ClearFormButton onClick={onClearForm} />}
       </StyledFooterDiv>
     </form>
   );
@@ -399,21 +391,6 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
 /*
  * Helpers.
  */
-
-function computeRandomColor(): string {
-  return swatchColors[Math.floor(Math.random() * swatchColors.length)];
-}
-
-function computeDefaultDate(): string {
-  const start = new Date();
-  start.setDate(start.getDate() + 7);
-  return computeInputDateFromObject(start);
-}
-
-function computeInputDateFromObject(date: Date): string {
-  const [month, day, year] = date.toLocaleDateString().split('/');
-  return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
-}
 
 function computeInputTimeFromObject(date: Date): string {
   return date.toLocaleTimeString('en-US', {
