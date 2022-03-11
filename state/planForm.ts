@@ -3,15 +3,15 @@ import {atom, selector} from 'recoil';
 import {recoilPersist} from 'recoil-persist';
 import {ZodIssue} from 'zod';
 
-import {computeDateTime, computeDefaultDate} from '../components/planForms/computeDateTime';
 import {PatchPlan, PostPlan} from '../pages/api/plans';
 import {swatchColors} from '../utils/color';
+import {computeDateTime, computeInputDateFromObject} from '../utils/dateTime';
 
 /*
  * Constants.
  */
 
-export const defaultColor = '#ffffff';
+const defaultColor = '#ffffff';
 const defaultStartTime = '14:00';
 const defaultEndTime = '17:00';
 
@@ -91,6 +91,8 @@ export const planFormSlice = createSlice({
   name: 'planForm',
   initialState: initialPlanFormState,
   reducers: {
+    // This is not meant to clear the reducer, but to set values which are
+    // not available when rendering on the server.
     initialize: (state, _action: PayloadAction) => {
       if (state.color === defaultColor) {
         state.color = computeRandomColor();
@@ -109,9 +111,6 @@ export const planFormSlice = createSlice({
     setColor: (state, action: PayloadAction<string>) => {
       state.color = action.payload;
     },
-    setStartDate: (state, action: PayloadAction<string>) => {
-      state.startDate = action.payload;
-    },
     changeStartDate: (state, action: PayloadAction<string>) => {
       try {
         const start = computeDateTime(action.payload, state.startTime);
@@ -125,9 +124,6 @@ export const planFormSlice = createSlice({
       } catch (exception) {
         // Ignore invalid dates.
       }
-    },
-    setStartTime: (state, action: PayloadAction<string>) => {
-      state.startTime = action.payload;
     },
     changeStartTime: (state, action: PayloadAction<string>) => {
       try {
@@ -143,9 +139,6 @@ export const planFormSlice = createSlice({
         // Ignore invalid dates.
       }
     },
-    setEndDate: (state, action: PayloadAction<string>) => {
-      state.endDate = action.payload;
-    },
     changeEndDate: (state, action: PayloadAction<string>) => {
       try {
         const start = computeDateTime(state.startDate, state.startTime);
@@ -159,9 +152,6 @@ export const planFormSlice = createSlice({
       } catch (exception) {
         // Ignore invalid dates.
       }
-    },
-    setEndTime: (state, action: PayloadAction<string>) => {
-      state.endTime = action.payload;
     },
     changeEndTime: (state, action: PayloadAction<string>) => {
       try {
@@ -229,4 +219,10 @@ function computePlanFormErrors(zodErrors: readonly ZodIssue[]): PlanFormErrors {
 
 function computeRandomColor(): string {
   return swatchColors[Math.floor(Math.random() * swatchColors.length)];
+}
+
+function computeDefaultDate(): string {
+  const start = new Date();
+  start.setDate(start.getDate() + 7);
+  return computeInputDateFromObject(start);
 }

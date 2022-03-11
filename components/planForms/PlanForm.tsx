@@ -4,8 +4,9 @@ import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
-import {PlanFormInputsEnum, defaultColor, initialPlanFormState, planFormSlice} from '../../state/planForm';
+import {PlanFormInputsEnum, initialPlanFormState, planFormSlice} from '../../state/planForm';
 import {Handler} from '../../types/common';
+import {computeDateTime, computeInputDateFromObject, computeInputTimeFromObject} from '../../utils/dateTime';
 import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
 import {wrapActionWithDispatch} from '../../utils/state';
 import {Button} from '../Button';
@@ -18,12 +19,6 @@ import {TextInput} from '../inputs/TextInput';
 import {TimeInput} from '../inputs/TimeInput';
 import {Tooltip} from '../popovers/Tooltip';
 import {LocationVisualizerAccordion} from './LocationVisualizerAccordion';
-import {
-  computeDateTime,
-  computeDefaultDate,
-  computeInputDateFromObject,
-  computeInputTimeFromObject
-} from './computeDateTime';
 
 /*
  * Types.
@@ -119,9 +114,16 @@ export const PlanForm: FC<PlanFormProps> = props => {
     persistPlan
   } = props;
 
+  const planStartDt = planStart ? new Date(planStart) : undefined;
+  const planEndDt = planEnd ? new Date(planEnd) : undefined;
+
   const [state, dispatch] = useReducer(planFormSlice.reducer, {
     ...initialPlanFormState,
     title: planTitle ?? '',
+    startDate: planStartDt ? computeInputDateFromObject(planStartDt) : '',
+    startTime: planStartDt ? computeInputTimeFromObject(planStartDt) : '',
+    endDate: planEndDt ? computeInputDateFromObject(planEndDt) : '',
+    endTime: planEndDt ? computeInputTimeFromObject(planEndDt) : '',
     location: planLocation ?? '',
     description: planDescription ?? ''
   });
@@ -131,26 +133,18 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const [
     setTitle,
     setColor,
-    setStartDate,
     changeStartDate,
-    setStartTime,
     changeStartTime,
-    setEndDate,
     changeEndDate,
-    setEndTime,
     changeEndTime,
     setLocation,
     setDescription
   ] = [
     planFormSlice.actions.setTitle,
     planFormSlice.actions.setColor,
-    planFormSlice.actions.setStartDate,
     planFormSlice.actions.changeStartDate,
-    planFormSlice.actions.setStartTime,
     planFormSlice.actions.changeStartTime,
-    planFormSlice.actions.setEndDate,
     planFormSlice.actions.changeEndDate,
-    planFormSlice.actions.setEndTime,
     planFormSlice.actions.changeEndTime,
     planFormSlice.actions.setLocation,
     planFormSlice.actions.setDescription
@@ -161,37 +155,17 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const clearForm = () => dispatch(planFormSlice.actions.clearForm());
   const setErrors = wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors);
 
-  // // TODO: Move initializer functions to reducer action and just call that.
+  // Cannot set color directly in the initial state due to SSR.
   const initializeColor = () => {
     if (!planColor) return;
 
     setColor(planColor);
   };
 
-  const initializePlanStart = () => {
-    if (!planStart) return;
-
-    const start = new Date(planStart);
-
-    setStartDate(computeInputDateFromObject(start));
-    setStartTime(computeInputTimeFromObject(start));
-  };
-
-  const initializePlanEnd = () => {
-    if (!planEnd) return;
-
-    const end = new Date(planEnd);
-
-    setEndDate(computeInputDateFromObject(end));
-    setEndTime(computeInputTimeFromObject(end));
-  };
-
+  // These initial values should only be set on the client (no SSR).
   useInitialEffect(() => {
-    // These initial values should only be set on the client (no SSR).
     initialize();
     initializeColor();
-    initializePlanStart();
-    initializePlanEnd();
   });
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
