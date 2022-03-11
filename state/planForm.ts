@@ -221,19 +221,7 @@ export function usePlanFormState(
     description: planDescription ?? ''
   });
 
-  const {title, color, startDate, startTime, endDate, endTime, location, description, errors} = state;
-
-  const setTitle = wrapActionWithDispatch(dispatch, planFormSlice.actions.setTitle);
   const setColor = wrapActionWithDispatch(dispatch, planFormSlice.actions.setColor);
-  const changeStartDate = wrapActionWithDispatch(dispatch, planFormSlice.actions.changeStartDate);
-  const changeStartTime = wrapActionWithDispatch(dispatch, planFormSlice.actions.changeStartTime);
-  const changeEndDate = wrapActionWithDispatch(dispatch, planFormSlice.actions.changeEndDate);
-  const changeEndTime = wrapActionWithDispatch(dispatch, planFormSlice.actions.changeEndTime);
-  const setLocation = wrapActionWithDispatch(dispatch, planFormSlice.actions.setLocation);
-  const setDescription = wrapActionWithDispatch(dispatch, planFormSlice.actions.setDescription);
-
-  const setErrors = wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors);
-  const clearForm = wrapActionWithDispatch(dispatch, planFormSlice.actions.clearForm);
 
   // These initial values should only be set on the client (no SSR).
   useInitialEffect(() => {
@@ -242,25 +230,17 @@ export function usePlanFormState(
   });
 
   return {
-    title,
-    color,
-    startDate,
-    startTime,
-    endDate,
-    endTime,
-    location,
-    description,
-    errors,
-    setTitle,
+    ...state,
+    setTitle: wrapActionWithDispatch(dispatch, planFormSlice.actions.setTitle),
     setColor,
-    changeStartDate,
-    changeStartTime,
-    changeEndDate,
-    changeEndTime,
-    setLocation,
-    setDescription,
-    setErrors,
-    clearForm
+    changeStartDate: wrapActionWithDispatch(dispatch, planFormSlice.actions.changeStartDate),
+    changeStartTime: wrapActionWithDispatch(dispatch, planFormSlice.actions.changeStartTime),
+    changeEndDate: wrapActionWithDispatch(dispatch, planFormSlice.actions.changeEndDate),
+    changeEndTime: wrapActionWithDispatch(dispatch, planFormSlice.actions.changeEndTime),
+    setLocation: wrapActionWithDispatch(dispatch, planFormSlice.actions.setLocation),
+    setDescription: wrapActionWithDispatch(dispatch, planFormSlice.actions.setDescription),
+    setErrors: wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors),
+    clearForm: wrapActionWithDispatch(dispatch, planFormSlice.actions.clearForm)
   };
 }
 
