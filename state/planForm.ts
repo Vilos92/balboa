@@ -223,29 +223,17 @@ export function usePlanFormState(
 
   const {title, color, startDate, startTime, endDate, endTime, location, description, errors} = state;
 
-  const [
-    setTitle,
-    setColor,
-    changeStartDate,
-    changeStartTime,
-    changeEndDate,
-    changeEndTime,
-    setLocation,
-    setDescription
-  ] = [
-    planFormSlice.actions.setTitle,
-    planFormSlice.actions.setColor,
-    planFormSlice.actions.changeStartDate,
-    planFormSlice.actions.changeStartTime,
-    planFormSlice.actions.changeEndDate,
-    planFormSlice.actions.changeEndTime,
-    planFormSlice.actions.setLocation,
-    planFormSlice.actions.setDescription
-  ].map(action => wrapActionWithDispatch(dispatch, action));
+  const setTitle = wrapActionWithDispatch(dispatch, planFormSlice.actions.setTitle);
+  const setColor = wrapActionWithDispatch(dispatch, planFormSlice.actions.setColor);
+  const changeStartDate = wrapActionWithDispatch(dispatch, planFormSlice.actions.changeStartDate);
+  const changeStartTime = wrapActionWithDispatch(dispatch, planFormSlice.actions.changeStartTime);
+  const changeEndDate = wrapActionWithDispatch(dispatch, planFormSlice.actions.changeEndDate);
+  const changeEndTime = wrapActionWithDispatch(dispatch, planFormSlice.actions.changeEndTime);
+  const setLocation = wrapActionWithDispatch(dispatch, planFormSlice.actions.setLocation);
+  const setDescription = wrapActionWithDispatch(dispatch, planFormSlice.actions.setDescription);
 
-  // TODO: Improve typing of wrapActionWithDispatch to handle this.
   const setErrors = wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors);
-  const clearForm = () => dispatch(planFormSlice.actions.clearForm());
+  const clearForm = wrapActionWithDispatch(dispatch, planFormSlice.actions.clearForm);
 
   // These initial values should only be set on the client (no SSR).
   useInitialEffect(() => {

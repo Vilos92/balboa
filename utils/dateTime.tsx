@@ -27,11 +27,17 @@ export function computeDateTime(date: string, time: string): Date {
   return dt;
 }
 
+/**
+ * Creates an input-formatted date string from a Date object.
+ */
 export function computeInputDateFromObject(date: Date): string {
   const [month, day, year] = date.toLocaleDateString().split('/');
   return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
 }
 
+/**
+ * Creates an input-formatted time string from a Date object.
+ */
 export function computeInputTimeFromObject(date: Date): string {
   return date.toLocaleTimeString('en-US', {
     hour: 'numeric',
