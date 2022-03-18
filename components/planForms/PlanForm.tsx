@@ -123,46 +123,46 @@ export const PlanForm: FC<PlanFormProps> = props => {
     location,
     description,
     errors,
-    setTitle,
-    setColor,
-    changeStartDate,
-    changeStartTime,
-    changeEndDate,
-    changeEndTime,
-    setLocation,
-    setDescription,
-    setErrors,
-    clearForm
+    titleUpdated,
+    colorUpdated,
+    startDateUpdated,
+    startTimeUpdated,
+    endDateUpdated,
+    endTimeUpdated,
+    locationUpdated,
+    descriptionUpdated,
+    errorsUpdated,
+    formCleared
   } = usePlanFormState(planTitle, planColor, planStart, planEnd, planLocation, planDescription);
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
-    setTitle(event.target.value);
+    titleUpdated(event.target.value);
   };
 
-  const onChangeColor = (newColor: string) => setColor(newColor);
+  const onChangeColor = (newColor: string) => colorUpdated(newColor);
 
   const onChangeStartDate = (event: ChangeEvent<HTMLInputElement>) => {
-    changeStartDate(event.target.value);
+    startDateUpdated(event.target.value);
   };
   const onChangeStartTime = (event: ChangeEvent<HTMLInputElement>) => {
-    changeStartTime(event.target.value);
+    startTimeUpdated(event.target.value);
   };
 
   const onChangeEndDate = (event: ChangeEvent<HTMLInputElement>) => {
-    changeEndDate(event.target.value);
+    endDateUpdated(event.target.value);
   };
   const onChangeEndTime = (event: ChangeEvent<HTMLInputElement>) => {
-    changeEndTime(event.target.value);
+    endTimeUpdated(event.target.value);
   };
 
   const onChangeLocation = (event: ChangeEvent<HTMLInputElement>) => {
-    setLocation(event.target.value);
+    locationUpdated(event.target.value);
   };
   const [hasLocationFocused, setHasLocationFocused] = useState(false);
   const onFocusLocation = () => setHasLocationFocused(true);
 
   const onChangeDescription = (event: ChangeEvent<HTMLTextAreaElement>) => {
-    setDescription(event.target.value);
+    descriptionUpdated(event.target.value);
   };
 
   const submit = async () => {
@@ -181,7 +181,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
     // Handle client-side validation errors in this form.
     const errors = validatePlan(planDraft);
     if (errors) {
-      setErrors(errors);
+      errorsUpdated(errors);
       return;
     }
 
@@ -206,7 +206,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
   }, [debouncedPersistPlan, title, color, startDate, startTime, endDate, endTime, location, description]);
 
   const onClearForm = () => {
-    clearForm();
+    formCleared();
     setHasLocationFocused(false);
   };
 

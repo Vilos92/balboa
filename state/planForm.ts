@@ -96,7 +96,7 @@ const planFormSlice = createSlice({
   reducers: {
     // This is not meant to clear the reducer, but to set values which are
     // not available when rendering on the server.
-    initialize: (state, _action: PayloadAction) => {
+    formInitialized: (state, _action: PayloadAction) => {
       if (state.color === defaultColor) {
         state.color = computeRandomColor();
       }
@@ -107,14 +107,14 @@ const planFormSlice = createSlice({
         state.endDate = computeDefaultDate();
       }
     },
-    setTitle: (state, action: PayloadAction<string>) => {
+    titleUpdated: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.TITLE] = undefined;
       state.title = action.payload;
     },
-    setColor: (state, action: PayloadAction<string>) => {
+    colorUpdated: (state, action: PayloadAction<string>) => {
       state.color = action.payload;
     },
-    changeStartDate: (state, action: PayloadAction<string>) => {
+    startDateUpdated: (state, action: PayloadAction<string>) => {
       try {
         const start = computeDateTime(action.payload, state.startTime);
         const end = computeDateTime(state.endDate, state.endTime);
@@ -128,7 +128,7 @@ const planFormSlice = createSlice({
         // Ignore invalid dates.
       }
     },
-    changeStartTime: (state, action: PayloadAction<string>) => {
+    startTimeUpdated: (state, action: PayloadAction<string>) => {
       try {
         const start = computeDateTime(state.startDate, action.payload);
         const end = computeDateTime(state.endDate, state.endTime);
@@ -142,7 +142,7 @@ const planFormSlice = createSlice({
         // Ignore invalid dates.
       }
     },
-    changeEndDate: (state, action: PayloadAction<string>) => {
+    endDateUpdated: (state, action: PayloadAction<string>) => {
       try {
         const start = computeDateTime(state.startDate, state.startTime);
         const end = computeDateTime(action.payload, state.endTime);
@@ -156,7 +156,7 @@ const planFormSlice = createSlice({
         // Ignore invalid dates.
       }
     },
-    changeEndTime: (state, action: PayloadAction<string>) => {
+    endTimeUpdated: (state, action: PayloadAction<string>) => {
       try {
         const start = computeDateTime(state.startDate, state.startTime);
         const end = computeDateTime(state.endDate, action.payload);
@@ -170,18 +170,18 @@ const planFormSlice = createSlice({
         // Ignore invalid dates.
       }
     },
-    setLocation: (state, action: PayloadAction<string>) => {
+    locationUpdated: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.LOCATION] = undefined;
       state.location = action.payload;
     },
-    setDescription: (state, action: PayloadAction<string>) => {
+    descriptionUpdated: (state, action: PayloadAction<string>) => {
       state.errors[PlanFormInputsEnum.DESCRIPTION] = undefined;
       state.description = action.payload;
     },
-    setErrors: (state, action: PayloadAction<readonly ZodIssue[]>) => {
+    errorsUpdated: (state, action: PayloadAction<readonly ZodIssue[]>) => {
       state.errors = computePlanFormErrors(action.payload);
     },
-    clearForm: (state, _action: PayloadAction) => {
+    formCleared: (state, _action: PayloadAction) => {
       state.title = '';
       state.color = computeRandomColor();
       state.startDate = computeDefaultDate();
@@ -221,26 +221,26 @@ export function usePlanFormState(
     description: planDescription ?? ''
   });
 
-  const setColor = wrapActionWithDispatch(dispatch, planFormSlice.actions.setColor);
+  const colorUpdated = wrapActionWithDispatch(dispatch, planFormSlice.actions.colorUpdated);
 
   // These initial values should only be set on the client (no SSR).
   useInitialEffect(() => {
-    dispatch(planFormSlice.actions.initialize());
-    if (planColor) setColor(planColor);
+    dispatch(planFormSlice.actions.formInitialized());
+    if (planColor) colorUpdated(planColor);
   });
 
   return {
     ...state,
-    setTitle: wrapActionWithDispatch(dispatch, planFormSlice.actions.setTitle),
-    setColor,
-    changeStartDate: wrapActionWithDispatch(dispatch, planFormSlice.actions.changeStartDate),
-    changeStartTime: wrapActionWithDispatch(dispatch, planFormSlice.actions.changeStartTime),
-    changeEndDate: wrapActionWithDispatch(dispatch, planFormSlice.actions.changeEndDate),
-    changeEndTime: wrapActionWithDispatch(dispatch, planFormSlice.actions.changeEndTime),
-    setLocation: wrapActionWithDispatch(dispatch, planFormSlice.actions.setLocation),
-    setDescription: wrapActionWithDispatch(dispatch, planFormSlice.actions.setDescription),
-    setErrors: wrapActionWithDispatch(dispatch, planFormSlice.actions.setErrors),
-    clearForm: () => dispatch(planFormSlice.actions.clearForm())
+    titleUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.titleUpdated),
+    colorUpdated,
+    startDateUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.startDateUpdated),
+    startTimeUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.startTimeUpdated),
+    endDateUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.endDateUpdated),
+    endTimeUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.endTimeUpdated),
+    locationUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.locationUpdated),
+    descriptionUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.descriptionUpdated),
+    errorsUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.errorsUpdated),
+    formCleared: () => dispatch(planFormSlice.actions.formCleared())
   };
 }
 
