@@ -3,8 +3,9 @@ import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
+import {usePlanFormState} from '../../localState/planForm';
+import {PlanFormInputsEnum} from '../../localState/planForm';
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
-import {PlanFormInputsEnum, usePlanFormState} from '../../state/planForm';
 import {Handler} from '../../types/common';
 import {computeDateTime, computeInputDateFromObject} from '../../utils/dateTime';
 import {useDebounce, useHover, useTimeout} from '../../utils/hooks';
