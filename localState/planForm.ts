@@ -149,15 +149,15 @@ const planFormSlice = createSlice({
       state.errors = computePlanFormErrors(action.payload);
     },
     formCleared: (state, _action: PayloadAction) => {
-      state.title = '';
+      state.title = initialPlanFormState.title;
       state.color = computeRandomColor();
       state.startDate = computeDefaultDate();
-      state.startTime = defaultStartTime;
+      state.startTime = initialPlanFormState.startTime;
       state.endDate = computeDefaultDate();
-      state.endTime = defaultEndTime;
-      state.location = '';
-      state.description = '';
-      state.errors = {};
+      state.endTime = initialPlanFormState.endTime;
+      state.location = initialPlanFormState.location;
+      state.description = initialPlanFormState.description;
+      state.errors = initialPlanFormState.errors;
     }
   }
 });
@@ -179,13 +179,13 @@ export function usePlanFormState(
 
   const [state, dispatch] = useReducer(planFormSlice.reducer, {
     ...initialPlanFormState,
-    title: planTitle ?? '',
-    startDate: planStartDt ? computeInputDateFromObject(planStartDt) : '',
-    startTime: planStartDt ? computeInputTimeFromObject(planStartDt) : defaultStartTime,
-    endDate: planEndDt ? computeInputDateFromObject(planEndDt) : '',
-    endTime: planEndDt ? computeInputTimeFromObject(planEndDt) : defaultEndTime,
-    location: planLocation ?? '',
-    description: planDescription ?? ''
+    title: planTitle ?? initialPlanFormState.title,
+    startDate: planStartDt ? computeInputDateFromObject(planStartDt) : initialPlanFormState.startDate,
+    startTime: planStartDt ? computeInputTimeFromObject(planStartDt) : initialPlanFormState.startTime,
+    endDate: planEndDt ? computeInputDateFromObject(planEndDt) : initialPlanFormState.endDate,
+    endTime: planEndDt ? computeInputTimeFromObject(planEndDt) : initialPlanFormState.endTime,
+    location: planLocation ?? initialPlanFormState.location,
+    description: planDescription ?? initialPlanFormState.description
   });
 
   const colorUpdated = wrapActionWithDispatch(dispatch, planFormSlice.actions.colorUpdated);
