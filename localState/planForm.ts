@@ -181,9 +181,9 @@ export function usePlanFormState(
     ...initialPlanFormState,
     title: planTitle ?? '',
     startDate: planStartDt ? computeInputDateFromObject(planStartDt) : '',
-    startTime: planStartDt ? computeInputTimeFromObject(planStartDt) : '',
+    startTime: planStartDt ? computeInputTimeFromObject(planStartDt) : defaultStartTime,
     endDate: planEndDt ? computeInputDateFromObject(planEndDt) : '',
-    endTime: planEndDt ? computeInputTimeFromObject(planEndDt) : '',
+    endTime: planEndDt ? computeInputTimeFromObject(planEndDt) : defaultEndTime,
     location: planLocation ?? '',
     description: planDescription ?? ''
   });
