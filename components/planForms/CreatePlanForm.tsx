@@ -2,7 +2,7 @@ import {FC, useState} from 'react';
 import {RecoilRoot, useRecoilState, useRecoilValue} from 'recoil';
 
 import {PostPlan, validatePostPlan} from '../../pages/api/plans';
-import {planFormState, planFormValue} from '../../state/planForm';
+import {planFormState, planFormValue} from '../../store/planForm';
 import {Providers} from '../../utils/auth';
 import {LoginModal} from '../LoginModal';
 import {PlanForm} from './PlanForm';
