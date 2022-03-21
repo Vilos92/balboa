@@ -8,7 +8,7 @@ import {persistor, store} from './store';
  * Component.
  */
 
-/*
+/**
  * Provider children with the application redux store.
  */
 export const AppProvider: FC = ({children}) => {

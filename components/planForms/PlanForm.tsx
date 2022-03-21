@@ -115,7 +115,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
     description: planDescription,
     submitPlan,
     validatePlan,
-    persistForm: persistPlan
+    persistForm
   } = props;
 
   const {
@@ -208,9 +208,9 @@ export const PlanForm: FC<PlanFormProps> = props => {
   };
 
   const debouncedPersistPlan = useDebounce(() => {
-    if (!persistPlan) return;
+    if (!persistForm) return;
 
-    persistPlan(computePlanForm(title, color, startDate, startTime, endDate, endTime, location, description));
+    persistForm(computePlanForm(title, color, startDate, startTime, endDate, endTime, location, description));
   }, 1000);
 
   useEffect(() => {
@@ -349,7 +349,7 @@ function computePlanForm(
   endTime: string,
   location: string,
   description: string
-) {
+): Partial<PlanFormState> {
   return {
     title,
     color,
@@ -375,7 +375,7 @@ function computePlanDraft(
   endTime: string,
   location: string,
   description: string
-) {
+): PostPlan | PatchPlan {
   const startDt = computeDateTime(startDate, startTime);
   const endDt = computeDateTime(endDate, endTime);
 
