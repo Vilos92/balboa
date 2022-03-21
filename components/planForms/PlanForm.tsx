@@ -72,9 +72,12 @@ const StyledColorInput = tw(ColorInput)`
 `;
 
 const StyledDateTimeDiv = tw.div`
-  flex
-  flex-row
+  grid
+  grid-cols-1
+  sm:grid-cols-2
   gap-1
+
+  mb-2
 `;
 
 interface StyledLocationDivProps {
