@@ -383,8 +383,6 @@ function computePlanDraft(
     id: planId,
     title,
     color,
-    startDate,
-    startTime,
     start: startDt.toISOString(),
     end: endDt.toISOString(),
     location,
