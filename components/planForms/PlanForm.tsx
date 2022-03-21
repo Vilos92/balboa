@@ -337,7 +337,7 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
  * Helpers.
  */
 
-/*
+/**
  * Used when persisting the form.
  */
 function computePlanForm(
@@ -362,7 +362,7 @@ function computePlanForm(
   };
 }
 
-/*
+/**
  * The actual plan draft which is submitted.
  */
 function computePlanDraft(
