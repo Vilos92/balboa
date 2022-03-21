@@ -11,7 +11,7 @@ import {wrapActionWithDispatch} from '../utils/state';
  * Types.
  */
 
-interface PlanFormState {
+export interface PlanFormState {
   title: string;
   color: string;
   startDate: string;
@@ -45,7 +45,7 @@ const defaultEndTime = '17:00';
  * Reducer.
  */
 
-const initialPlanFormState: PlanFormState = {
+const initialPlanFormState: PlanFormState = Object.freeze({
   title: '',
   color: defaultColor,
   startDate: '',
@@ -55,9 +55,9 @@ const initialPlanFormState: PlanFormState = {
   location: '',
   description: '',
   errors: {}
-};
+});
 
-const planFormSlice = createSlice({
+export const planFormSlice = createSlice({
   name: 'planForm',
   initialState: initialPlanFormState,
   reducers: {
@@ -145,6 +145,9 @@ const planFormSlice = createSlice({
       state.errors[PlanFormInputsEnum.DESCRIPTION] = undefined;
       state.description = action.payload;
     },
+    planUpdated: (state, action: PayloadAction<Partial<PlanFormState>>) => {
+      Object.assign(state, action.payload);
+    },
     errorsUpdated: (state, action: PayloadAction<readonly ZodIssue[]>) => {
       state.errors = computePlanFormErrors(action.payload);
     },
@@ -169,21 +172,20 @@ const planFormSlice = createSlice({
 export function usePlanFormState(
   planTitle?: string,
   planColor?: string,
-  planStart?: string,
-  planEnd?: string,
+  planStartDate?: string,
+  planStartTime?: string,
+  planEndDate?: string,
+  planEndTime?: string,
   planLocation?: string,
   planDescription?: string
 ) {
-  const planStartDt = planStart ? new Date(planStart) : undefined;
-  const planEndDt = planEnd ? new Date(planEnd) : undefined;
-
   const [state, dispatch] = useReducer(planFormSlice.reducer, {
     ...initialPlanFormState,
     title: planTitle ?? initialPlanFormState.title,
-    startDate: planStartDt ? computeInputDateFromObject(planStartDt) : initialPlanFormState.startDate,
-    startTime: planStartDt ? computeInputTimeFromObject(planStartDt) : initialPlanFormState.startTime,
-    endDate: planEndDt ? computeInputDateFromObject(planEndDt) : initialPlanFormState.endDate,
-    endTime: planEndDt ? computeInputTimeFromObject(planEndDt) : initialPlanFormState.endTime,
+    startDate: planStartDate ?? initialPlanFormState.startDate,
+    startTime: planStartTime ?? initialPlanFormState.startTime,
+    endDate: planEndDate ?? initialPlanFormState.endDate,
+    endTime: planEndTime ?? initialPlanFormState.endTime,
     location: planLocation ?? initialPlanFormState.location,
     description: planDescription ?? initialPlanFormState.description
   });

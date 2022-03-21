@@ -44,10 +44,10 @@ specifiers:
   react-is: ^17.0.2
   react-map-gl: ^6.1.17
   react-popper: ^2.2.5
+  react-redux: ^7.2.6
   react-resize-detector: ^7.0.0
   react-spring: ^9.4.2
-  recoil: ^0.6.1
-  recoil-persist: ^4.0.0
+  redux-persist: ^6.0.0
   styled-components: ^5.3.3
   swr: ^1.0.1
   tailwindcss: ^2.2.19
@@ -59,7 +59,7 @@ dependencies:
   '@next-auth/prisma-adapter': 0.5.2-next.19_f26fdcf87df296c1294e2c3d19a07668
   '@popperjs/core': 2.10.2
   '@prisma/client': 3.6.0_prisma@3.6.0
-  '@reduxjs/toolkit': 1.8.0_react@17.0.2
+  '@reduxjs/toolkit': 1.8.0_react-redux@7.2.6+react@17.0.2
   '@types/react-map-gl': 6.1.1
   axios: 0.24.0
   calendar-link: 2.1.1
@@ -74,10 +74,10 @@ dependencies:
   react-dom: 17.0.2_react@17.0.2
   react-map-gl: 6.1.17_react@17.0.2
   react-popper: 2.2.5_838acf1c84808345430cf17171f87518
+  react-redux: 7.2.6_react-dom@17.0.2+react@17.0.2
   react-resize-detector: 7.0.0_react-dom@17.0.2+react@17.0.2
   react-spring: 9.4.2_react-dom@17.0.2+react@17.0.2
-  recoil: 0.6.1_react-dom@17.0.2+react@17.0.2
-  recoil-persist: 4.0.0_recoil@0.6.1
+  redux-persist: 6.0.0
   styled-components: 5.3.3_281a4fa50a045c9112baf635f3bc27a7
   swr: 1.0.1_react@17.0.2
   zod: 3.11.6
@@ -1481,7 +1481,7 @@ packages:
       react-dom: 17.0.2_react@17.0.2
     dev: false
 
-  /@reduxjs/toolkit/1.8.0_react@17.0.2:
+  /@reduxjs/toolkit/1.8.0_react-redux@7.2.6+react@17.0.2:
     resolution: {integrity: sha512-cdfHWfcvLyhBUDicoFwG1u32JqvwKDxLxDd7zSmSoFw/RhYLOygIRtmaMjPRUUHmVmmAGAvquLLsKKU/677kSQ==}
     peerDependencies:
       react: ^16.9.0 || ^17.0.0 || 18.0.0-beta
@@ -1494,6 +1494,7 @@ packages:
     dependencies:
       immer: 9.0.12
       react: 17.0.2
+      react-redux: 7.2.6_react-dom@17.0.2+react@17.0.2
       redux: 4.1.2
       redux-thunk: 2.4.1_redux@4.1.2
       reselect: 4.1.5
@@ -1609,7 +1610,6 @@ packages:
     dependencies:
       '@types/react': 17.0.34
       hoist-non-react-statics: 3.3.2
-    dev: true
 
   /@types/istanbul-lib-coverage/2.0.4:
     resolution: {integrity: sha512-z/QT1XN4K4KYuslS23k62yDIDLwLFkzxOuMplDtObz0+y7VqJCaO2o+SPwHCvLFZh7xazvvoor2tA/hPz9ee7g==}
@@ -1669,6 +1669,15 @@ packages:
       '@types/mapbox-gl': 2.4.2
       '@types/react': 17.0.34
       '@types/viewport-mercator-project': 6.1.2
+    dev: false
+
+  /@types/react-redux/7.1.23:
+    resolution: {integrity: sha512-D02o3FPfqQlfu2WeEYwh3x2otYd2Dk1o8wAfsA0B1C2AJEFxE663Ozu7JzuWbznGgW248NaOF6wsqCGNq9d3qw==}
+    dependencies:
+      '@types/hoist-non-react-statics': 3.3.1
+      '@types/react': 17.0.34
+      hoist-non-react-statics: 3.3.2
+      redux: 4.1.2
     dev: false
 
   /@types/react/17.0.34:
@@ -4112,10 +4121,6 @@ packages:
     engines: {node: '>=0.8.0'}
     dev: false
 
-  /hamt_plus/1.0.2:
-    resolution: {integrity: sha1-4hwlKWjH4zsg9qGwlM2FeHomVgE=}
-    dev: false
-
   /harmony-reflect/1.6.2:
     resolution: {integrity: sha512-HIp/n38R9kQjDEziXyDTuW3vvoxxyxjxFzXLrBr18uB47GnSt+G9D29fqrpM5ZkspMcPICud3XsBJQ4Y2URg8g==}
     dev: true
@@ -6290,6 +6295,28 @@ packages:
       warning: 4.0.3
     dev: false
 
+  /react-redux/7.2.6_react-dom@17.0.2+react@17.0.2:
+    resolution: {integrity: sha512-10RPdsz0UUrRL1NZE0ejTkucnclYSgXp5q+tB5SWx2qeG2ZJQJyymgAhwKy73yiL/13btfB6fPr+rgbMAaZIAQ==}
+    peerDependencies:
+      react: ^16.8.3 || ^17
+      react-dom: '*'
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.16.3
+      '@types/react-redux': 7.1.23
+      hoist-non-react-statics: 3.3.2
+      loose-envify: 1.4.0
+      prop-types: 15.7.2
+      react: 17.0.2
+      react-dom: 17.0.2_react@17.0.2
+      react-is: 17.0.2
+    dev: false
+
   /react-refresh/0.8.3:
     resolution: {integrity: sha512-X8jZHc7nCMjaCqoU+V2I0cOhNW+QMBwSUkeXnTi8IPe6zaRWfn60ZzvFDZqWPfmSJfjub7dDW1SP0jaHWLu/hg==}
     engines: {node: '>=0.10.0'}
@@ -6371,31 +6398,6 @@ packages:
       picomatch: 2.3.0
     dev: true
 
-  /recoil-persist/4.0.0_recoil@0.6.1:
-    resolution: {integrity: sha512-hJFWxAFYpEMF1/rdF+AjBQABWuERFMWoJ5Ag1vJKG1Aj1603MuBmk3epaz8rU/Jy4IUBRkFibl6zFrvwhRhCew==}
-    peerDependencies:
-      recoil: ^0.5.1
-    dependencies:
-      recoil: 0.6.1_react-dom@17.0.2+react@17.0.2
-    dev: false
-
-  /recoil/0.6.1_react-dom@17.0.2+react@17.0.2:
-    resolution: {integrity: sha512-J7oT3LZl2vpyFClgSUpOQjpykz84VSX/NJE/PavAtR8n7Z+whEdVBPUtwc2TEWjONeL/lJmiac2XQ+qEOQA52Q==}
-    peerDependencies:
-      react: '>=16.13.1'
-      react-dom: '*'
-      react-native: '*'
-    peerDependenciesMeta:
-      react-dom:
-        optional: true
-      react-native:
-        optional: true
-    dependencies:
-      hamt_plus: 1.0.2
-      react: 17.0.2
-      react-dom: 17.0.2_react@17.0.2
-    dev: false
-
   /redent/3.0.0:
     resolution: {integrity: sha512-6tDA8g98We0zd0GvVeMT9arEOnTw9qM03L9cJXaCjrip1OO764RDBLBfrB4cwzNGDj5OA5ioymC9GkizgWJDUg==}
     engines: {node: '>=8'}
@@ -6410,6 +6412,12 @@ packages:
       css-unit-converter: 1.1.2
       postcss-value-parser: 3.3.1
     dev: true
+
+  /redux-persist/6.0.0:
+    resolution: {integrity: sha512-71LLMbUq2r02ng2We9S215LtPu3fY0KgaGE0k8WRgl6RkqxtGfl7HUozz1Dftwsb0D/5mZ8dwAaPbtnzfvbEwQ==}
+    peerDependencies:
+      redux: '>4.0.0'
+    dev: false
 
   /redux-thunk/2.4.1_redux@4.1.2:
     resolution: {integrity: sha512-OOYGNY5Jy2TWvTL1KgAlVy6dcx3siPJ1wTq741EPyUKfn6W6nChdICjZwCd0p8AZBs5kWpZlbkXW2nE/zjUa+Q==}

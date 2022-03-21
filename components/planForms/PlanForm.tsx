@@ -4,7 +4,7 @@ import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
-import {usePlanFormState} from '../../state/planForm';
+import {PlanFormState, usePlanFormState} from '../../state/planForm';
 import {PlanFormInputsEnum} from '../../state/planForm';
 import {Handler} from '../../types/common';
 import {computeDateTime, computeInputDateFromObject} from '../../utils/dateTime';
@@ -31,13 +31,15 @@ interface PlanFormProps {
   planId?: string;
   title?: string;
   color?: string;
-  start?: string;
-  end?: string;
+  startDate?: string;
+  startTime?: string;
+  endDate?: string;
+  endTime?: string;
   location?: string;
   description?: string;
   validatePlan: (planDraft: PostPlan | PatchPlan) => readonly ZodIssue[] | undefined;
   submitPlan: (planDraft: PostPlan | PatchPlan) => Promise<void>;
-  persistPlan?: (planDraft: PostPlan | PatchPlan) => void;
+  persistForm?: (planForm: Partial<PlanFormState>) => void;
 }
 
 interface ColorInputWithTooltipProps {
@@ -105,13 +107,15 @@ export const PlanForm: FC<PlanFormProps> = props => {
     planId,
     title: planTitle,
     color: planColor,
-    start: planStart,
-    end: planEnd,
+    startDate: planStartDate,
+    startTime: planStartTime,
+    endDate: planEndDate,
+    endTime: planEndTime,
     location: planLocation,
     description: planDescription,
     submitPlan,
     validatePlan,
-    persistPlan
+    persistForm: persistPlan
   } = props;
 
   const {
@@ -134,7 +138,16 @@ export const PlanForm: FC<PlanFormProps> = props => {
     descriptionUpdated,
     errorsUpdated,
     formCleared
-  } = usePlanFormState(planTitle, planColor, planStart, planEnd, planLocation, planDescription);
+  } = usePlanFormState(
+    planTitle,
+    planColor,
+    planStartDate,
+    planStartTime,
+    planEndDate,
+    planEndTime,
+    planLocation,
+    planDescription
+  );
 
   const onChangeTitle = (event: ChangeEvent<HTMLInputElement>) => {
     titleUpdated(event.target.value);
@@ -197,9 +210,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
   const debouncedPersistPlan = useDebounce(() => {
     if (!persistPlan) return;
 
-    persistPlan(
-      computePlanDraft(undefined, title, color, startDate, startTime, endDate, endTime, location, description)
-    );
+    persistPlan(computePlanForm(title, color, startDate, startTime, endDate, endTime, location, description));
   }, 1000);
 
   useEffect(() => {
@@ -326,6 +337,34 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
  * Helpers.
  */
 
+/*
+ * Used when persisting the form.
+ */
+function computePlanForm(
+  title: string,
+  color: string,
+  startDate: string,
+  startTime: string,
+  endDate: string,
+  endTime: string,
+  location: string,
+  description: string
+) {
+  return {
+    title,
+    color,
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    location,
+    description
+  };
+}
+
+/*
+ * The actual plan draft which is submitted.
+ */
 function computePlanDraft(
   planId: string | undefined,
   title: string,
@@ -344,6 +383,8 @@ function computePlanDraft(
     id: planId,
     title,
     color,
+    startDate,
+    startTime,
     start: startDt.toISOString(),
     end: endDt.toISOString(),
     location,
