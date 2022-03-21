@@ -1,8 +1,10 @@
 import {FC, useState} from 'react';
-import {RecoilRoot, useRecoilState, useRecoilValue} from 'recoil';
 
 import {PostPlan, validatePostPlan} from '../../pages/api/plans';
-import {planFormState, planFormValue} from '../../store/planForm';
+import {PlanFormState, planFormSlice} from '../../state/planForm';
+import {AppProvider} from '../../store/AppProvider';
+import {selectCreatePlanForm} from '../../store/selector';
+import {useAppDispatch, useAppSelector} from '../../store/store';
 import {Providers} from '../../utils/auth';
 import {LoginModal} from '../LoginModal';
 import {PlanForm} from './PlanForm';
@@ -28,8 +30,11 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
   providers,
   createPlan
 }) => {
-  const planDraft = useRecoilValue(planFormValue);
-  const [, setPlanDraft] = useRecoilState(planFormState);
+  const createPlanForm = useAppSelector(selectCreatePlanForm);
+  const dispatch = useAppDispatch();
+
+  const setPlanDraft = (plan: Partial<PlanFormState>) => dispatch(planFormSlice.actions.planUpdated(plan));
+  const clearForm = () => dispatch(planFormSlice.actions.formCleared());
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const closeLoginModal = () => setIsLoginModalVisible(false);
@@ -41,7 +46,7 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
     }
 
     await createPlan(plan);
-    setPlanDraft(undefined);
+    clearForm();
   };
 
   return (
@@ -50,15 +55,17 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
         shouldShowColorHint
         isSubmitDisabled={isSubmitDisabled}
         isClearButtonVisible
-        title={planDraft.title}
-        color={planDraft.color}
-        start={planDraft.start}
-        end={planDraft.end}
-        location={planDraft.location}
-        description={planDraft.description}
+        title={createPlanForm.title}
+        color={createPlanForm.color}
+        startDate={createPlanForm.startDate}
+        startTime={createPlanForm.startTime}
+        endDate={createPlanForm.endDate}
+        endTime={createPlanForm.endTime}
+        location={createPlanForm.location}
+        description={createPlanForm.description}
         validatePlan={validatePostPlan}
         submitPlan={authCheckSubmitPlan}
-        persistPlan={setPlanDraft}
+        persistForm={setPlanDraft}
       />
       {isLoginModalVisible && providers && <LoginModal providers={providers} closeModal={closeLoginModal} />}
     </>
@@ -71,12 +78,12 @@ export const CreatePlanFormContainer: FC<CreatePlanFormProps> = ({
   providers,
   createPlan
 }) => (
-  <RecoilRoot>
+  <AppProvider>
     <CreatePlanForm
       isAuthenticated={isAuthenticated}
       isSubmitDisabled={isSubmitDisabled}
       providers={providers}
       createPlan={createPlan}
     />
-  </RecoilRoot>
+  </AppProvider>
 );
