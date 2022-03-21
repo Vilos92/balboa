@@ -182,6 +182,7 @@ export function usePlanFormState(
   const [state, dispatch] = useReducer(planFormSlice.reducer, {
     ...initialPlanFormState,
     title: planTitle ?? initialPlanFormState.title,
+    color: planColor ?? initialPlanFormState.color,
     startDate: planStartDate ?? initialPlanFormState.startDate,
     startTime: planStartTime ?? initialPlanFormState.startTime,
     endDate: planEndDate ?? initialPlanFormState.endDate,
@@ -195,7 +196,6 @@ export function usePlanFormState(
   // These initial values should only be set on the client (no SSR).
   useInitialEffect(() => {
     dispatch(planFormSlice.actions.formInitialized());
-    if (planColor) colorUpdated(planColor);
   });
 
   return {
