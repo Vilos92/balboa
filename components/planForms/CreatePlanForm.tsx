@@ -1,10 +1,10 @@
 import {FC, useState} from 'react';
-import {Provider} from 'react-redux';
-import {PersistGate} from 'redux-persist/integration/react';
 
 import {PostPlan, validatePostPlan} from '../../pages/api/plans';
 import {PlanFormState, planFormSlice} from '../../state/planForm';
-import {persistor, store, useAppDispatch, useAppSelector} from '../../store/store';
+import {AppProvider} from '../../store/AppProvider';
+import {selectCreatePlanForm} from '../../store/selector';
+import {useAppDispatch, useAppSelector} from '../../store/store';
 import {Providers} from '../../utils/auth';
 import {LoginModal} from '../LoginModal';
 import {PlanForm} from './PlanForm';
@@ -30,8 +30,9 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
   providers,
   createPlan
 }) => {
-  const createPlanForm = useAppSelector(state => state.createPlanForm);
+  const createPlanForm = useAppSelector(selectCreatePlanForm);
   const dispatch = useAppDispatch();
+
   const setPlanDraft = (plan: Partial<PlanFormState>) => dispatch(planFormSlice.actions.planUpdated(plan));
   const clearForm = () => dispatch(planFormSlice.actions.formCleared());
 
@@ -77,14 +78,12 @@ export const CreatePlanFormContainer: FC<CreatePlanFormProps> = ({
   providers,
   createPlan
 }) => (
-  <Provider store={store}>
-    <PersistGate loading={null} persistor={persistor}>
-      <CreatePlanForm
-        isAuthenticated={isAuthenticated}
-        isSubmitDisabled={isSubmitDisabled}
-        providers={providers}
-        createPlan={createPlan}
-      />
-    </PersistGate>
-  </Provider>
+  <AppProvider>
+    <CreatePlanForm
+      isAuthenticated={isAuthenticated}
+      isSubmitDisabled={isSubmitDisabled}
+      providers={providers}
+      createPlan={createPlan}
+    />
+  </AppProvider>
 );
