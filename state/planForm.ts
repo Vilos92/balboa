@@ -187,7 +187,6 @@ export function usePlanFormState(
   planDescription?: string
 ) {
   const [state, dispatch] = useReducer(planFormReducer, {
-    ...initialPlanFormState,
     title: planTitle ?? initialPlanFormState.title,
     color: planColor ?? initialPlanFormState.color,
     startDate: planStartDate ?? initialPlanFormState.startDate,
@@ -195,10 +194,9 @@ export function usePlanFormState(
     endDate: planEndDate ?? initialPlanFormState.endDate,
     endTime: planEndTime ?? initialPlanFormState.endTime,
     location: planLocation ?? initialPlanFormState.location,
-    description: planDescription ?? initialPlanFormState.description
+    description: planDescription ?? initialPlanFormState.description,
+    errors: initialPlanFormState.errors
   });
-
-  const colorUpdated = wrapActionWithDispatch(dispatch, planFormActions.colorUpdated);
 
   // These initial values should only be set on the client (no SSR).
   useInitialEffect(() => {
@@ -208,7 +206,7 @@ export function usePlanFormState(
   return {
     ...state,
     titleUpdated: wrapActionWithDispatch(dispatch, planFormActions.titleUpdated),
-    colorUpdated,
+    colorUpdated: wrapActionWithDispatch(dispatch, planFormActions.colorUpdated),
     startDateUpdated: wrapActionWithDispatch(dispatch, planFormActions.startDateUpdated),
     startTimeUpdated: wrapActionWithDispatch(dispatch, planFormActions.startTimeUpdated),
     endDateUpdated: wrapActionWithDispatch(dispatch, planFormActions.endDateUpdated),
