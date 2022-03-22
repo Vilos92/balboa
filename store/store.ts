@@ -3,14 +3,14 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from 'react-redux';
 import {FLUSH, PAUSE, PERSIST, PURGE, REGISTER, REHYDRATE, persistReducer, persistStore} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
-import {planFormSlice} from '../state/planForm';
+import {planFormReducer} from '../state/planForm';
 
 /*
  * Reducer.
  */
 
 const rootReducer = combineReducers({
-  createPlanForm: planFormSlice.reducer
+  createPlanForm: planFormReducer
 });
 
 /*

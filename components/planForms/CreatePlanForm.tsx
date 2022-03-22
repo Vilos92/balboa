@@ -1,7 +1,7 @@
 import {FC, useState} from 'react';
 
 import {PostPlan, validatePostPlan} from '../../pages/api/plans';
-import {PlanFormState, planFormSlice} from '../../state/planForm';
+import {PlanFormState, planFormActions} from '../../state/planForm';
 import {AppProvider} from '../../store/AppProvider';
 import {selectCreatePlanForm} from '../../store/selector';
 import {useAppDispatch, useAppSelector} from '../../store/store';
@@ -33,8 +33,8 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
   const createPlanForm = useAppSelector(selectCreatePlanForm);
   const dispatch = useAppDispatch();
 
-  const setPlanDraft = (plan: Partial<PlanFormState>) => dispatch(planFormSlice.actions.planUpdated(plan));
-  const clearForm = () => dispatch(planFormSlice.actions.formCleared());
+  const setPlanDraft = (plan: Partial<PlanFormState>) => dispatch(planFormActions.planUpdated(plan));
+  const clearForm = () => dispatch(planFormActions.formCleared());
 
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const closeLoginModal = () => setIsLoginModalVisible(false);

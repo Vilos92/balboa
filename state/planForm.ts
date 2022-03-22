@@ -42,7 +42,7 @@ const defaultStartTime = '14:00';
 const defaultEndTime = '17:00';
 
 /*
- * Reducer.
+ * Slice.
  */
 
 const initialPlanFormState: PlanFormState = Object.freeze({
@@ -57,7 +57,7 @@ const initialPlanFormState: PlanFormState = Object.freeze({
   errors: {}
 });
 
-export const planFormSlice = createSlice({
+const planFormSlice = createSlice({
   name: 'planForm',
   initialState: initialPlanFormState,
   reducers: {
@@ -166,6 +166,13 @@ export const planFormSlice = createSlice({
 });
 
 /*
+ * Reducer and actions.
+ */
+
+export const planFormReducer = planFormSlice.reducer;
+export const planFormActions = planFormSlice.actions;
+
+/*
  * Hooks.
  */
 
@@ -179,7 +186,7 @@ export function usePlanFormState(
   planLocation?: string,
   planDescription?: string
 ) {
-  const [state, dispatch] = useReducer(planFormSlice.reducer, {
+  const [state, dispatch] = useReducer(planFormReducer, {
     ...initialPlanFormState,
     title: planTitle ?? initialPlanFormState.title,
     color: planColor ?? initialPlanFormState.color,
@@ -191,25 +198,25 @@ export function usePlanFormState(
     description: planDescription ?? initialPlanFormState.description
   });
 
-  const colorUpdated = wrapActionWithDispatch(dispatch, planFormSlice.actions.colorUpdated);
+  const colorUpdated = wrapActionWithDispatch(dispatch, planFormActions.colorUpdated);
 
   // These initial values should only be set on the client (no SSR).
   useInitialEffect(() => {
-    dispatch(planFormSlice.actions.formInitialized());
+    dispatch(planFormActions.formInitialized());
   });
 
   return {
     ...state,
-    titleUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.titleUpdated),
+    titleUpdated: wrapActionWithDispatch(dispatch, planFormActions.titleUpdated),
     colorUpdated,
-    startDateUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.startDateUpdated),
-    startTimeUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.startTimeUpdated),
-    endDateUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.endDateUpdated),
-    endTimeUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.endTimeUpdated),
-    locationUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.locationUpdated),
-    descriptionUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.descriptionUpdated),
-    errorsUpdated: wrapActionWithDispatch(dispatch, planFormSlice.actions.errorsUpdated),
-    formCleared: () => dispatch(planFormSlice.actions.formCleared())
+    startDateUpdated: wrapActionWithDispatch(dispatch, planFormActions.startDateUpdated),
+    startTimeUpdated: wrapActionWithDispatch(dispatch, planFormActions.startTimeUpdated),
+    endDateUpdated: wrapActionWithDispatch(dispatch, planFormActions.endDateUpdated),
+    endTimeUpdated: wrapActionWithDispatch(dispatch, planFormActions.endTimeUpdated),
+    locationUpdated: wrapActionWithDispatch(dispatch, planFormActions.locationUpdated),
+    descriptionUpdated: wrapActionWithDispatch(dispatch, planFormActions.descriptionUpdated),
+    errorsUpdated: wrapActionWithDispatch(dispatch, planFormActions.errorsUpdated),
+    formCleared: () => dispatch(planFormActions.formCleared())
   };
 }
 
