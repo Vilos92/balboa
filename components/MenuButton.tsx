@@ -175,7 +175,7 @@ function renderUnauthenticatedRoutes(openLoginModal?: Handler) {
 
   return (
     <StyledMenuItemDiv>
-      <StyledMenuItemButton onClick={openLoginModal}>Login</StyledMenuItemButton>
+      <StyledMenuItemButton onClick={openLoginModal}>Log in</StyledMenuItemButton>
     </StyledMenuItemDiv>
   );
 }
@@ -187,7 +187,7 @@ function renderAuthenticatedRoutes(onClickPlans: Handler, onClickLogout: Handler
         <StyledMenuItemButton onClick={onClickPlans}>Plans</StyledMenuItemButton>
       </StyledMenuItemDiv>
       <StyledMenuItemDiv>
-        <StyledMenuItemButton onClick={onClickLogout}>Logout</StyledMenuItemButton>
+        <StyledMenuItemButton onClick={onClickLogout}>Log out</StyledMenuItemButton>
       </StyledMenuItemDiv>
     </>
   );
