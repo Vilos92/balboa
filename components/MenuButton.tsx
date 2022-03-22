@@ -61,6 +61,7 @@ const StyledMenuCard = tw.div`
   text-black
   shadow-md
   rounded-2xl
+  mr-2
 `;
 
 const StyledMenuItemDiv = tw.div`
@@ -87,6 +88,8 @@ const StyledMenuItemDiv = tw.div`
 const StyledMenuItemButton = tw(ChromelessButton)`
   w-full
   h-full
+
+  text-xl
   text-gray-500
   active:text-purple-400
   focus:text-purple-400
