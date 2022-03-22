@@ -1,6 +1,6 @@
 import {signOut} from 'next-auth/react';
 import {useRouter} from 'next/router';
-import React, {FC, MouseEvent, MouseEventHandler, useState} from 'react';
+import React, {FC, MouseEvent, useState} from 'react';
 import tw from 'twin.macro';
 
 import {Handler} from '../types/common';
