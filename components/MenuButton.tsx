@@ -1,6 +1,6 @@
 import {signOut} from 'next-auth/react';
 import {useRouter} from 'next/router';
-import React, {FC, useState} from 'react';
+import React, {FC, MouseEvent, MouseEventHandler, useState} from 'react';
 import tw from 'twin.macro';
 
 import {Handler} from '../types/common';
@@ -101,18 +101,21 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
-  const openMenu = () => {
-    // Handle onClick after closeMenu in the scenario where closeMenu is already mapped to the window.
-    setTimeout(() => setIsMenuVisible(true));
+  const openMenu = (event: MouseEvent<HTMLButtonElement>) => {
+    // We want to allow an already open menu to be closed by clicking it.
+    if (isMenuVisible) return;
+
+    setIsMenuVisible(true);
+
+    // Prevent the menu from closing due to the click event bubbling to closeMenu.
+    event.stopPropagation();
   };
   const closeMenu = () => {
-    if (isLoginModalVisible) return;
     setIsMenuVisible(false);
   };
 
   const openLoginModal = () => {
-    // Handle onClick after closeLoginModal in the scenario where closeMenu is already mapped to the window.
-    setTimeout(() => setIsLoginModalVisible(true));
+    setIsLoginModalVisible(true);
   };
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
