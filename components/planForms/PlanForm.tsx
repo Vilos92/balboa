@@ -8,7 +8,7 @@ import {PlanFormState, usePlanFormState} from '../../state/planForm';
 import {PlanFormInputsEnum} from '../../state/planForm';
 import {Handler} from '../../types/common';
 import {computeDateTime, computeInputDateFromObject} from '../../utils/dateTime';
-import {useDebounce, useHover, useTimeout} from '../../utils/hooks';
+import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
 import {ChromelessButton} from '../ChromelessButton';
 import {Icon, IconTypesEnum} from '../Icon';
@@ -291,7 +291,12 @@ export const PlanForm: FC<PlanFormProps> = props => {
 };
 
 const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorHint, value, onChange}) => {
-  const [isTooltipVisible, setIsTooltipVisible] = useState(shouldShowColorHint);
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+
+  // Set initial visibility after first render to avoid location flash.
+  useInitialEffect(() => {
+    setIsTooltipVisible(shouldShowColorHint);
+  });
 
   const onChangeColor = (newColor: string) => {
     setIsTooltipVisible(false);
