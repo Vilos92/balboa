@@ -1,7 +1,7 @@
 import {signOut} from 'next-auth/react';
 import {NextRouter, useRouter} from 'next/router';
 import React, {FC, MouseEvent, useState} from 'react';
-import tw from 'twin.macro';
+import tw, {styled} from 'twin.macro';
 
 import {Handler} from '../types/common';
 import {Providers, useAuthSession} from '../utils/auth';
@@ -18,6 +18,10 @@ import {GrueSvg} from './svg/GrueSvg';
 
 interface MenuButtonProps {
   providers?: Providers;
+}
+
+interface HamburgerProps {
+  isActive: boolean;
 }
 
 interface MenuProps {
@@ -41,19 +45,32 @@ const StyledMenuButton = tw(ChromelessButton)`
   justify-center
 `;
 
-const StyledHamburgerDiv = tw.div`
-  flex
-  flex-col
-  justify-center
-  gap-2
-  mr-2
-  cursor-pointer
-`;
-
 const StyledHamburgerPattyDiv = tw.div`
   w-9
   h-0.5
   bg-white
+`;
+
+interface StyledHamburgerDivProps {
+  $isActive: boolean;
+}
+const StyledHamburgerDiv = styled.div<StyledHamburgerDivProps>`
+  ${tw`
+    flex
+    flex-col
+    justify-center
+    gap-2
+    mr-2
+    cursor-pointer
+  `}
+
+  & > div {
+    ${({$isActive}) => $isActive && tw`bg-gray-300`}
+  }
+
+  &:hover > div {
+    ${tw`bg-gray-300`}
+  }
 `;
 
 const StyledMenuCard = tw.div`
@@ -156,11 +173,7 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
         popoverChildren={<PopoverMenu openLoginModal={openLoginModal} closeMenu={closeMenu} />}
       >
         <StyledMenuButton onClick={openMenu}>
-          <StyledHamburgerDiv>
-            <StyledHamburgerPattyDiv />
-            <StyledHamburgerPattyDiv />
-            <StyledHamburgerPattyDiv />
-          </StyledHamburgerDiv>
+          <Hamburger isActive={isMenuVisible} />
         </StyledMenuButton>
       </Popover>
       {isMenuVisible && <ModalMenu openLoginModal={openLoginModal} closeMenu={() => undefined} />}
@@ -168,6 +181,14 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
     </StyledMenuWrapperDiv>
   );
 };
+
+const Hamburger: FC<HamburgerProps> = ({isActive}) => (
+  <StyledHamburgerDiv $isActive={isActive}>
+    <StyledHamburgerPattyDiv />
+    <StyledHamburgerPattyDiv />
+    <StyledHamburgerPattyDiv />
+  </StyledHamburgerDiv>
+);
 
 const PopoverMenu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
   const router = useRouter();
