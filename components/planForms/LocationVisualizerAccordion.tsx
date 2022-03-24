@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import {FC, useEffect, useState} from 'react';
+import {FC, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 
 import {LocationVisualizerMock} from '../locationVisualizer/LocationVisualizer';
