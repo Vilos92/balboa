@@ -21,7 +21,6 @@
     "@popperjs/core": "^2.10.2",
     "@prisma/client": "^3.6.0",
     "@reduxjs/toolkit": "^1.8.0",
-    "@types/react-map-gl": "^6.1.1",
     "axios": "^0.24.0",
     "calendar-link": "^2.1.1",
     "eslint-config-react-app": "6",
@@ -41,6 +40,8 @@
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.3",
     "swr": "^1.0.1",
+    "tailwindcss": "^2.2.19",
+    "twin.macro": "^2.8.1",
     "zod": "^3.11.6"
   },
   "devDependencies": {
@@ -51,6 +52,7 @@
     "@types/styled-components": "^5.1.15",
     "@typescript-eslint/eslint-plugin": "^5.3.1",
     "@typescript-eslint/parser": "^5.3.1",
+    "@types/react-map-gl": "^6.1.1",
     "babel-jest": "^27.4.6",
     "babel-plugin-macros": "^3.1.0",
     "babel-plugin-styled-components": "^1.13.3",
@@ -68,9 +70,6 @@
     "jest": "^27.4.7",
     "prettier": "^2.4.1",
     "prisma": "^3.6.0",
-    "react-is": "^17.0.2",
-    "tailwindcss": "^2.2.19",
-    "twin.macro": "^2.8.1",
     "typescript": "^4.4.4"
   },
   "babelMacros": {
