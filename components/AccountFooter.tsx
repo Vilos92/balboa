@@ -75,6 +75,8 @@ const StyledFooterButtonDiv = tw.div`
   flex
   flex-row
   gap-3
+
+  text-xl
 `;
 
 const StyledFooterButton = tw(Button)`

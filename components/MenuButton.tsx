@@ -118,7 +118,7 @@ const StyledMenuItemButton = tw(ChromelessButton)`
   h-full
 
   text-3xl
-  sm:text-xl
+  sm:text-lg
   text-gray-600
   active:text-purple-400
   focus:text-purple-400
