@@ -24,6 +24,10 @@ import {useNetGetPlans} from '../api/plans';
  * Types.
  */
 
+interface OngoingPlansProps {
+  plans: readonly Plan[];
+}
+
 interface UpcomingPlansProps {
   plans: readonly Plan[];
 }
@@ -34,6 +38,7 @@ interface PastPlansProps {
 
 interface PlanCardProps {
   plan: Plan;
+  shouldHideDays?: boolean;
 }
 
 /*
@@ -132,18 +137,34 @@ export const getServerSideProps: GetServerSideProps = async ({req}) => {
  */
 
 const PlansPage: FC = () => {
+  const router = useRouter();
+
   const {data: plans, error} = useNetGetPlans();
   if (!plans || error) return <PageSkeleton />;
 
-  const startOfToday = computeStartOfToday();
+  const now = new Date();
+
+  const ongoingPlans = plans
+    .filter(plan => new Date(plan.start) < now && new Date(plan.end) >= now)
+    .sort((planA, planB) => calculateDateDifference(planB.start, planA.start));
 
   const upcomingPlans = plans
-    .filter(plan => new Date(plan.end) >= startOfToday)
+    .filter(plan => new Date(plan.start) >= now && new Date(plan.end) >= now)
     .sort((planA, planB) => calculateDateDifference(planB.start, planA.start));
 
   const pastPlans = plans
-    .filter(plan => new Date(plan.end) < startOfToday)
+    .filter(plan => new Date(plan.end) < now)
     .sort((planA, planB) => calculateDateDifference(planA.start, planB.start));
+
+  const onClickCreateNow = () => router.push('/');
+
+  const emptyUpcomingMessage =
+    ongoingPlans.length === 0 && upcomingPlans.length === 0 ? (
+      <StyledSectionH1>
+        You have no upcoming events,{' '}
+        <ChromelessButton onClick={onClickCreateNow}>plan something</ChromelessButton> new!
+      </StyledSectionH1>
+    ) : undefined;
 
   return (
     <>
@@ -152,6 +173,8 @@ const PlansPage: FC = () => {
         <Header />
 
         <StyledContentDiv>
+          {emptyUpcomingMessage}
+          <OngoingPlans plans={ongoingPlans} />
           <UpcomingPlans plans={upcomingPlans} />
           <PastPlans plans={pastPlans} />
         </StyledContentDiv>
@@ -167,18 +190,21 @@ export default PlansPage;
  * Components.
  */
 
+const OngoingPlans: FC<OngoingPlansProps> = ({plans}) => {
+  if (plans.length === 0) return null;
+
+  return (
+    <>
+      <StyledSectionH1>Ongoing</StyledSectionH1>
+      {plans.map(plan => (
+        <PlanCard key={plan.id} plan={plan} shouldHideDays />
+      ))}
+    </>
+  );
+};
+
 const UpcomingPlans: FC<UpcomingPlansProps> = ({plans}) => {
-  const router = useRouter();
-
-  const onClickCreateNow = () => router.push('/');
-
-  if (plans.length === 0)
-    return (
-      <StyledSectionH1>
-        You have no upcoming events,{' '}
-        <ChromelessButton onClick={onClickCreateNow}>plan something</ChromelessButton> new!
-      </StyledSectionH1>
-    );
+  if (plans.length === 0) return null;
 
   return (
     <>
@@ -203,7 +229,7 @@ const PastPlans: FC<PastPlansProps> = ({plans}) => {
   );
 };
 
-const PlanCard: FC<PlanCardProps> = ({plan}) => {
+const PlanCard: FC<PlanCardProps> = ({plan, shouldHideDays}) => {
   const router = useRouter();
 
   const onClickCard = () => router.push(`plans/${plan.id}`);
@@ -231,9 +257,11 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
 
           <VisualUser user={hostUser} />
         </div>
-        <StyledRightDiv>
-          <DaysAwayOrSince dateString={plan.start} />
-        </StyledRightDiv>
+        {!shouldHideDays && (
+          <StyledRightDiv>
+            <DaysAwayOrSince dateString={plan.start} />
+          </StyledRightDiv>
+        )}
       </StyledCard>
     </StyledChromelessButton>
   );
@@ -242,12 +270,6 @@ const PlanCard: FC<PlanCardProps> = ({plan}) => {
 /*
  * Helpers.
  */
-
-function computeStartOfToday(): Date {
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  return now;
-}
 
 function calculateDateDifference(dateStringA: string, dateStringB: string) {
   const dateA = new Date(dateStringA);
