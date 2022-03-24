@@ -1,5 +1,5 @@
 import {signOut} from 'next-auth/react';
-import {useRouter} from 'next/router';
+import {NextRouter, useRouter} from 'next/router';
 import React, {FC, MouseEvent, useState} from 'react';
 import tw from 'twin.macro';
 
@@ -21,7 +21,7 @@ interface MenuButtonProps {
 }
 
 interface MenuProps {
-  openLoginModal?: Handler;
+  openLoginModal: Handler;
   closeMenu: Handler;
 }
 
@@ -173,37 +173,18 @@ const PopoverMenu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
   const router = useRouter();
   const {isAuthenticated} = useAuthSession();
 
+  const menuRoutes = renderRoutes(router, isAuthenticated, openLoginModal);
+
   const menuRef = useClickWindow<HTMLDivElement>(closeMenu);
 
-  const onClickCreate = () => router.push('/');
-  const onClickPlans = () => router.push('/plans/');
-  const onClickLogout = () => signOut();
-
-  const menuItems = isAuthenticated
-    ? renderAuthenticatedRoutes(onClickPlans, onClickLogout)
-    : renderUnauthenticatedRoutes(openLoginModal);
-
-  return (
-    <StyledMenuCard ref={menuRef}>
-      <StyledMenuItemDiv>
-        <StyledMenuItemButton onClick={onClickCreate}>Create</StyledMenuItemButton>
-      </StyledMenuItemDiv>
-      {menuItems}
-    </StyledMenuCard>
-  );
+  return <StyledMenuCard ref={menuRef}>{menuRoutes}</StyledMenuCard>;
 };
 
 const ModalMenu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
   const router = useRouter();
   const {isAuthenticated} = useAuthSession();
 
-  const onClickCreate = () => router.push('/');
-  const onClickPlans = () => router.push('/plans/');
-  const onClickLogout = () => signOut();
-
-  const menuItems = isAuthenticated
-    ? renderAuthenticatedRoutes(onClickPlans, onClickLogout)
-    : renderUnauthenticatedRoutes(openLoginModal);
+  const menuRoutes = renderRoutes(router, isAuthenticated, openLoginModal);
 
   return (
     <StyledModalDiv>
@@ -212,10 +193,7 @@ const ModalMenu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
           <StyledSvgDiv>
             <GrueSvg fill='#6b7280' height='32px' />
           </StyledSvgDiv>
-          <StyledMenuItemDiv>
-            <StyledMenuItemButton onClick={onClickCreate}>Create</StyledMenuItemButton>
-          </StyledMenuItemDiv>
-          {menuItems}
+          {menuRoutes}
         </StyledMenuCard>
       </Modal>
     </StyledModalDiv>
@@ -226,9 +204,26 @@ const ModalMenu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
  * Helpers.
  */
 
-function renderUnauthenticatedRoutes(openLoginModal?: Handler) {
-  if (!openLoginModal) return;
+function renderRoutes(router: NextRouter, isAuthenticated: boolean, openLoginModal: Handler) {
+  const onClickCreate = () => router.push('/');
+  const onClickPlans = () => router.push('/plans/');
+  const onClickLogout = () => signOut();
 
+  const menuRoutes = isAuthenticated
+    ? renderAuthenticatedRoutes(onClickPlans, onClickLogout)
+    : renderUnauthenticatedRoutes(openLoginModal);
+
+  return (
+    <>
+      <StyledMenuItemDiv>
+        <StyledMenuItemButton onClick={onClickCreate}>Create</StyledMenuItemButton>
+      </StyledMenuItemDiv>
+      {menuRoutes}
+    </>
+  );
+}
+
+function renderUnauthenticatedRoutes(openLoginModal: Handler) {
   return (
     <StyledMenuItemDiv>
       <StyledMenuItemButton onClick={openLoginModal}>Log in</StyledMenuItemButton>
