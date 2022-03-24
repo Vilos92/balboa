@@ -127,7 +127,11 @@ const StyledTabButton = styled(ChromelessButton)<StyledTabButtonProps>`
   ${tw`
     w-20
     rounded-full
-    pb-2
+
+    flex
+    flex-col
+    items-center
+    justify-center
   `}
 
   &:hover, &:focus {
