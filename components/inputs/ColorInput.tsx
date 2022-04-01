@@ -2,7 +2,6 @@ import {FC, useCallback, useState} from 'react';
 import {HexColorPicker} from 'react-colorful';
 import tw, {styled} from 'twin.macro';
 
-import {Handler} from '../../types/common';
 import {swatchColors} from '../../utils/color';
 import {useClickWindow} from '../../utils/hooks';
 import {Popover} from '../popovers/Popover';
@@ -92,12 +91,8 @@ export const ColorInput: FC<ColorInputProps> = props => {
 
   const [isPickerVisible, setIsPickerVisible] = useState<boolean>(false);
 
-  const onInputClick = () => {
-    setIsPickerVisible(!isPickerVisible);
-  };
-  const onWindowClick = useCallback(() => {
-    setIsPickerVisible(false);
-  }, []);
+  const onInputClick = () => setIsPickerVisible(!isPickerVisible);
+  const onWindowClick = useCallback(() => setIsPickerVisible(false), [setIsPickerVisible]);
 
   const popoverRef = useClickWindow<HTMLSpanElement>(onWindowClick);
 

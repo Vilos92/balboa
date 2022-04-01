@@ -148,21 +148,14 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
   const openMenu = (event: MouseEvent<HTMLButtonElement>) => {
-    // We want to allow an already open menu to be closed by clicking it.
-    if (isMenuVisible) return;
-
-    setIsMenuVisible(true);
+    setIsMenuVisible(!isMenuVisible);
 
     // Prevent the menu from closing due to the click event bubbling to closeMenu.
     event.stopPropagation();
   };
-  const closeMenu = () => {
-    setIsMenuVisible(false);
-  };
+  const closeMenu = () => setIsMenuVisible(false);
 
-  const openLoginModal = () => {
-    setIsLoginModalVisible(true);
-  };
+  const openLoginModal = () => setIsLoginModalVisible(true);
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
   return (
