@@ -163,7 +163,7 @@ interface StyledAttendButtonProps {
 }
 const StyledAttendButton = styled(Button)<StyledAttendButtonProps>`
   ${tw`
-    bg-purple-900
+    bg-purple-400
     h-10
     w-full
     mt-1

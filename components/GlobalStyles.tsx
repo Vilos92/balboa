@@ -8,7 +8,7 @@ const CustomStyles = createGlobalStyle`
   body {
     -webkit-tap-highlight-color: ${theme`colors.purple.400`};
     ${tw`
-      bg-gray-800
+      bg-gray-200
       antialiased
     `}
 

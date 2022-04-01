@@ -23,7 +23,7 @@ export const LoadingGrue: FC = () => {
     <>
       {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
       <animated.div style={style}>
-        <GrueSvg fill='#ffffff' height={height} />
+        <GrueSvg fill='#000000' height={height} />
       </animated.div>
     </>
   );

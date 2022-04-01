@@ -1,6 +1,6 @@
 import {signOut} from 'next-auth/react';
 import {NextRouter, useRouter} from 'next/router';
-import React, {FC, MouseEvent, useState} from 'react';
+import React, {FC, MouseEvent, useCallback, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Handler} from '../types/common';
@@ -24,8 +24,10 @@ interface HamburgerProps {
   isActive: boolean;
 }
 
+type OnClickOpenLoginModal = (event: MouseEvent<HTMLButtonElement>) => void;
+
 interface MenuProps {
-  openLoginModal: Handler;
+  onClickOpenLoginModal: OnClickOpenLoginModal;
   closeMenu: Handler;
 }
 
@@ -147,29 +149,32 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
-  const openMenu = (event: MouseEvent<HTMLButtonElement>) => {
+  const onClickOpenMenu = (event: MouseEvent<HTMLButtonElement>) => {
     setIsMenuVisible(!isMenuVisible);
-
-    // Prevent the menu from closing due to the click event bubbling to closeMenu.
     event.stopPropagation();
   };
-  const closeMenu = () => setIsMenuVisible(false);
+  const closeMenu = useCallback(() => setIsMenuVisible(false), [setIsMenuVisible]);
 
-  const openLoginModal = () => setIsLoginModalVisible(true);
-  const closeLoginModal = () => setIsLoginModalVisible(false);
+  const onClickOpenLoginModal = (event: MouseEvent<HTMLButtonElement>) => {
+    setIsLoginModalVisible(true);
+    event.stopPropagation();
+  };
+  const closeLoginModal = useCallback(() => setIsLoginModalVisible(false), [setIsLoginModalVisible]);
 
   return (
     <StyledMenuWrapperDiv>
       <Popover
         placement='bottom-end'
         isVisible={isMenuVisible}
-        popoverChildren={<PopoverMenu openLoginModal={openLoginModal} closeMenu={closeMenu} />}
+        popoverChildren={<PopoverMenu onClickOpenLoginModal={onClickOpenLoginModal} closeMenu={closeMenu} />}
       >
-        <StyledMenuButton onClick={openMenu}>
+        <StyledMenuButton onClick={onClickOpenMenu}>
           <Hamburger isActive={isMenuVisible} />
         </StyledMenuButton>
       </Popover>
-      {isMenuVisible && <ModalMenu openLoginModal={openLoginModal} closeMenu={() => undefined} />}
+      {isMenuVisible && (
+        <ModalMenu onClickOpenLoginModal={onClickOpenLoginModal} closeMenu={() => undefined} />
+      )}
       {isLoginModalVisible && providers && <LoginModal providers={providers} closeModal={closeLoginModal} />}
     </StyledMenuWrapperDiv>
   );
@@ -183,22 +188,22 @@ const Hamburger: FC<HamburgerProps> = ({isActive}) => (
   </StyledHamburgerDiv>
 );
 
-const PopoverMenu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
+const PopoverMenu: FC<MenuProps> = ({onClickOpenLoginModal, closeMenu}) => {
   const router = useRouter();
   const {isAuthenticated} = useAuthSession();
 
-  const menuRoutes = renderRoutes(router, isAuthenticated, openLoginModal);
+  const menuRoutes = renderRoutes(router, isAuthenticated, onClickOpenLoginModal);
 
   const menuRef = useClickWindow<HTMLDivElement>(closeMenu);
 
   return <StyledMenuCard ref={menuRef}>{menuRoutes}</StyledMenuCard>;
 };
 
-const ModalMenu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
+const ModalMenu: FC<MenuProps> = ({onClickOpenLoginModal, closeMenu}) => {
   const router = useRouter();
   const {isAuthenticated} = useAuthSession();
 
-  const menuRoutes = renderRoutes(router, isAuthenticated, openLoginModal);
+  const menuRoutes = renderRoutes(router, isAuthenticated, onClickOpenLoginModal);
 
   return (
     <StyledModalDiv>
@@ -218,14 +223,18 @@ const ModalMenu: FC<MenuProps> = ({openLoginModal, closeMenu}) => {
  * Helpers.
  */
 
-function renderRoutes(router: NextRouter, isAuthenticated: boolean, openLoginModal: Handler) {
+function renderRoutes(
+  router: NextRouter,
+  isAuthenticated: boolean,
+  onClickOpenLoginModal: OnClickOpenLoginModal
+) {
   const onClickCreate = () => router.push('/');
   const onClickPlans = () => router.push('/plans/');
   const onClickLogout = () => signOut();
 
   const menuRoutes = isAuthenticated
     ? renderAuthenticatedRoutes(onClickPlans, onClickLogout)
-    : renderUnauthenticatedRoutes(openLoginModal);
+    : renderUnauthenticatedRoutes(onClickOpenLoginModal);
 
   return (
     <>
@@ -237,10 +246,10 @@ function renderRoutes(router: NextRouter, isAuthenticated: boolean, openLoginMod
   );
 }
 
-function renderUnauthenticatedRoutes(openLoginModal: Handler) {
+function renderUnauthenticatedRoutes(onClickOpenLoginModal: OnClickOpenLoginModal) {
   return (
     <StyledMenuItemDiv>
-      <StyledMenuItemButton onClick={openLoginModal}>Log in</StyledMenuItemButton>
+      <StyledMenuItemButton onClick={onClickOpenLoginModal}>Log in</StyledMenuItemButton>
     </StyledMenuItemDiv>
   );
 }

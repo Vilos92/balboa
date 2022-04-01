@@ -24,8 +24,13 @@ const StyledFalseHeaderDiv = tw.div`
 `;
 
 const StyledHeaderDiv = tw.div`
+  box-border
+  border-t
+  border-b
+  border-gray-50
+
   z-20
-  bg-purple-900
+  bg-gray-800
   w-full
   h-16
   flex

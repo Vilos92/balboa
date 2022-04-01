@@ -74,7 +74,7 @@ export function useDebounceValue(value: string, delay: number) {
   return debouncedValue;
 }
 
-export function useClickWindow<T extends HTMLElement>(onClick: () => void) {
+export function useClickWindow<T extends HTMLElement>(onClick: Handler) {
   const elementRef = useRef<T>(null);
 
   const onClickWindow = useCallback(

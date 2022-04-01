@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, MouseEvent, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Providers} from '../utils/auth';
@@ -33,9 +33,9 @@ const StyledFooterSpacerDiv = tw.div`
 const StyledFooterDiv = styled.div`
   ${tw`
     z-10
-    bg-purple-900
+    bg-gray-800
     opacity-95
-    text-gray-100
+    text-white
     flex
     justify-center
     h-16
@@ -80,7 +80,7 @@ const StyledFooterButtonDiv = tw.div`
 `;
 
 const StyledFooterButton = tw(Button)`
-  bg-purple-900
+  bg-gray-800
   border-2
   border-gray-200
   h-10
@@ -95,8 +95,10 @@ export const AccountFooter: FC<AccountFooterProps> = ({isHidden, providers}) => 
 
   if (isHidden) return <StyledFooterSpacerDiv />;
 
-  const openLoginModal = () => {
+  const openLoginModal = (event: MouseEvent<HTMLButtonElement>) => {
     setIsLoginModalVisible(true);
+
+    event.stopPropagation();
   };
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
