@@ -2,6 +2,7 @@ import {FC} from 'react';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 
+import {PageSkeleton} from '../components/PageSkeleton';
 import {persistor, store} from './store';
 
 /*
@@ -14,7 +15,7 @@ import {persistor, store} from './store';
 export const AppProvider: FC = ({children}) => {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      <PersistGate loading={<PageSkeleton />} persistor={persistor}>
         {children}
       </PersistGate>
     </Provider>

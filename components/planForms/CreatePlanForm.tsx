@@ -2,7 +2,6 @@ import {FC, useState} from 'react';
 
 import {PostPlan, validatePostPlan} from '../../pages/api/plans';
 import {PlanFormState, planFormActions} from '../../state/planForm';
-import {AppProvider} from '../../store/AppProvider';
 import {selectCreatePlanForm} from '../../store/selector';
 import {useAppDispatch, useAppSelector} from '../../store/store';
 import {Providers} from '../../utils/auth';
@@ -24,7 +23,7 @@ interface CreatePlanFormProps {
  * Components.
  */
 
-const CreatePlanForm: FC<CreatePlanFormProps> = ({
+export const CreatePlanForm: FC<CreatePlanFormProps> = ({
   isAuthenticated,
   isSubmitDisabled,
   providers,
@@ -71,19 +70,3 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
     </>
   );
 };
-
-export const CreatePlanFormContainer: FC<CreatePlanFormProps> = ({
-  isAuthenticated,
-  isSubmitDisabled,
-  providers,
-  createPlan
-}) => (
-  <AppProvider>
-    <CreatePlanForm
-      isAuthenticated={isAuthenticated}
-      isSubmitDisabled={isSubmitDisabled}
-      providers={providers}
-      createPlan={createPlan}
-    />
-  </AppProvider>
-);

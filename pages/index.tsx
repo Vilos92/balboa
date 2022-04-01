@@ -6,7 +6,8 @@ import {AccountFooter} from '../components/AccountFooter';
 import {Card, ColumnHorizontalCentered} from '../components/Commons';
 import {Header} from '../components/Header';
 import {SearchEngineOptimizer} from '../components/SearchEngineOptimizer';
-import {CreatePlanFormContainer} from '../components/planForms/CreatePlanForm';
+import {CreatePlanForm} from '../components/planForms/CreatePlanForm';
+import {AppProvider} from '../store/AppProvider';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 import {PostPlan, postPlan} from './api/plans';
 
@@ -72,19 +73,21 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
   return (
     <>
       <SearchEngineOptimizer />
-      <ColumnHorizontalCentered>
-        <Header providers={providers} />
-        <StyledCard>
-          <StyledLandingH2>Enter your event details here</StyledLandingH2>
-          <CreatePlanFormContainer
-            isAuthenticated={isAuthenticated}
-            isSubmitDisabled={isLoadingSessionStatus}
-            providers={providers}
-            createPlan={createPlan}
-          />
-        </StyledCard>
-        <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
-      </ColumnHorizontalCentered>
+      <AppProvider>
+        <ColumnHorizontalCentered>
+          <Header providers={providers} />
+          <StyledCard>
+            <StyledLandingH2>Enter your event details here</StyledLandingH2>
+            <CreatePlanForm
+              isAuthenticated={isAuthenticated}
+              isSubmitDisabled={isLoadingSessionStatus}
+              providers={providers}
+              createPlan={createPlan}
+            />
+          </StyledCard>
+          <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
+        </ColumnHorizontalCentered>
+      </AppProvider>
     </>
   );
 };
