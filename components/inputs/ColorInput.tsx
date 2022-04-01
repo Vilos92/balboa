@@ -1,4 +1,4 @@
-import {FC, useState} from 'react';
+import {FC, useCallback, useState} from 'react';
 import {HexColorPicker} from 'react-colorful';
 import tw, {styled} from 'twin.macro';
 
@@ -21,7 +21,6 @@ interface ColorInputProps extends Omit<StaticTypeInputProps, 'onChange'> {
 interface ColorPickerProps {
   label: string;
   color: string;
-  onClose: Handler;
   onChange?: onChangeColor;
 }
 
@@ -93,35 +92,39 @@ export const ColorInput: FC<ColorInputProps> = props => {
 
   const [isPickerVisible, setIsPickerVisible] = useState<boolean>(false);
 
-  const onInputClick = () => setIsPickerVisible(!isPickerVisible);
-  const closePicker = () => {
-    setIsPickerVisible(false);
+  const onInputClick = () => {
+    setIsPickerVisible(!isPickerVisible);
   };
+  const onWindowClick = useCallback(() => {
+    setIsPickerVisible(false);
+  }, []);
+
+  const popoverRef = useClickWindow<HTMLSpanElement>(onWindowClick);
 
   const colorPicker = isPickerVisible ? (
-    <ColorPicker label={label} color={color} onChange={onChange} onClose={closePicker} />
+    <ColorPicker label={label} color={color} onChange={onChange} />
   ) : null;
 
   return (
-    <StyledPopover popoverChildren={colorPicker} isVisible={isPickerVisible}>
-      <StyledColorDiv $backgroundColor={color} onClick={onInputClick} className={className} />
-    </StyledPopover>
+    <span ref={popoverRef}>
+      <StyledPopover popoverChildren={colorPicker} isVisible={isPickerVisible}>
+        <StyledColorDiv $backgroundColor={color} onClick={onInputClick} className={className} />
+      </StyledPopover>
+    </span>
   );
 };
 
-const ColorPicker: FC<ColorPickerProps> = ({label, color, onChange, onClose}) => {
-  const popoverRef = useClickWindow<HTMLSpanElement>(onClose);
-
+const ColorPicker: FC<ColorPickerProps> = ({label, color, onChange}) => {
   const onClickSwatch = (color: string) => onChange?.(color);
 
   return (
-    <span ref={popoverRef}>
+    <>
       <HexColorPicker aria-label={label} color={color} onChange={onChange} />
 
       <StyledColorSwatchesContainerDiv>
         <ColorSwatches onClickSwatch={onClickSwatch} />
       </StyledColorSwatchesContainerDiv>
-    </span>
+    </>
   );
 };
 
