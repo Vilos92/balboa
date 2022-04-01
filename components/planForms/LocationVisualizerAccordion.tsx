@@ -10,7 +10,7 @@ import {StyledLocationDiv} from './PlanForm';
  */
 
 const LocationVisualizer = dynamic(() => import('../locationVisualizer/LocationVisualizer'), {
-  loading: <LocationVisualizerMock />,
+  loading: () => <LocationVisualizerMock />,
   ssr: false,
   suspense: true
 });
