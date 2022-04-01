@@ -3,7 +3,8 @@ import {useRouter} from 'next/router';
 import tw from 'twin.macro';
 
 import {AccountFooter} from '../components/AccountFooter';
-import {Card, ColumnHorizontalCentered} from '../components/Commons';
+import {Card} from '../components/Card';
+import {ColumnHorizontalCentered} from '../components/Commons';
 import {Header} from '../components/Header';
 import {SearchEngineOptimizer} from '../components/SearchEngineOptimizer';
 import {CreatePlanForm} from '../components/planForm/CreatePlanForm';

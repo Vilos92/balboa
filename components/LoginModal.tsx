@@ -7,7 +7,7 @@ import googleSvg from '../public/google.svg';
 import {Handler} from '../types/common';
 import {Providers, signInWithProvider} from '../utils/auth';
 import {Button} from './Button';
-import {Card} from './Commons';
+import {Card} from './Card';
 import {Modal} from './Modal';
 
 /*

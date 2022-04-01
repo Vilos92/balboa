@@ -1,14 +1,5 @@
-import {FC, MouseEvent, PropsWithChildren, forwardRef} from 'react';
+import {FC} from 'react';
 import tw from 'twin.macro';
-
-/*
- * Types.
- */
-
-interface CardProps {
-  className?: string;
-  onClick?: (event: MouseEvent<HTMLDivElement>) => void;
-}
 
 /*
  * Styles.
@@ -40,7 +31,7 @@ const StyledColumnHorizontalCenteredDiv = tw.div`
   sm:pr-0
 `;
 
-const StyledCardDiv = tw.div`
+export const StyledCardDiv = tw.div`
   filter
   drop-shadow-lg
 
@@ -63,14 +54,3 @@ export const ColumnJustified: FC = ({children}) => (
 export const ColumnHorizontalCentered: FC = ({children}) => (
   <StyledColumnHorizontalCenteredDiv>{children}</StyledColumnHorizontalCenteredDiv>
 );
-
-export const Card = forwardRef<HTMLDivElement, PropsWithChildren<CardProps>>(function Card(
-  {children, className, onClick},
-  ref
-) {
-  return (
-    <StyledCardDiv className={className} onClick={onClick} ref={ref}>
-      {children}
-    </StyledCardDiv>
-  );
-});

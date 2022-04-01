@@ -4,8 +4,9 @@ import {FC} from 'react';
 import tw from 'twin.macro';
 
 import {FooterSpacer} from '../../components/AccountFooter';
+import {Card} from '../../components/Card';
 import {ChromelessButton} from '../../components/ChromelessButton';
-import {Card, ColumnJustified} from '../../components/Commons';
+import {ColumnJustified} from '../../components/Commons';
 import {DateTime} from '../../components/DateTime';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {DaysAwayOrSince} from '../../components/DaysAwayOrSince';
