@@ -76,8 +76,9 @@ const StyledHamburgerDiv = styled.div<StyledHamburgerDivProps>`
 `;
 
 const StyledMenuCard = tw.div`
-  w-40
+  w-screen
   sm:w-auto
+  sm:mr-2
 
   flex
   flex-col
@@ -87,23 +88,21 @@ const StyledMenuCard = tw.div`
   text-black
   shadow-md
   rounded-2xl
-  mr-2
 `;
 
 const StyledMenuItemDiv = tw.div`
   first:rounded-t-2xl
-  first:pt-3
 
   last:rounded-b-2xl
-  last:pb-3
+  last:pb-5
 
   not-last:border-b-2
   border-gray-300
 
-  pt-2
-  pb-2
-  sm:pt-1
-  sm:pb-1
+  pt-5
+  pb-5
+  sm:pt-3
+  sm:pb-3
 
   sm:pl-3
   sm:pr-3
@@ -133,8 +132,7 @@ const StyledModalDiv = tw.div`
 
 const StyledSvgDiv = tw.div`
   w-full
-  pt-2
-  pb-1
+  pt-5
 
   flex
   flex-row
