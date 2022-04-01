@@ -75,7 +75,7 @@ const StyledHamburgerDiv = styled.div<StyledHamburgerDivProps>`
   }
 `;
 
-const StyledMenuCard = tw.div`
+const StyledMenuDiv = tw.div`
   w-screen
   sm:w-auto
   sm:mr-2
@@ -88,6 +88,9 @@ const StyledMenuCard = tw.div`
   text-black
   shadow-md
   rounded-2xl
+
+  filter
+  drop-shadow-lg
 `;
 
 const StyledMenuItemDiv = tw.div`
@@ -194,7 +197,7 @@ const PopoverMenu: FC<MenuProps> = ({onClickOpenLoginModal, closeMenu}) => {
 
   const menuRef = useClickWindow<HTMLDivElement>(closeMenu);
 
-  return <StyledMenuCard ref={menuRef}>{menuRoutes}</StyledMenuCard>;
+  return <StyledMenuDiv ref={menuRef}>{menuRoutes}</StyledMenuDiv>;
 };
 
 const ModalMenu: FC<MenuProps> = ({onClickOpenLoginModal, closeMenu}) => {
@@ -206,12 +209,12 @@ const ModalMenu: FC<MenuProps> = ({onClickOpenLoginModal, closeMenu}) => {
   return (
     <StyledModalDiv>
       <Modal closeModal={closeMenu}>
-        <StyledMenuCard>
+        <StyledMenuDiv>
           <StyledSvgDiv>
             <GrueSvg fill='#6b7280' height='32px' />
           </StyledSvgDiv>
           {menuRoutes}
-        </StyledMenuCard>
+        </StyledMenuDiv>
       </Modal>
     </StyledModalDiv>
   );

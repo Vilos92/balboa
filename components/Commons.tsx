@@ -48,8 +48,8 @@ const StyledCardDiv = tw.div`
   bg-blend-lighten
   bg-white
   w-full
-  rounded-2xl
-  shadow-md
+  rounded-lg
+  sm:rounded-2xl
 `;
 
 /*

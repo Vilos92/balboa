@@ -94,6 +94,7 @@ const StyledCard = tw(Card)`
   flex-col
   gap-4
   overflow-y-hidden
+  w-screen
   sm:mt-8
   sm:mb-8
   sm:w-7/12
@@ -269,7 +270,7 @@ export const getServerSideProps: GetServerSideProps<PlanPageContainerProps> = as
 
 const PlanPageContainer: FC<PlanPageContainerProps> = ({providers, fallback, planId}) => (
   <SWRConfig value={{fallback}}>
-    <PlanPage providers={providers} planId={planId} />;
+    <PlanPage providers={providers} planId={planId} />
   </SWRConfig>
 );
 

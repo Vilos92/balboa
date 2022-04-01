@@ -25,6 +25,8 @@ interface LandingPageProps {
 const StyledCard = tw(Card)`
   mt-4
   mb-4
+  w-screen
+
   sm:mt-8
   sm:mb-8
   sm:w-7/12
