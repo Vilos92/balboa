@@ -1,5 +1,5 @@
 import dynamic from 'next/dynamic';
-import {FC, useState} from 'react';
+import {FC, Suspense, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 
 import {LocationVisualizerMock} from '../locationVisualizer/LocationVisualizer';
@@ -11,7 +11,8 @@ import {StyledLocationDiv} from './PlanForm';
 
 const LocationVisualizer = dynamic(() => import('../locationVisualizer/LocationVisualizer'), {
   loading: () => <></>,
-  ssr: false
+  ssr: false,
+  suspense: true
 });
 
 /*
@@ -47,7 +48,13 @@ export const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> =
       {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
       <animated.div style={style}>
         <StyledLocationDiv $isExpanded={isExpanded}>
-          {isRested ? <LocationVisualizer location={location} /> : <LocationVisualizerMock />}
+          {isRested ? (
+            <Suspense fallback={null}>
+              <LocationVisualizer location={location} />
+            </Suspense>
+          ) : (
+            <LocationVisualizerMock />
+          )}
         </StyledLocationDiv>
       </animated.div>
     </>
