@@ -88,7 +88,6 @@ export function useClickWindow<T extends HTMLElement>(onClick: () => void) {
   );
 
   useEffect(() => {
-    console.log('add listener');
     window.addEventListener('click', onClickWindow);
 
     return () => {
