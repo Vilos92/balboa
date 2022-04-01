@@ -17,7 +17,7 @@ import {DateInput} from '../inputs/DateInput';
 import {TextAreaInput} from '../inputs/TextAreaInput';
 import {TextInput} from '../inputs/TextInput';
 import {TimeInput} from '../inputs/TimeInput';
-import {Tooltip} from '../popovers/Tooltip';
+import {Tooltip} from '../popover/Tooltip';
 import {LocationVisualizerAccordion} from './LocationVisualizerAccordion';
 
 /*

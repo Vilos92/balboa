@@ -4,7 +4,7 @@ import tw, {styled} from 'twin.macro';
 
 import {swatchColors} from '../../utils/color';
 import {useClickWindow} from '../../utils/hooks';
-import {Popover} from '../popovers/Popover';
+import {Popover} from '../popover/Popover';
 import {StaticTypeInputProps} from './Input';
 
 /*

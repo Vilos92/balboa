@@ -17,8 +17,8 @@ import {SearchEngineOptimizer} from '../../components/SearchEngineOptimizer';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {ShareInputWithButton} from '../../components/inputs/ShareInputWithButton';
-import {EditPlanForm} from '../../components/planForms/EditPlanForm';
-import {HoverTooltip} from '../../components/popovers/HoverTooltip';
+import {EditPlanForm} from '../../components/planForm/EditPlanForm';
+import {HoverTooltip} from '../../components/popover/HoverTooltip';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {

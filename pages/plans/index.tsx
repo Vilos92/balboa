@@ -15,7 +15,7 @@ import {PageSkeleton} from '../../components/PageSkeleton';
 import {SearchEngineOptimizer} from '../../components/SearchEngineOptimizer';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
-import {HoverTooltip} from '../../components/popovers/HoverTooltip';
+import {HoverTooltip} from '../../components/popover/HoverTooltip';
 import {Plan} from '../../models/plan';
 import {getSessionUser} from '../../utils/auth';
 import {useNetGetPlans} from '../api/plans';

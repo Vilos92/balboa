@@ -6,7 +6,7 @@ import {AccountFooter} from '../components/AccountFooter';
 import {Card, ColumnHorizontalCentered} from '../components/Commons';
 import {Header} from '../components/Header';
 import {SearchEngineOptimizer} from '../components/SearchEngineOptimizer';
-import {CreatePlanForm} from '../components/planForms/CreatePlanForm';
+import {CreatePlanForm} from '../components/planForm/CreatePlanForm';
 import {AppProvider} from '../store/AppProvider';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 import {PostPlan, postPlan} from './api/plans';

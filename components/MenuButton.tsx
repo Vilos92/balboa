@@ -9,7 +9,7 @@ import {useClickWindow} from '../utils/hooks';
 import {ChromelessButton} from './ChromelessButton';
 import {LoginModal} from './LoginModal';
 import {Modal} from './Modal';
-import {Popover} from './popovers/Popover';
+import {Popover} from './popover/Popover';
 import {GrueSvg} from './svg/GrueSvg';
 
 /*

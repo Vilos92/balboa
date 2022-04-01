@@ -3,7 +3,7 @@ import {FC} from 'react';
 import tw from 'twin.macro';
 
 import {User} from '../models/user';
-import {HoverTooltip} from './popovers/HoverTooltip';
+import {HoverTooltip} from './popover/HoverTooltip';
 
 /*
  * Types.

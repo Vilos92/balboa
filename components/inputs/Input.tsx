@@ -1,7 +1,7 @@
 import {FC} from 'react';
 import tw, {css, styled} from 'twin.macro';
 
-import {Tooltip} from '../popovers/Tooltip';
+import {Tooltip} from '../popover/Tooltip';
 
 /*
  * Types.
