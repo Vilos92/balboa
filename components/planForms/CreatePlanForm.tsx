@@ -45,8 +45,8 @@ const CreatePlanForm: FC<CreatePlanFormProps> = ({
       return;
     }
 
-    await createPlan(plan);
     clearForm();
+    await createPlan(plan);
   };
 
   return (
