@@ -33,6 +33,7 @@ const StyledCard = tw(Card)`
 
 const StyledLandingH2 = tw.h2`
   text-lg
+  tracking-wide
   text-center
   font-bold
   mb-2

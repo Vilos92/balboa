@@ -10,7 +10,7 @@ import {StyledLocationDiv} from './PlanForm';
  */
 
 const LocationVisualizer = dynamic(() => import('../locationVisualizer/LocationVisualizer'), {
-  loading: () => <></>,
+  loading: <LocationVisualizerMock />,
   ssr: false,
   suspense: true
 });
@@ -49,7 +49,7 @@ export const LocationVisualizerAccordion: FC<LocationVisualizerAccordionProps> =
       <animated.div style={style}>
         <StyledLocationDiv $isExpanded={isExpanded}>
           {isRested ? (
-            <Suspense fallback={null}>
+            <Suspense fallback={<LocationVisualizerMock />}>
               <LocationVisualizer location={location} />
             </Suspense>
           ) : (
