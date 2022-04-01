@@ -6,7 +6,7 @@ import {FC} from 'react';
 
 interface GrueSvgProps {
   fill: string;
-  height: string;
+  height?: string;
 }
 
 /*

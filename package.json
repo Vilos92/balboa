@@ -36,7 +36,7 @@
     "react-popper": "^2.2.5",
     "react-redux": "^7.2.6",
     "react-resize-detector": "^7.0.0",
-    "react-spring": "^9.4.2",
+    "react-spring": "^9.4.4",
     "redux-persist": "^6.0.0",
     "styled-components": "^5.3.3",
     "swr": "^1.0.1",

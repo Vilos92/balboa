@@ -17,11 +17,13 @@ export const LoadingGrue: FC = () => {
     }
   });
 
+  const height = style.height.get();
+
   return (
     <>
       {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
       <animated.div style={style}>
-        <GrueSvg fill='#ffffff' height={style.height.toString()} />
+        <GrueSvg fill='#ffffff' height={height} />
       </animated.div>
     </>
   );
