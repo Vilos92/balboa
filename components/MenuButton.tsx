@@ -83,54 +83,46 @@ const StyledMenuDiv = tw.div`
   flex
   flex-col
 
-  bg-gray-200
+  box-border
+  border
+  border-gray-300
+  sm:rounded-2xl
 
+  bg-white
   text-black
-  shadow-md
-  rounded-2xl
-
-  filter
-  drop-shadow-lg
+  shadow-xl
 `;
 
-const StyledMenuItemDiv = tw.div`
+const StyledMenuItemButton = tw(ChromelessButton)`
   first:rounded-t-2xl
-
   last:rounded-b-2xl
-  last:pb-5
-
-  not-last:border-b-2
-  border-gray-300
-
-  pt-5
-  pb-5
-  sm:pt-3
-  sm:pb-3
-
-  sm:pl-3
-  sm:pr-3
 
   w-full
   h-full
   text-center
+  hover:bg-purple-100
 
-  hover:bg-gray-300
-`;
+  p-5
+  sm:p-3
 
-const StyledMenuItemButton = tw(ChromelessButton)`
-  w-full
-  h-full
+  border-gray-300
+  not-last:border-b-2
 
   text-3xl
   sm:text-lg
+
   text-gray-600
-  active:text-purple-400
-  focus:text-purple-400
-  hover:text-purple-400
+  active:text-gray-600
+  focus:text-gray-600
+  hover:text-gray-600
 `;
 
 const StyledModalDiv = tw.div`
   sm:invisible
+`;
+
+const StyledModal = tw(Modal)`
+  bg-black
 `;
 
 const StyledSvgDiv = tw.div`
@@ -208,14 +200,14 @@ const ModalMenu: FC<MenuProps> = ({onClickOpenLoginModal, closeMenu}) => {
 
   return (
     <StyledModalDiv>
-      <Modal closeModal={closeMenu}>
+      <StyledModal closeModal={closeMenu}>
         <StyledMenuDiv>
           <StyledSvgDiv>
             <GrueSvg fill='#6b7280' height='32px' />
           </StyledSvgDiv>
           {menuRoutes}
         </StyledMenuDiv>
-      </Modal>
+      </StyledModal>
     </StyledModalDiv>
   );
 };
@@ -239,31 +231,21 @@ function renderRoutes(
 
   return (
     <>
-      <StyledMenuItemDiv>
-        <StyledMenuItemButton onClick={onClickCreate}>Create</StyledMenuItemButton>
-      </StyledMenuItemDiv>
+      <StyledMenuItemButton onClick={onClickCreate}>Create</StyledMenuItemButton>
       {menuRoutes}
     </>
   );
 }
 
 function renderUnauthenticatedRoutes(onClickOpenLoginModal: OnClickOpenLoginModal) {
-  return (
-    <StyledMenuItemDiv>
-      <StyledMenuItemButton onClick={onClickOpenLoginModal}>Log in</StyledMenuItemButton>
-    </StyledMenuItemDiv>
-  );
+  return <StyledMenuItemButton onClick={onClickOpenLoginModal}>Log in</StyledMenuItemButton>;
 }
 
 function renderAuthenticatedRoutes(onClickPlans: Handler, onClickLogout: Handler) {
   return (
     <>
-      <StyledMenuItemDiv>
-        <StyledMenuItemButton onClick={onClickPlans}>Plans</StyledMenuItemButton>
-      </StyledMenuItemDiv>
-      <StyledMenuItemDiv>
-        <StyledMenuItemButton onClick={onClickLogout}>Log out</StyledMenuItemButton>
-      </StyledMenuItemDiv>
+      <StyledMenuItemButton onClick={onClickPlans}>Plans</StyledMenuItemButton>
+      <StyledMenuItemButton onClick={onClickLogout}>Log out</StyledMenuItemButton>
     </>
   );
 }

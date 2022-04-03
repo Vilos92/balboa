@@ -9,6 +9,7 @@ import {useClickWindow} from '../utils/hooks';
  */
 
 interface ModalProps {
+  className?: string;
   closeModal: Handler;
 }
 
@@ -34,11 +35,11 @@ const StyledOverlayDiv = tw.div`
  * Component.
  */
 
-export const Modal: FC<ModalProps> = ({children, closeModal}) => {
+export const Modal: FC<ModalProps> = ({children, className, closeModal}) => {
   const modalRef = useClickWindow<HTMLSpanElement>(closeModal);
 
   return (
-    <StyledOverlayDiv>
+    <StyledOverlayDiv className={className}>
       <span ref={modalRef}>{children}</span>
     </StyledOverlayDiv>
   );

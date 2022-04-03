@@ -31,18 +31,6 @@ const StyledColumnHorizontalCenteredDiv = tw.div`
   sm:pr-0
 `;
 
-export const StyledCardDiv = tw.div`
-  filter
-  drop-shadow-lg
-
-  p-3
-  bg-blend-lighten
-  bg-white
-  w-full
-  rounded-lg
-  sm:rounded-2xl
-`;
-
 /*
  * Components.
  */

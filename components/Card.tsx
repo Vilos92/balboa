@@ -1,6 +1,5 @@
 import {MouseEvent, PropsWithChildren, forwardRef} from 'react';
-
-import {StyledCardDiv} from './Commons';
+import tw from 'twin.macro';
 
 /*
  * Types.
@@ -10,6 +9,20 @@ interface CardProps {
   className?: string;
   onClick?: (event: MouseEvent<HTMLDivElement>) => void;
 }
+
+/*
+ * Styles.
+ */
+
+const StyledCardDiv = tw.div`
+  p-3
+  bg-white
+  shadow-xl
+
+  w-full
+  rounded-lg
+  sm:rounded-2xl
+`;
 
 /*
  * Component.
