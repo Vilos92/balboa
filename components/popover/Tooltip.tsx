@@ -17,10 +17,11 @@ export interface TooltipProps extends Omit<PopoverProps, 'popoverChildren'> {
 
 const StyledPopover = tw(Popover)`
   box-content
-  bg-gray-700
+  bg-gray-600
   text-gray-100
   border
-  border-gray-100
+  border-gray-200
+  p-2.5
 `;
 
 const StyledTextDiv = tw.div`
@@ -29,8 +30,6 @@ const StyledTextDiv = tw.div`
     text-sm
     no-underline
     break-words
-
-    p-1.5
 `;
 
 /*
