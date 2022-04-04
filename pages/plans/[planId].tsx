@@ -91,16 +91,22 @@ interface AttendeesProps {
 const StyledCard = tw(Card)`
   mt-4
   mb-4
+  w-screen
+  overflow-y-hidden
+
   flex
   flex-col
   gap-4
-  overflow-y-hidden
-  w-screen
+
+  p-0
+
   sm:mt-8
   sm:mb-8
   sm:w-7/12
   sm:max-w-xl
 `;
+
+// Card navigation tabs.
 
 const StyledTabsDiv = tw.div`
   h-8
@@ -108,7 +114,6 @@ const StyledTabsDiv = tw.div`
   flex-row
   justify-evenly
   border-b-2
-  pb-2
   mb-2
 `;
 
@@ -119,7 +124,10 @@ const StyledTabSeparatorDiv = tw.div`
 `;
 
 const StyledActiveCss = css`
-  ${tw`bg-purple-400 text-white`}
+  ${tw`
+    bg-purple-200
+    text-gray-600
+  `}
 `;
 
 interface StyledTabButtonProps {
@@ -127,20 +135,42 @@ interface StyledTabButtonProps {
 }
 const StyledTabButton = styled(ChromelessButton)<StyledTabButtonProps>`
   ${tw`
-    w-20
-    rounded-full
-
     flex
     flex-col
     items-center
     justify-center
+
+    w-full
+    pt-3
+    pb-3
+
+    bg-gray-100
+    text-gray-600
+
+    first-of-type:rounded-tl-2xl
+    last-of-type:rounded-tr-2xl
   `}
 
-  &:hover, &:focus {
+  &:active, &:hover, &:focus {
     ${StyledActiveCss}
   }
 
   ${({$isActive}) => $isActive && StyledActiveCss}
+`;
+
+// Content below tabs.
+
+interface StyledContentDivProps {
+  $isHosting: boolean;
+}
+const StyledContentDiv = styled.div<StyledContentDivProps>`
+  ${tw`
+    pr-3
+    pb-3
+    pl-3
+  `}
+
+  ${({$isHosting}) => !$isHosting && tw`pt-3`}
 `;
 
 // Plan details.
@@ -361,16 +391,18 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
                 </StyledTabsDiv>
               )}
 
-              {tabView === TabViewsEnum.DETAILS && (
-                <PlanDetails authSession={authSession} plan={plan} mutateAttending={mutateAttending} />
-              )}
+              <StyledContentDiv $isHosting={isHosting}>
+                {tabView === TabViewsEnum.DETAILS && (
+                  <PlanDetails authSession={authSession} plan={plan} mutateAttending={mutateAttending} />
+                )}
 
-              {tabView === TabViewsEnum.EDIT && (
-                <>
-                  <StyledEditH2>Edit your event details</StyledEditH2>
-                  <EditPlanForm plan={plan} editPlan={updatePlan} />
-                </>
-              )}
+                {tabView === TabViewsEnum.EDIT && (
+                  <>
+                    <StyledEditH2>Edit your event details</StyledEditH2>
+                    <EditPlanForm plan={plan} editPlan={updatePlan} />
+                  </>
+                )}
+              </StyledContentDiv>
             </div>
           </animated.div>
         </StyledCard>
