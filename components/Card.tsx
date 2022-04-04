@@ -20,7 +20,6 @@ const StyledCardDiv = tw.div`
   shadow-xl
 
   w-full
-  rounded-lg
   sm:rounded-2xl
 `;
 

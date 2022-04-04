@@ -148,8 +148,8 @@ const StyledTabButton = styled(ChromelessButton)<StyledTabButtonProps>`
     text-gray-600
     text-lg
 
-    first-of-type:rounded-tl-2xl
-    last-of-type:rounded-tr-2xl
+    sm:first-of-type:rounded-tl-2xl
+    sm:last-of-type:rounded-tr-2xl
   `}
 
   &:active, &:hover, &:focus {
