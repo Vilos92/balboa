@@ -34,8 +34,10 @@ const StyledPopoverDiv = styled.div<StyledPopoverDivProps>`
     max-w-xs
     text-left
     rounded-2xl
+    invisible
   `}
 
+  ${({$isVisible}) => $isVisible && tw`visible`}
   ${({$isVisible}) => $isVisible && tw`block`}
 `;
 

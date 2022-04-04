@@ -16,8 +16,11 @@ export interface TooltipProps extends Omit<PopoverProps, 'popoverChildren'> {
  */
 
 const StyledPopover = tw(Popover)`
-  bg-purple-900
+  box-content
+  bg-gray-700
   text-gray-100
+  border
+  border-gray-100
 `;
 
 const StyledTextDiv = tw.div`

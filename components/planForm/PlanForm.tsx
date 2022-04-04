@@ -307,7 +307,7 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorH
 
   const [setTimeout] = useTimeout();
   useEffect(() => {
-    setTimeout(hideTooltip, 3000);
+    setTimeout(hideTooltip, 5000);
   }, [setTimeout]);
 
   return (
