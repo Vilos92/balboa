@@ -68,11 +68,11 @@ const StyledHamburgerDiv = styled.div<StyledHamburgerDivProps>`
   `}
 
   & > div {
-    ${({$isActive}) => $isActive && tw`bg-gray-300`}
+    ${({$isActive}) => $isActive && tw`bg-purple-200`}
   }
 
   &:hover > div {
-    ${tw`bg-gray-300`}
+    ${tw`bg-purple-200`}
   }
 `;
 
