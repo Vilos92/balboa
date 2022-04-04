@@ -1,17 +1,12 @@
-import React, {FC, MouseEvent, useState} from 'react';
-import tw, {theme} from 'twin.macro';
+import React, {FC} from 'react';
+import tw from 'twin.macro';
 
 import {Invitation} from '../models/invitation';
-import {useNetGetInvitationsForUser} from '../pages/api/invitations';
 import {Handler} from '../types/common';
 import {Providers, useAuthSession} from '../utils/auth';
-import {useClickWindow} from '../utils/hooks';
-import {Card} from './Card';
-import {ChromelessButton} from './ChromelessButton';
-import {Icon, IconTypesEnum} from './Icon';
+import {InvitationsButton} from './InvitationsButton';
 import {Logo} from './Logo';
 import {MenuButton} from './MenuButton';
-import {Popover} from './popover/Popover';
 
 /*
  * Props.
@@ -19,11 +14,6 @@ import {Popover} from './popover/Popover';
 
 interface HeaderProps {
   providers?: Providers;
-}
-
-interface InvitationsPopoverProps {
-  invitations: readonly Invitation[];
-  closePopover: Handler;
 }
 
 /*
@@ -68,13 +58,6 @@ const StyledActionsDiv = tw.div`
   gap-3
 `;
 
-const StyledActionDiv = tw.div`
-  h-full
-  flex
-  justify-center
-  items-center
-`;
-
 /*
  * Components.
  */
@@ -89,53 +72,10 @@ export const Header: FC<HeaderProps> = ({providers}) => {
         <StyledHeaderSpacerDiv />
         <Logo />
         <StyledActionsDiv>
-          {isAuthenticated && <InvitationButton />}
+          {isAuthenticated && <InvitationsButton />}
           <MenuButton providers={providers} />
         </StyledActionsDiv>
       </StyledHeaderDiv>
     </>
-  );
-};
-
-const InvitationButton: FC = () => {
-  const {data: invitations, error2, mutate} = useNetGetInvitationsForUser();
-
-  const [isPopoverVisible, setIsPopoverVisible] = useState(false);
-
-  const onClickOpen = (event: MouseEvent<HTMLButtonElement>) => {
-    setIsPopoverVisible(true);
-    event.stopPropagation();
-  };
-  const closePopover = () => setIsPopoverVisible(false);
-
-  return (
-    <Popover
-      placement='bottom-end'
-      isVisible={isPopoverVisible}
-      popoverChildren={<InvitationsPopover invitations={invitations ?? []} closePopover={closePopover} />}
-    >
-      <StyledActionDiv>
-        <ChromelessButton onClick={onClickOpen}>
-          <Icon
-            type={IconTypesEnum.PENCIL}
-            size={32}
-            fill={theme`colors.white`}
-            hoverFill={theme`colors.purple.200`}
-          />
-        </ChromelessButton>
-      </StyledActionDiv>
-    </Popover>
-  );
-};
-
-const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopover}) => {
-  const cardRef = useClickWindow<HTMLDivElement>(closePopover);
-
-  return (
-    <Card ref={cardRef}>
-      {invitations.map(invitation => (
-        <div key={invitation.plan.id}>{invitation.plan.title}</div>
-      ))}
-    </Card>
   );
 };

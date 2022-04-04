@@ -1,5 +1,5 @@
 import React, {FC, SVGProps} from 'react';
-import tw, {styled, theme} from 'twin.macro';
+import {styled, theme} from 'twin.macro';
 
 import CalendarEventSvg from '../public/remixIcon/calendar-event-line.svg';
 import MapPinSvg from '../public/remixIcon/map-pin-line.svg';
@@ -24,6 +24,7 @@ interface IconProps {
   size: number;
   fill?: string;
   hoverFill?: string;
+  isActive?: boolean;
 }
 
 interface IconSvgProps {
@@ -53,12 +54,13 @@ const StyledIconDiv = styled.div<StyledIconDivProps>`
  * Component.
  */
 
-export const Icon: FC<IconProps> = ({type, size, fill: fillProp, hoverFill: hoverFillProp}) => {
+export const Icon: FC<IconProps> = ({type, size, fill: fillProp, hoverFill: hoverFillProp, isActive}) => {
   const fill = fillProp ?? theme`colors.black` ?? '';
   const hoverFill = hoverFillProp ?? fill;
+  const currentFill = isActive ? hoverFill : fill;
 
   return (
-    <StyledIconDiv $fill={fill} $hoverFill={hoverFill}>
+    <StyledIconDiv $fill={currentFill} $hoverFill={hoverFill}>
       <IconSvg type={type} size={size} />
     </StyledIconDiv>
   );
