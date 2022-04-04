@@ -1,5 +1,4 @@
 import {GetStaticProps, NextPage} from 'next';
-import {useRouter} from 'next/router';
 import tw from 'twin.macro';
 
 import {AccountFooter} from '../components/AccountFooter';
@@ -10,7 +9,6 @@ import {SearchEngineOptimizer} from '../components/SearchEngineOptimizer';
 import {CreatePlanForm} from '../components/planForm/CreatePlanForm';
 import {AppProvider} from '../store/AppProvider';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
-import {PostPlan, postPlan} from './api/plans';
 
 /*
  * Types.
@@ -60,16 +58,9 @@ export const getStaticProps: GetStaticProps<LandingPageProps> = async () => {
  */
 
 const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
-  const router = useRouter();
-
   const {status, isAuthenticated} = useAuthSession();
 
   const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
-
-  const createPlan = async (planDraft: PostPlan) => {
-    const plan = await postPlan(planDraft);
-    router.push(`plans/${plan.id}`);
-  };
 
   return (
     <>
@@ -83,7 +74,6 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
               isAuthenticated={isAuthenticated}
               isSubmitDisabled={isLoadingSessionStatus}
               providers={providers}
-              createPlan={createPlan}
             />
           </StyledCard>
           <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />

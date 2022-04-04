@@ -1,6 +1,7 @@
+import {useRouter} from 'next/router';
 import {FC, useState} from 'react';
 
-import {PostPlan, validatePostPlan} from '../../pages/api/plans';
+import {PostPlan, postPlan, validatePostPlan} from '../../pages/api/plans';
 import {PlanFormState, planFormActions} from '../../state/planForm';
 import {selectCreatePlanForm} from '../../store/selector';
 import {useAppDispatch, useAppSelector} from '../../store/store';
@@ -16,19 +17,15 @@ interface CreatePlanFormProps {
   isAuthenticated: boolean;
   isSubmitDisabled: boolean;
   providers: Providers;
-  createPlan: (planDraft: PostPlan) => Promise<void>;
 }
 
 /*
  * Components.
  */
 
-export const CreatePlanForm: FC<CreatePlanFormProps> = ({
-  isAuthenticated,
-  isSubmitDisabled,
-  providers,
-  createPlan
-}) => {
+export const CreatePlanForm: FC<CreatePlanFormProps> = ({isAuthenticated, isSubmitDisabled, providers}) => {
+  const router = useRouter();
+
   const createPlanForm = useAppSelector(selectCreatePlanForm);
   const dispatch = useAppDispatch();
 
@@ -38,14 +35,15 @@ export const CreatePlanForm: FC<CreatePlanFormProps> = ({
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
-  const authCheckSubmitPlan = async (plan: PostPlan) => {
+  const authCheckSubmitPlan = async (planDraft: PostPlan) => {
     if (!isAuthenticated) {
       setIsLoginModalVisible(true);
       return;
     }
 
+    const plan = await postPlan(planDraft);
     clearForm();
-    await createPlan(plan);
+    router.push(`plans/${plan.id}`);
   };
 
   return (
