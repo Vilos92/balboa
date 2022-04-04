@@ -1,3 +1,4 @@
+import {useRouter} from 'next/router';
 import React, {FC, MouseEvent, useState} from 'react';
 import tw, {styled, theme} from 'twin.macro';
 
@@ -29,6 +30,15 @@ interface InvitationRowProps {
  * Styles.
  */
 
+const StyledCard = tw(Card)`
+  pl-0
+  pr-0
+  pb-0
+`;
+
+const StyledContentDiv = tw.div`
+`;
+
 const StyledChromelessButton = tw(ChromelessButton)`
   h-full
   flex
@@ -43,17 +53,36 @@ const StyledCardH1 = tw.h1`
   tracking-wide
   border-b
   border-gray-200
+  pb-2
 `;
 
-const StyledInvitationDiv = tw.div`
-  pt-2
-  not-last:pb-4
-  not-last:border-b
-  border-gray-200
+const StyledInvitationButton = styled(ChromelessButton)`
+  ${tw`
+    w-full
+    pt-3
+    pb-4
+    not-last:border-b
+    last:sm:rounded-b-2xl
+
+    hover:bg-purple-100
+    border-gray-200
+
+    text-gray-600
+    active:text-gray-600
+    focus:text-gray-600
+    hover:text-gray-600
+  `}
+
+  & > * {
+    ${tw`
+      pl-3
+      pr-3
+    `}
+  }
 `;
 
 const StyledActionsDiv = tw.div`
-  pt-1
+  pt-2
 
   flex
   flex-row
@@ -77,6 +106,8 @@ export const InvitationsButton: FC = () => {
   };
   const closePopover = () => setIsPopoverVisible(false);
 
+  const isSomeUnread = invitations && invitations.length > 0;
+
   return (
     <Popover
       placement='bottom-end'
@@ -85,7 +116,7 @@ export const InvitationsButton: FC = () => {
     >
       <StyledChromelessButton onClick={onClickButton}>
         <Icon
-          type={IconTypesEnum.PENCIL}
+          type={isSomeUnread ? IconTypesEnum.MAIL_UNREAD : IconTypesEnum.MAIL}
           size={32}
           fill={theme`colors.white`}
           hoverFill={theme`colors.purple.200`}
@@ -100,22 +131,41 @@ const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopo
   const cardRef = useClickWindow<HTMLDivElement>(closePopover);
 
   return (
-    <Card ref={cardRef}>
+    <StyledCard ref={cardRef}>
       <StyledCardH1>Invitations</StyledCardH1>
-      {invitations.map(invitation => (
-        <InvitationRow key={invitation.plan.id} invitation={invitation} />
-      ))}
-    </Card>
+      <StyledContentDiv>
+        {invitations.map(invitation => (
+          <InvitationRow key={invitation.plan.id} invitation={invitation} />
+        ))}
+      </StyledContentDiv>
+    </StyledCard>
   );
 };
 
-const InvitationRow: FC<InvitationRowProps> = ({invitation}) => (
-  <StyledInvitationDiv>
-    <VisualPlan plan={invitation.plan} />
+const InvitationRow: FC<InvitationRowProps> = ({invitation}) => {
+  const router = useRouter();
+  const onClick = () => router.push(`plans/${invitation.plan.id}`);
 
-    <StyledActionsDiv>
-      <Button backgroundColor={theme`colors.purple.400`}>Accept</Button>
-      <Button backgroundColor={theme`colors.red.400`}>Decline</Button>
-    </StyledActionsDiv>
-  </StyledInvitationDiv>
-);
+  const onClickAccept = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+  };
+
+  const onClickDecline = (event: MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+  };
+
+  return (
+    <StyledInvitationButton onClick={onClick}>
+      <VisualPlan plan={invitation.plan} />
+
+      <StyledActionsDiv>
+        <Button backgroundColor={theme`colors.purple.400`} onClick={onClickAccept}>
+          Accept
+        </Button>
+        <Button backgroundColor={theme`colors.red.400`} onClick={onClickDecline}>
+          Decline
+        </Button>
+      </StyledActionsDiv>
+    </StyledInvitationButton>
+  );
+};

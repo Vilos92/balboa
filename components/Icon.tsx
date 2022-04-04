@@ -2,6 +2,8 @@ import React, {FC, SVGProps} from 'react';
 import {styled, theme} from 'twin.macro';
 
 import CalendarEventSvg from '../public/remixIcon/calendar-event-line.svg';
+import MailSvg from '../public/remixIcon/mail-line.svg';
+import MailUnreadSvg from '../public/remixIcon/mail-unread-line.svg';
 import MapPinSvg from '../public/remixIcon/map-pin-line.svg';
 import PencilSvg from '../public/remixIcon/pencil-line.svg';
 import ProfileSvg from '../public/remixIcon/profile-line.svg';
@@ -13,7 +15,9 @@ import RestartSvg from '../public/remixIcon/restart-line.svg';
 
 export enum IconTypesEnum {
   CALENDAR_EVENT = 'calendar_event',
-  MAP_PIN = 'mapPin',
+  MAIL = 'mail',
+  MAIL_UNREAD = 'mail_unread',
+  MAP_PIN = 'map_pin',
   PENCIL = 'pencil',
   PROFILE = 'profile',
   RESTART = 'restart'
@@ -73,6 +77,10 @@ const IconSvg: FC<IconSvgProps> = ({type, size}) => {
   switch (type) {
     case IconTypesEnum.CALENDAR_EVENT:
       return <CalendarEventSvg {...iconProps} />;
+    case IconTypesEnum.MAIL:
+      return <MailSvg {...iconProps} />;
+    case IconTypesEnum.MAIL_UNREAD:
+      return <MailUnreadSvg {...iconProps} />;
     case IconTypesEnum.MAP_PIN:
       return <MapPinSvg {...iconProps} />;
     case IconTypesEnum.PENCIL:

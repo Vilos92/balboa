@@ -55,7 +55,7 @@ const StyledActionsDiv = tw.div`
   flex-row
   justify-end
   items-center
-  gap-3
+  gap-5
 `;
 
 /*
