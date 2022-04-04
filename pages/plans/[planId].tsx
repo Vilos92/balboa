@@ -136,16 +136,17 @@ interface StyledTabButtonProps {
 const StyledTabButton = styled(ChromelessButton)<StyledTabButtonProps>`
   ${tw`
     flex
-    flex-col
+    flex-row
     items-center
     justify-center
+    gap-1
 
+    h-full
     w-full
-    pt-3
-    pb-3
 
     bg-gray-100
     text-gray-600
+    text-lg
 
     first-of-type:rounded-tl-2xl
     last-of-type:rounded-tr-2xl
@@ -379,6 +380,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
                     $isActive={tabView === TabViewsEnum.DETAILS}
                     onClick={() => setTabView(TabViewsEnum.DETAILS)}
                   >
+                    <Icon type={IconTypesEnum.PROFILE} size={20} />
                     Details
                   </StyledTabButton>
                   <StyledTabSeparatorDiv />
@@ -386,6 +388,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
                     $isActive={tabView === TabViewsEnum.EDIT}
                     onClick={() => setTabView(TabViewsEnum.EDIT)}
                   >
+                    <Icon type={IconTypesEnum.PENCIL} size={20} />
                     Edit
                   </StyledTabButton>
                 </StyledTabsDiv>
