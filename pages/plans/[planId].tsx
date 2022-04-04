@@ -155,8 +155,12 @@ const StyledPlanDetailsDiv = tw.div`
 const StyledAttendButtonDiv = tw.div`
   col-start-1
   col-span-3
+  ml-3
+  mr-3
+
   sm:col-start-3
   sm:col-span-1
+  sm:m-0
 `;
 
 interface StyledAttendButtonProps {
