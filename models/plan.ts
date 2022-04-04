@@ -4,7 +4,7 @@ import {makePrismaClient} from '../utils/prisma';
 import {userSchema} from './user';
 
 /*
- * Zods.
+ * Zod.
  */
 
 // Schema for user on plan retrieved from the database using prisma.

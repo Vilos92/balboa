@@ -4,7 +4,7 @@ import {makePrismaClient} from '../utils/prisma';
 import {planSchema} from './plan';
 
 /*
- * Zods.
+ * Zod.
  */
 
 const InvitationStatusesEnumSchema = z.enum(['PENDING', 'ACCEPTED', 'DECLINED']);
@@ -13,7 +13,7 @@ const InvitationStatusesEnumSchema = z.enum(['PENDING', 'ACCEPTED', 'DECLINED'])
 const dbInvitationSchema = z.object({
   createdAt: z.date(),
   planId: z.string(),
-  email: z.string(),
+  email: z.string().email(),
   status: InvitationStatusesEnumSchema,
   plan: planSchema
 });
@@ -22,7 +22,7 @@ const dbInvitationSchema = z.object({
 const invitationSchema = z.object({
   createdAt: z.date(),
   plan: planSchema,
-  email: z.string(),
+  email: z.string().email(),
   status: InvitationStatusesEnumSchema
 });
 
@@ -31,12 +31,19 @@ const invitationInclude = {
   plan: true
 };
 
+// Schema for invitation drafts. This is used to validate data which will be sent to the DB.
+const invitationDraftSchema = z.object({
+  planId: z.string().cuid(),
+  email: z.string().email()
+});
+
 /*
  * Types.
  */
 
 type DbInvitation = z.infer<typeof dbInvitationSchema>;
 type Invitation = z.infer<typeof invitationSchema>;
+type InvitationDraft = z.infer<typeof invitationDraftSchema>;
 
 /*
  * Database operations.
@@ -45,7 +52,7 @@ type Invitation = z.infer<typeof invitationSchema>;
 /**
  * Select invitations belonging to a specific email.
  */
-export async function findPlansForUser(email: string) {
+export async function findInvitationsForEmail(email: string) {
   const prisma = makePrismaClient();
 
   const data = await prisma.invitation.findMany({
@@ -59,9 +66,29 @@ export async function findPlansForUser(email: string) {
   return encodeInvitations(dbInvitations);
 }
 
+export async function saveInvitation(invitationDraft: InvitationDraft) {
+  const prisma = makePrismaClient();
+
+  const data = await prisma.invitation.create({
+    data: invitationDraft,
+    include: invitationInclude
+  });
+
+  const dbInvitation = decodeDbInvitation(data);
+  return encodeInvitation(dbInvitation);
+}
+
 /*
  * Runtime decoding/encoding.
  */
+
+/**
+ * Used by the server to decode an invitation from the database.
+ * Does not handle any exceptions thrown by the parser.
+ */
+function decodeDbInvitation(invitationRow: unknown): DbInvitation {
+  return dbInvitationSchema.parse(invitationRow);
+}
 
 /**
  * Used by the server to decode an array of invitations from the database.
@@ -84,7 +111,7 @@ function encodeInvitation(invitationRow: DbInvitation): Invitation {
 }
 
 /*
- * Used by the server to encode an array of plans
+ * Used by the server to encode an array of invitations
  * from the database to be sent to the client.
  */
 function encodeInvitations(invitationRows: readonly DbInvitation[]): readonly Invitation[] {
