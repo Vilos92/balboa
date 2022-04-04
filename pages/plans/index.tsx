@@ -233,7 +233,7 @@ const PastPlans: FC<PastPlansProps> = ({plans}) => {
 const PlanCard: FC<PlanCardProps> = ({plan, shouldHideDays}) => {
   const router = useRouter();
 
-  const onClickCard = () => router.push(`plans/${plan.id}`);
+  const onClickCard = () => router.push(`/plans/${plan.id}`);
 
   const {hostUser} = plan;
 

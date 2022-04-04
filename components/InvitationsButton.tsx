@@ -144,7 +144,7 @@ const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopo
 
 const InvitationRow: FC<InvitationRowProps> = ({invitation}) => {
   const router = useRouter();
-  const onClick = () => router.push(`plans/${invitation.plan.id}`);
+  const onClick = () => router.push(`/plans/${invitation.plan.id}`);
 
   const onClickAccept = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();

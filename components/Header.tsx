@@ -1,8 +1,6 @@
 import React, {FC} from 'react';
 import tw from 'twin.macro';
 
-import {Invitation} from '../models/invitation';
-import {Handler} from '../types/common';
 import {Providers, useAuthSession} from '../utils/auth';
 import {InvitationsButton} from './InvitationsButton';
 import {Logo} from './Logo';
