@@ -10,15 +10,15 @@ import {userSchema} from './user';
 // Schema for user on plan retrieved from the database using prisma.
 const dbUserOnPlanSchema = z.object({
   createdAt: z.date(),
-  planId: z.string(),
-  userId: z.string(),
+  planId: z.string().cuid(),
+  userId: z.string().cuid(),
   user: userSchema
 });
 
 // Schema for plans retrieved from the database using prisma.
 const dbPlanSchema = z.object({
-  id: z.string(),
-  hostUserId: z.string(),
+  id: z.string().cuid(),
+  hostUserId: z.string().cuid(),
   createdAt: z.date(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
@@ -32,13 +32,13 @@ const dbPlanSchema = z.object({
 
 // Schema for user on plan drafts.
 const userOnPlanDraftSchema = z.object({
-  userId: z.string(),
-  planId: z.string()
+  userId: z.string().cuid(),
+  planId: z.string().cuid()
 });
 
 // Schema for plans used by the server and client.
 const planSchema = z.object({
-  id: z.string(),
+  id: z.string().cuid(),
   createdAt: z.string(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
@@ -58,8 +58,8 @@ const planInclude = {
 
 // Schema for plan drafts. This is used to validate data which will be sent to the DB.
 export const planDraftSchema = z.object({
-  id: z.string().optional(),
-  hostUserId: z.string(),
+  id: z.string().cuid().optional(),
+  hostUserId: z.string().cuid(),
   title: z.string().min(3).max(60),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
   start: z.string().min(13).max(30),
