@@ -1,6 +1,6 @@
 import {useRouter} from 'next/router';
 import {FC} from 'react';
-import tw from 'twin.macro';
+import tw, {theme} from 'twin.macro';
 
 import {GrueSvg} from './svg/GrueSvg';
 
@@ -38,7 +38,7 @@ export const Logo: FC = () => {
   return (
     <StyledLogoDiv onClick={onClick}>
       <StyledLogoSvgDiv>
-        <GrueSvg fill='#ffffff' height='32px' />
+        <GrueSvg fill={theme`colors.white`} height='32px' />
       </StyledLogoSvgDiv>
       <StyledLogoH1>rueplan</StyledLogoH1>
     </StyledLogoDiv>

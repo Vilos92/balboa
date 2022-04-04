@@ -1,5 +1,5 @@
 import React, {FC, MouseEvent, useState} from 'react';
-import tw from 'twin.macro';
+import tw, {theme} from 'twin.macro';
 
 import {Invitation} from '../models/invitation';
 import {useNetGetInvitationsForUser} from '../pages/api/invitations';
@@ -7,6 +7,7 @@ import {Handler} from '../types/common';
 import {Providers, useAuthSession} from '../utils/auth';
 import {useClickWindow} from '../utils/hooks';
 import {Card} from './Card';
+import {ChromelessButton} from './ChromelessButton';
 import {Icon, IconTypesEnum} from './Icon';
 import {Logo} from './Logo';
 import {MenuButton} from './MenuButton';
@@ -56,13 +57,21 @@ const StyledHeaderSpacerDiv = tw.div`
   w-full
 `;
 
-const ActionsDiv = tw.div`
+const StyledActionsDiv = tw.div`
   flex-grow
   w-full
 
   flex
   flex-row
   justify-end
+  items-center
+  gap-3
+`;
+
+const StyledActionDiv = tw.div`
+  h-full
+  flex
+  justify-center
   items-center
 `;
 
@@ -79,10 +88,10 @@ export const Header: FC<HeaderProps> = ({providers}) => {
       <StyledHeaderDiv>
         <StyledHeaderSpacerDiv />
         <Logo />
-        <ActionsDiv>
+        <StyledActionsDiv>
           {isAuthenticated && <InvitationButton />}
           <MenuButton providers={providers} />
-        </ActionsDiv>
+        </StyledActionsDiv>
       </StyledHeaderDiv>
     </>
   );
@@ -105,9 +114,16 @@ const InvitationButton: FC = () => {
       isVisible={isPopoverVisible}
       popoverChildren={<InvitationsPopover invitations={invitations ?? []} closePopover={closePopover} />}
     >
-      <button onClick={onClickOpen}>
-        <Icon type={IconTypesEnum.PENCIL} size={20} />
-      </button>
+      <StyledActionDiv>
+        <ChromelessButton onClick={onClickOpen}>
+          <Icon
+            type={IconTypesEnum.PENCIL}
+            size={32}
+            fill={theme`colors.white`}
+            hoverFill={theme`colors.purple.200`}
+          />
+        </ChromelessButton>
+      </StyledActionDiv>
     </Popover>
   );
 };

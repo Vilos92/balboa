@@ -1,5 +1,6 @@
 import React, {FC} from 'react';
 import {animated, useSpring} from 'react-spring';
+import {theme} from 'twin.macro';
 
 import {GrueSvg} from './svg/GrueSvg';
 
@@ -23,7 +24,7 @@ export const LoadingGrue: FC = () => {
     <>
       {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
       <animated.div style={style}>
-        <GrueSvg fill='#000000' height={height} />
+        <GrueSvg fill={theme`colors.black`} height={height} />
       </animated.div>
     </>
   );
