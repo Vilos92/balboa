@@ -12,6 +12,7 @@ import {ChromelessButton} from './ChromelessButton';
 import {Icon, IconTypesEnum} from './Icon';
 import {VisualPlan} from './VisualPlan';
 import {Popover} from './popover/Popover';
+import {colors} from '.pnpm/@react-spring+shared@9.4.4_react@18.0.0/node_modules/@react-spring/shared';
 
 /*
  * Props.
@@ -118,8 +119,8 @@ export const InvitationsButton: FC = () => {
         <Icon
           type={isSomeUnread ? IconTypesEnum.MAIL_UNREAD : IconTypesEnum.MAIL}
           size={32}
-          fill={theme`colors.white`}
-          hoverFill={theme`colors.purple.200`}
+          fill={isSomeUnread ? theme`colors.purple.400` : theme`colors.white`}
+          hoverFill={isSomeUnread ? theme`colors.purple.400` : theme`colors.purple.200`}
           isActive={isPopoverVisible}
         />
       </StyledChromelessButton>
