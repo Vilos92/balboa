@@ -19,6 +19,7 @@ import {VisualUser} from '../../components/VisualUser';
 import {HoverTooltip} from '../../components/popover/HoverTooltip';
 import {Plan} from '../../models/plan';
 import {getSessionUser} from '../../utils/auth';
+import {useNetGetInvitationsForUser} from '../api/invitations';
 import {useNetGetPlans} from '../api/plans';
 
 /*
@@ -139,6 +140,9 @@ export const getServerSideProps: GetServerSideProps = async ({req}) => {
 
 const PlansPage: FC = () => {
   const router = useRouter();
+
+  const {data: invites, error2, mutate} = useNetGetInvitationsForUser();
+  // console.log('invites', invites, error2);
 
   const {data: plans, error} = useNetGetPlans();
   if (!plans || error) return <PageSkeleton />;

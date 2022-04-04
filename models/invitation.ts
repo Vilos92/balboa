@@ -1,34 +1,34 @@
 import {z} from 'zod';
 
 import {makePrismaClient} from '../utils/prisma';
-import {planSchema} from './plan';
+import {dbPlanSchema, encodePlan, planInclude, planSchema} from './plan';
 
 /*
  * Zod.
  */
 
-const InvitationStatusesEnumSchema = z.enum(['PENDING', 'ACCEPTED', 'DECLINED']);
+const invitationStatusesEnumSchema = z.enum(['PENDING', 'ACCEPTED', 'DECLINED']);
 
 // Schema for an invitation retrieved from the database using prisma.
 const dbInvitationSchema = z.object({
   createdAt: z.date(),
   planId: z.string(),
   email: z.string().email(),
-  status: InvitationStatusesEnumSchema,
-  plan: planSchema
+  status: invitationStatusesEnumSchema,
+  plan: dbPlanSchema
 });
 
 // Schema for plans used by the server and client.
 const invitationSchema = z.object({
-  createdAt: z.date(),
+  createdAt: z.string(),
   plan: planSchema,
   email: z.string().email(),
-  status: InvitationStatusesEnumSchema
+  status: invitationStatusesEnumSchema
 });
 
 // Relational fields which should be returned to the client.
 const invitationInclude = {
-  plan: true
+  plan: {include: planInclude}
 };
 
 // Schema for invitation drafts. This is used to validate data which will be sent to the DB.
@@ -41,8 +41,9 @@ const invitationDraftSchema = z.object({
  * Types.
  */
 
+const InvitationStatusesEnum = invitationStatusesEnumSchema.enum;
 type DbInvitation = z.infer<typeof dbInvitationSchema>;
-type Invitation = z.infer<typeof invitationSchema>;
+export type Invitation = z.infer<typeof invitationSchema>;
 type InvitationDraft = z.infer<typeof invitationDraftSchema>;
 
 /*
@@ -57,7 +58,8 @@ export async function findInvitationsForEmail(email: string) {
 
   const data = await prisma.invitation.findMany({
     where: {
-      email
+      email,
+      status: InvitationStatusesEnum.PENDING
     },
     include: invitationInclude
   });
@@ -104,7 +106,10 @@ function decodeDbInvitations(invitationRows: readonly unknown[]): readonly DbInv
  */
 function encodeInvitation(invitationRow: DbInvitation): Invitation {
   const invitationBlob = {
-    createdAt: invitationRow.createdAt.toISOString()
+    createdAt: invitationRow.createdAt.toISOString(),
+    email: invitationRow.email,
+    status: invitationRow.status,
+    plan: encodePlan(invitationRow.plan)
   };
 
   return invitationSchema.parse(invitationBlob);
