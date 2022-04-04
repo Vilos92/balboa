@@ -5,6 +5,7 @@ specifiers:
   '@next/eslint-plugin-next': ^12.0.10
   '@popperjs/core': ^2.10.2
   '@prisma/client': ^3.6.0
+  '@react-hook/media-query': ^1.1.1
   '@reduxjs/toolkit': ^1.8.0
   '@testing-library/jest-dom': ^5.16.1
   '@trivago/prettier-plugin-sort-imports': ^3.1.1
@@ -58,6 +59,7 @@ dependencies:
   '@next-auth/prisma-adapter': 0.5.2-next.19_f26fdcf87df296c1294e2c3d19a07668
   '@popperjs/core': 2.10.2
   '@prisma/client': 3.6.0_prisma@3.6.0
+  '@react-hook/media-query': 1.1.1_react@18.0.0
   '@reduxjs/toolkit': 1.8.0_react-redux@7.2.6+react@18.0.0
   axios: 0.24.0
   calendar-link: 2.1.1
@@ -1287,6 +1289,14 @@ packages:
     resolution: {integrity: sha512-dRClHS7DsTVchDKzeG72OaEyeDskCv91pnZ72Fftn0mp4BkUvX2LvWup65hCNzwwQm5IDd6A88APldKDnMiEMA==}
     requiresBuild: true
     dev: true
+
+  /@react-hook/media-query/1.1.1_react@18.0.0:
+    resolution: {integrity: sha512-VM14wDOX5CW5Dn6b2lTiMd79BFMTut9AZj2+vIRT3LCKgMCYmdqruTtzDPSnIVDQdtxdPgtOzvU9oK20LopuOw==}
+    peerDependencies:
+      react: '>=16.8'
+    dependencies:
+      react: 18.0.0
+    dev: false
 
   /@react-spring/animated/9.4.4_react@18.0.0:
     resolution: {integrity: sha512-e9xnuBaUTD+NolKikUmrGWjX8AVCPyj1GcEgjgq9E+0sXKv46UY7cm2EmB6mUDTxWIDVKebARY++xT4nGDraBQ==}

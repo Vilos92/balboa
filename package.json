@@ -20,6 +20,7 @@
     "@next-auth/prisma-adapter": "^0.5.2-next.19",
     "@popperjs/core": "^2.10.2",
     "@prisma/client": "^3.6.0",
+    "@react-hook/media-query": "^1.1.1",
     "@reduxjs/toolkit": "^1.8.0",
     "axios": "^0.24.0",
     "calendar-link": "^2.1.1",
