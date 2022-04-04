@@ -77,6 +77,7 @@ model Plan {
   description String
   HostUser    User          @relation(fields: [hostUserId], references: [id])
   users       UserOnPlan[]  
+  invitations Invitation[]  
 
   @@map("plan")
 }
@@ -90,4 +91,23 @@ model UserOnPlan {
 
   @@id([planId, userId])
   @@map("user_on_plan")
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model Invitation {
+  createdAt   DateTime          @map("created_at")  @default(now())
+  plan        Plan              @relation(fields: [planId], references: [id])
+  planId      String            @map("plan_id")
+  email       String
+  status      InvitationStatus  @default(PENDING)
+
+  @@id([planId, email])
+  @@index([planId])
+  @@index([email])
+  @@map("invitation")
 }

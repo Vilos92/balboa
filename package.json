@@ -13,7 +13,7 @@
     "pretty": "prettier --write ./**/*.ts",
     "prisma-generate-client": "npx prisma generate",
     "prisma-migrate:local": "dotenv -e .env.local -- npx prisma migrate dev",
-    "prisma-migrate:dev": "dotenv -e .env.dev -- npx prisma migrate dev",
+    "prisma-migrate:dev": "dotenv -e .env.dev -- npx prisma migrate deploy",
     "prisma-migrate:prod": "dotenv -e .env.prod -- npx prisma migrate deploy"
   },
   "dependencies": {
