@@ -4,7 +4,7 @@ import {makePrismaClient} from '../utils/prisma';
 import {userSchema} from './user';
 
 /*
- * Constants.
+ * Zods.
  */
 
 // Schema for user on plan retrieved from the database using prisma.
@@ -26,7 +26,7 @@ const dbPlanSchema = z.object({
   end: z.date(),
   location: z.string(),
   description: z.string(),
-  HostUser: userSchema,
+  hostUser: userSchema,
   users: z.array(dbUserOnPlanSchema)
 });
 
@@ -37,7 +37,7 @@ const userOnPlanDraftSchema = z.object({
 });
 
 // Schema for plans used by the server and client.
-const planSchema = z.object({
+export const planSchema = z.object({
   id: z.string(),
   createdAt: z.string(),
   title: z.string(),
@@ -52,7 +52,7 @@ const planSchema = z.object({
 
 // Relational fields which should be returned to the client.
 const planInclude = {
-  HostUser: true,
+  hostUser: true,
   users: {include: {user: true}}
 };
 
@@ -236,7 +236,7 @@ function encodePlan(planRow: DbPlan): Plan {
     end: planRow.end.toISOString(),
     location: planRow.location,
     description: planRow.description,
-    hostUser: planRow.HostUser,
+    hostUser: planRow.hostUser,
     users: planRow.users.map(userOnPlan => userOnPlan.user)
   };
 

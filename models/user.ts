@@ -1,7 +1,7 @@
 import {z} from 'zod';
 
 /*
- * Constants.
+ * Zods.
  */
 
 export const userSchema = z.object({

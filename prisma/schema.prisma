@@ -75,7 +75,7 @@ model Plan {
   end         DateTime
   location    String
   description String
-  HostUser    User          @relation(fields: [hostUserId], references: [id])
+  hostUser    User          @relation(fields: [hostUserId], references: [id])
   users       UserOnPlan[]  
   invitations Invitation[]  
 
