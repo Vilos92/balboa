@@ -4,7 +4,7 @@ import {NextRouter, useRouter} from 'next/router';
 import React, {FC, MouseEvent, useCallback, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
-import {AsyncHandler} from '../types/common';
+import {AsyncHandler, Handler} from '../types/common';
 import {Providers, useAuthSession} from '../utils/auth';
 import {useClickWindow} from '../utils/hooks';
 import {ChromelessButton} from './ChromelessButton';
@@ -29,7 +29,7 @@ type ButtonMouseEvent = (event: MouseEvent<HTMLButtonElement>) => void;
 
 interface MenuProps {
   onClickOpenLoginModal: ButtonMouseEvent;
-  closeMenu: AsyncHandler;
+  closeMenu: Handler;
 }
 
 /*
@@ -185,7 +185,7 @@ const PopoverMenu: FC<MenuProps> = ({onClickOpenLoginModal, closeMenu}) => {
   const router = useRouter();
   const {isAuthenticated} = useAuthSession();
 
-  const menuRoutes = renderRoutes(router, isAuthenticated, onClickOpenLoginModal);
+  const menuRoutes = renderRoutes(router, isAuthenticated, onClickOpenLoginModal, closeMenu);
 
   const menuRef = useClickWindow<HTMLDivElement>(closeMenu);
 
@@ -218,7 +218,7 @@ function renderRoutes(
   router: NextRouter,
   isAuthenticated: boolean,
   onClickOpenLoginModal: ButtonMouseEvent,
-  closeMenu: AsyncHandler
+  closeMenu: Handler
 ) {
   const onClickCreate = async () => {
     await router.push('/');
