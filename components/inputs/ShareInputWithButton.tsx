@@ -34,6 +34,8 @@ const tooltipVisibilityDuration = 2000; // 2000 ms.
 const StyledShareDiv = tw.div`
   flex
   flex-row
+  items-center
+  gap-3
 `;
 
 const StyledShareTooltipDiv = tw.div`
@@ -42,10 +44,7 @@ const StyledShareTooltipDiv = tw.div`
 
 const StyledShareButton = tw(Button)`
   bg-purple-400
-  w-16
-  h-9
-  mt-4
-  ml-2
+  mt-2
 `;
 
 /*

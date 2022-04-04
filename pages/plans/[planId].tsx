@@ -7,9 +7,9 @@ import tw, {TwStyle, css, styled} from 'twin.macro';
 
 import {AccountFooter} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
+import {Card} from '../../components/Card';
 import {ChromelessButton} from '../../components/ChromelessButton';
 import {ColumnHorizontalCentered} from '../../components/Commons';
-import { Card } from "../../components/Card";
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {Icon, IconTypesEnum} from '../../components/Icon';
@@ -400,9 +400,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
 
   return (
     <>
-      <div>
-        <ShareInputWithButton label='Share' shareUrl={shareUrl} shareText={plan.title} />
-      </div>
+      <ShareInputWithButton label='Share' shareUrl={shareUrl} shareText={plan.title} />
       <StyledPlanDetailsDiv>
         <StyledPlanTitleH2>
           <VisualPlan plan={plan} />
