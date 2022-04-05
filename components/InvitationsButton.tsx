@@ -53,10 +53,10 @@ const StyledCardH1 = tw.h1`
   pb-2
 `;
 
-interface StyledInvitationButtonProps {
+interface StyledInvitationDivProps {
   $hasHover: boolean;
 }
-const StyledInvitationButton = styled(ChromelessButton)<StyledInvitationButtonProps>`
+const StyledInvitationDiv = styled.div<StyledInvitationDivProps>`
   ${tw`
     w-full
     pt-3
@@ -72,6 +72,8 @@ const StyledInvitationButton = styled(ChromelessButton)<StyledInvitationButtonPr
 
     active:bg-purple-100
     focus:bg-purple-100
+
+    cursor-pointer
   `}
 
   ${({$hasHover}) => $hasHover && tw`bg-purple-100 text-gray-600`}
@@ -108,8 +110,7 @@ export const InvitationsButton: FC = () => {
   if (error) return null;
 
   const onClickButton = (event: MouseEvent<HTMLButtonElement>) => {
-    setIsPopoverVisible(!isPopoverVisible);
-    event.stopPropagation();
+    setTimeout(() => setIsPopoverVisible(!isPopoverVisible));
   };
   const closePopover = () => setIsPopoverVisible(false);
 
@@ -166,7 +167,7 @@ const InvitationRow: FC<InvitationRowProps> = ({invitation}) => {
   const hasHover = hasInvitationHover && !(hasAcceptHover || hasDeclineHover);
 
   return (
-    <StyledInvitationButton ref={invitationHoverRef} $hasHover={hasHover} onClick={onClick}>
+    <StyledInvitationDiv ref={invitationHoverRef} $hasHover={hasHover} onClick={onClick}>
       <VisualPlan plan={invitation.plan} />
 
       <StyledActionsDiv>
@@ -185,6 +186,6 @@ const InvitationRow: FC<InvitationRowProps> = ({invitation}) => {
           Decline
         </StyledActionButton>
       </StyledActionsDiv>
-    </StyledInvitationButton>
+    </StyledInvitationDiv>
   );
 };

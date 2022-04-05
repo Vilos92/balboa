@@ -142,16 +142,10 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
-  const onClickOpenMenu = (event: MouseEvent<HTMLButtonElement>) => {
-    setIsMenuVisible(!isMenuVisible);
-    event.stopPropagation();
-  };
+  const onClickOpenMenu = () => setTimeout(() => setIsMenuVisible(!isMenuVisible));
   const closeMenu = useCallback(() => setIsMenuVisible(false), [setIsMenuVisible]);
 
-  const onClickOpenLoginModal = (event: MouseEvent<HTMLButtonElement>) => {
-    setIsLoginModalVisible(true);
-    event.stopPropagation();
-  };
+  const onClickOpenLoginModal = () => setTimeout(() => setIsLoginModalVisible(true));
   const closeLoginModal = useCallback(() => setIsLoginModalVisible(false), [setIsLoginModalVisible]);
 
   const isScreenSmall = useMediaQuery('only screen and (min-width: 640px)');

@@ -3,7 +3,7 @@ import Image from 'next/image';
 import {FC} from 'react';
 import tw, {styled} from 'twin.macro';
 
-import googleSvg from '../public/google.svg';
+import GoogleSvg from '../public/google.svg';
 import {Handler} from '../types/common';
 import {Providers, signInWithProvider} from '../utils/auth';
 import {Button} from './Button';
@@ -66,7 +66,7 @@ export const LoginModal: FC<LoginModalProps> = ({providers, closeModal}) => {
 
 const GoogleLoginButton: FC<LoginButtonProps> = ({provider}) => (
   <StyledLoginButton onClick={() => signInWithProvider(provider.id)}>
-    <Image width={24} src={googleSvg} priority />
+    <GoogleSvg width={24} height={24} viewBox='0 0 48 48' />
     Sign in with {provider.name}
   </StyledLoginButton>
 );
