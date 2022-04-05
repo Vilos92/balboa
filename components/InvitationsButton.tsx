@@ -24,6 +24,7 @@ interface InvitationsPopoverProps {
 
 interface InvitationRowProps {
   invitation: Invitation;
+  closePopover: Handler;
 }
 
 /*
@@ -151,7 +152,9 @@ const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopo
 
   const content =
     invitations.length > 0 ? (
-      invitations.map(invitation => <InvitationRow key={invitation.plan.id} invitation={invitation} />)
+      invitations.map(invitation => (
+        <InvitationRow key={invitation.plan.id} invitation={invitation} closePopover={closePopover} />
+      ))
     ) : (
       <StyledEmptyDiv>Waiting for invites...</StyledEmptyDiv>
     );
@@ -164,20 +167,21 @@ const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopo
   );
 };
 
-const InvitationRow: FC<InvitationRowProps> = ({invitation}) => {
+const InvitationRow: FC<InvitationRowProps> = ({invitation, closePopover}) => {
   const [invitationHoverRef, hasInvitationHover] = useHover<HTMLDivElement>();
   const [acceptHoverRef, hasAcceptHover] = useHover<HTMLButtonElement>();
   const [declineHoverRef, hasDeclineHover] = useHover<HTMLButtonElement>();
 
   const router = useRouter();
 
-  const onClick = (event: MouseEvent<HTMLDivElement>) => {
+  const onClick = async (event: MouseEvent<HTMLDivElement>) => {
     // We must cast the target to Node as per official rec:
     // https://github.com/Microsoft/TypeScript/issues/15394#issuecomment-297495746
     if (acceptHoverRef.current?.contains(event.target as Node)) return;
     if (declineHoverRef.current?.contains(event.target as Node)) return;
 
-    router.push(`/plans/${invitation.plan.id}`);
+    await router.push(`/plans/${invitation.plan.id}`);
+    closePopover();
   };
 
   const onClickAccept = () => undefined;

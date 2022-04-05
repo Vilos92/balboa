@@ -36,12 +36,18 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
   ${({disabled}) =>
     !disabled &&
     tw`
-      hover:brightness-150
-      active:brightness-150
-      focus:brightness-150
-  `}
+      hover:brightness-125
+      active:brightness-125
+      focus:brightness-125
+    `}
 
-  text-shadow: 0 2px 4px rgba(0,0,0,0.10);
+  &:hover > * {
+    ${tw`
+      brightness-90
+    `}
+  }
+
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 /*
@@ -61,7 +67,7 @@ export const Button = forwardRef<HTMLButtonElement, PropsWithChildren<ButtonProp
       onClick={onClick}
       className={className}
     >
-      {children}
+      <span>{children}</span>
     </StyledColoredButton>
   );
 });
