@@ -2,6 +2,7 @@ import {z} from 'zod';
 
 import {makePrismaClient} from '../utils/prisma';
 import {dbPlanSchema, encodePlan, planInclude, planSchema} from './plan';
+import {userSchema} from './user';
 
 /*
  * Zod.
@@ -15,7 +16,8 @@ const dbInvitationSchema = z.object({
   planId: z.string(),
   email: z.string().email(),
   status: invitationStatusesEnumSchema,
-  plan: dbPlanSchema
+  plan: dbPlanSchema,
+  senderUser: userSchema
 });
 
 // Schema for plans used by the server and client.
@@ -23,17 +25,20 @@ const invitationSchema = z.object({
   createdAt: z.string(),
   plan: planSchema,
   email: z.string().email(),
-  status: invitationStatusesEnumSchema
+  status: invitationStatusesEnumSchema,
+  senderUser: userSchema
 });
 
 // Relational fields which should be returned to the client.
 const invitationInclude = {
+  senderUser: true,
   plan: {include: planInclude}
 };
 
 // Schema for invitation drafts. This is used to validate data which will be sent to the DB.
 const invitationDraftSchema = z.object({
   planId: z.string().cuid(),
+  senderUserId: z.string().cuid(),
   email: z.string().email()
 });
 
@@ -109,7 +114,8 @@ function encodeInvitation(invitationRow: DbInvitation): Invitation {
     createdAt: invitationRow.createdAt.toISOString(),
     email: invitationRow.email,
     status: invitationRow.status,
-    plan: encodePlan(invitationRow.plan)
+    plan: encodePlan(invitationRow.plan),
+    senderUser: invitationRow.senderUser
   };
 
   return invitationSchema.parse(invitationBlob);

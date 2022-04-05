@@ -12,6 +12,7 @@ import {Card} from './Card';
 import {ChromelessButton} from './ChromelessButton';
 import {Icon, IconTypesEnum} from './Icon';
 import {VisualPlan} from './VisualPlan';
+import {VisualUser} from './VisualUser';
 import {Popover} from './popover/Popover';
 
 /*

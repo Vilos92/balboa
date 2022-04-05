@@ -38,8 +38,9 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  Plan          Plan[]
-  users       UserOnPlan[]  
+  hostedPlans   Plan[]
+  plans         UserOnPlan[]  
+  invitations   Invitation[]  
 
   @@map("rocky_user")
 }
@@ -100,11 +101,13 @@ enum InvitationStatus {
 }
 
 model Invitation {
-  createdAt   DateTime          @map("created_at")  @default(now())
-  plan        Plan              @relation(fields: [planId], references: [id])
-  planId      String            @map("plan_id")
-  email       String
-  status      InvitationStatus  @default(PENDING)
+  createdAt     DateTime          @map("created_at")  @default(now())
+  plan          Plan              @relation(fields: [planId], references: [id])
+  planId        String            @map("plan_id")
+  senderUser    User              @relation(fields: [senderUserId], references: [id])
+  senderUserId  String            @map("sender_user_id")
+  email         String
+  status        InvitationStatus  @default(PENDING)
 
   @@id([planId, email])
   @@index([planId])
