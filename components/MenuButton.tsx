@@ -100,8 +100,6 @@ const StyledMenuItemButton = tw(ChromelessButton)`
 
   w-full
   h-full
-  text-center
-  hover:bg-purple-100
 
   p-5
   sm:p-3
@@ -109,6 +107,11 @@ const StyledMenuItemButton = tw(ChromelessButton)`
   border-gray-300
   not-last:border-b-2
 
+  hover:bg-purple-100
+  active:bg-purple-100
+  focus:bg-purple-100
+
+  text-center
   text-3xl
   sm:text-lg
 
@@ -139,16 +142,10 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const [isMenuVisible, setIsMenuVisible] = useState(false);
   const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
 
-  const onClickOpenMenu = (event: MouseEvent<HTMLButtonElement>) => {
-    setIsMenuVisible(!isMenuVisible);
-    event.stopPropagation();
-  };
+  const onClickOpenMenu = () => setTimeout(() => setIsMenuVisible(!isMenuVisible));
   const closeMenu = useCallback(() => setIsMenuVisible(false), [setIsMenuVisible]);
 
-  const onClickOpenLoginModal = (event: MouseEvent<HTMLButtonElement>) => {
-    setIsLoginModalVisible(true);
-    event.stopPropagation();
-  };
+  const onClickOpenLoginModal = () => setTimeout(() => setIsLoginModalVisible(true));
   const closeLoginModal = useCallback(() => setIsLoginModalVisible(false), [setIsLoginModalVisible]);
 
   const isScreenSmall = useMediaQuery('only screen and (min-width: 640px)');

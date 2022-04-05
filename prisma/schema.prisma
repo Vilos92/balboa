@@ -38,8 +38,9 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
-  Plan          Plan[]
-  users       UserOnPlan[]  
+  hostedPlans   Plan[]
+  plans         UserOnPlan[]  
+  invitations   Invitation[]  
 
   @@map("rocky_user")
 }
@@ -67,15 +68,15 @@ model VerificationToken {
 
 model Plan {
   id          String        @id @default(cuid())
-  hostUserId  String        @map("host_user_id")
   createdAt   DateTime      @map("created_at") @default(now())
+  hostUser    User          @relation(fields: [hostUserId], references: [id])
+  hostUserId  String        @map("host_user_id")
   title       String
   color       String 
   start       DateTime
   end         DateTime
   location    String
   description String
-  hostUser    User          @relation(fields: [hostUserId], references: [id])
   users       UserOnPlan[]  
   invitations Invitation[]  
 
@@ -100,13 +101,15 @@ enum InvitationStatus {
 }
 
 model Invitation {
-  createdAt   DateTime          @map("created_at")  @default(now())
-  plan        Plan              @relation(fields: [planId], references: [id])
-  planId      String            @map("plan_id")
-  email       String
-  status      InvitationStatus  @default(PENDING)
+  id            String            @id @default(cuid())
+  createdAt     DateTime          @map("created_at")  @default(now())
+  plan          Plan              @relation(fields: [planId], references: [id])
+  planId        String            @map("plan_id")
+  senderUser    User              @relation(fields: [senderUserId], references: [id])
+  senderUserId  String            @map("sender_user_id")
+  email         String
+  status        InvitationStatus  @default(PENDING)
 
-  @@id([planId, email])
   @@index([planId])
   @@index([email])
   @@map("invitation")

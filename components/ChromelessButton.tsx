@@ -23,16 +23,9 @@ const StyledButton = tw.button`
  */
 
 export const ChromelessButton = forwardRef<HTMLButtonElement, PropsWithChildren<ChromelessButtonProps>>(
-  function ChromelessButton({children, className, onClick, onMouseEnter, onMouseLeave}, ref) {
+  function ChromelessButton({children, className, onClick}, ref) {
     return (
-      <StyledButton
-        ref={ref}
-        type='button'
-        className={className}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
+      <StyledButton ref={ref} type='button' className={className} onClick={onClick}>
         {children}
       </StyledButton>
     );

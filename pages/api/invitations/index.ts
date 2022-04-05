@@ -14,7 +14,7 @@ const invitationsUrl = '/api/invitations';
  * Types.
  */
 
-type ApiResponse = NetResponse<Invitation | readonly Invitation[]>;
+type ApiResponse = NetResponse<readonly Invitation[]>;
 
 /*
  * Request handler.

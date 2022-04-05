@@ -1,4 +1,4 @@
-import {FC, MouseEvent, useState} from 'react';
+import {FC, useState} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {Providers} from '../utils/auth';
@@ -95,11 +95,7 @@ export const AccountFooter: FC<AccountFooterProps> = ({isHidden, providers}) => 
 
   if (isHidden) return <StyledFooterSpacerDiv />;
 
-  const openLoginModal = (event: MouseEvent<HTMLButtonElement>) => {
-    setIsLoginModalVisible(true);
-
-    event.stopPropagation();
-  };
+  const openLoginModal = () => setTimeout(() => setIsLoginModalVisible(true));
   const closeLoginModal = () => setIsLoginModalVisible(false);
 
   return (
