@@ -111,10 +111,11 @@ export function useHover<T extends HTMLElement>(): [RefObject<T>, boolean] {
     ref.current.addEventListener('mouseover', handleMouseOver);
     ref.current.addEventListener('mouseout', handleMouseOut);
 
+    const hoverElement = ref.current;
+
     return () => {
-      if (!ref.current) return;
-      ref.current.removeEventListener('mouseover', handleMouseOver);
-      ref.current.removeEventListener('mouseout', handleMouseOut);
+      hoverElement.removeEventListener('mouseover', handleMouseOver);
+      hoverElement.removeEventListener('mouseout', handleMouseOut);
     };
   });
 

@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, PropsWithChildren, forwardRef} from 'react';
 import tw, {styled} from 'twin.macro';
 
 /*
@@ -42,14 +42,20 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
  * Component.
  */
 
-export const Button: FC<ButtonProps> = ({children, type, backgroundColor, disabled, onClick, className}) => (
-  <StyledColoredButton
-    type={type}
-    $backgroundColor={backgroundColor}
-    disabled={disabled}
-    onClick={onClick}
-    className={className}
-  >
-    {children}
-  </StyledColoredButton>
-);
+export const Button = forwardRef<HTMLButtonElement, PropsWithChildren<ButtonProps>>(function Button(
+  {children, type, backgroundColor, disabled, onClick, className},
+  ref
+) {
+  return (
+    <StyledColoredButton
+      ref={ref}
+      type={type}
+      $backgroundColor={backgroundColor}
+      disabled={disabled}
+      onClick={onClick}
+      className={className}
+    >
+      {children}
+    </StyledColoredButton>
+  );
+});

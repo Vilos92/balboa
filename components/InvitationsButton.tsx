@@ -5,7 +5,7 @@ import tw, {styled, theme} from 'twin.macro';
 import {Invitation} from '../models/invitation';
 import {useNetGetInvitationsForUser} from '../pages/api/invitations';
 import {Handler} from '../types/common';
-import {useClickWindow} from '../utils/hooks';
+import {useClickWindow, useHover} from '../utils/hooks';
 import {Button} from './Button';
 import {Card} from './Card';
 import {ChromelessButton} from './ChromelessButton';
@@ -56,7 +56,10 @@ const StyledCardH1 = tw.h1`
   pb-2
 `;
 
-const StyledInvitationButton = styled(ChromelessButton)`
+interface StyledInvitationButtonProps {
+  $hasHover: boolean;
+}
+const StyledInvitationButton = styled(ChromelessButton)<StyledInvitationButtonProps>`
   ${tw`
     w-full
     pt-3
@@ -64,14 +67,15 @@ const StyledInvitationButton = styled(ChromelessButton)`
     not-last:border-b
     last:sm:rounded-b-2xl
 
-    hover:bg-purple-100
     border-gray-200
 
     text-gray-600
+    hover:text-gray-600
     active:text-gray-600
     focus:text-gray-600
-    hover:text-gray-600
   `}
+
+  ${({$hasHover}) => $hasHover && tw`bg-purple-100 text-gray-600`}
 
   & > * {
     ${tw`
@@ -146,6 +150,10 @@ const InvitationRow: FC<InvitationRowProps> = ({invitation}) => {
   const router = useRouter();
   const onClick = () => router.push(`/plans/${invitation.plan.id}`);
 
+  const [invitationHoverRef, hasInvitationHover] = useHover<HTMLButtonElement>();
+  const [acceptHoverRef, hasAcceptHover] = useHover<HTMLButtonElement>();
+  const [declineHoverRef, hasDeclineHover] = useHover<HTMLButtonElement>();
+
   const onClickAccept = (event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
   };
@@ -154,15 +162,17 @@ const InvitationRow: FC<InvitationRowProps> = ({invitation}) => {
     event.stopPropagation();
   };
 
+  const hasHover = hasInvitationHover && !(hasAcceptHover || hasDeclineHover);
+
   return (
-    <StyledInvitationButton onClick={onClick}>
+    <StyledInvitationButton ref={invitationHoverRef} $hasHover={hasHover} onClick={onClick}>
       <VisualPlan plan={invitation.plan} />
 
       <StyledActionsDiv>
-        <Button backgroundColor={theme`colors.purple.400`} onClick={onClickAccept}>
+        <Button ref={acceptHoverRef} backgroundColor={theme`colors.purple.400`} onClick={onClickAccept}>
           Accept
         </Button>
-        <Button backgroundColor={theme`colors.red.400`} onClick={onClickDecline}>
+        <Button ref={declineHoverRef} backgroundColor={theme`colors.red.400`} onClick={onClickDecline}>
           Decline
         </Button>
       </StyledActionsDiv>
