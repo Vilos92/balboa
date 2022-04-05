@@ -1,5 +1,4 @@
 import {ClientSafeProvider} from 'next-auth/react';
-import Image from 'next/image';
 import {FC} from 'react';
 import tw, {styled} from 'twin.macro';
 

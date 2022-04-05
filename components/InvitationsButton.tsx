@@ -165,20 +165,23 @@ const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopo
 };
 
 const InvitationRow: FC<InvitationRowProps> = ({invitation}) => {
-  const router = useRouter();
-  const onClick = () => router.push(`/plans/${invitation.plan.id}`);
-
-  const [invitationHoverRef, hasInvitationHover] = useHover<HTMLButtonElement>();
+  const [invitationHoverRef, hasInvitationHover] = useHover<HTMLDivElement>();
   const [acceptHoverRef, hasAcceptHover] = useHover<HTMLButtonElement>();
   const [declineHoverRef, hasDeclineHover] = useHover<HTMLButtonElement>();
 
-  const onClickAccept = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
+  const router = useRouter();
+
+  const onClick = (event: MouseEvent<HTMLDivElement>) => {
+    // We must cast the target to Node as per official rec:
+    // https://github.com/Microsoft/TypeScript/issues/15394#issuecomment-297495746
+    if (acceptHoverRef.current?.contains(event.target as Node)) return;
+    if (declineHoverRef.current?.contains(event.target as Node)) return;
+
+    router.push(`/plans/${invitation.plan.id}`);
   };
 
-  const onClickDecline = (event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-  };
+  const onClickAccept = () => undefined;
+  const onClickDecline = () => undefined;
 
   const hasHover = hasInvitationHover && !(hasAcceptHover || hasDeclineHover);
 

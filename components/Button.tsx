@@ -1,4 +1,4 @@
-import {FC, PropsWithChildren, forwardRef} from 'react';
+import {PropsWithChildren, forwardRef} from 'react';
 import tw, {styled} from 'twin.macro';
 
 /*
