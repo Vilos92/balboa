@@ -33,7 +33,13 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
     focus:shadow
   `}
 
-  ${({disabled}) => !disabled && tw`hover:brightness-150`}
+  ${({disabled}) =>
+    !disabled &&
+    tw`
+      hover:brightness-150
+      active:brightness-150
+      focus:brightness-150
+  `}
 
   text-shadow: 0 2px 4px rgba(0,0,0,0.10);
 `;

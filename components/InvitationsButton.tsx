@@ -36,9 +36,6 @@ const StyledCard = tw(Card)`
   pb-0
 `;
 
-const StyledContentDiv = tw.div`
-`;
-
 const StyledChromelessButton = tw(ChromelessButton)`
   h-full
   flex
@@ -70,9 +67,11 @@ const StyledInvitationButton = styled(ChromelessButton)<StyledInvitationButtonPr
     border-gray-200
 
     text-gray-600
-    hover:text-gray-600
     active:text-gray-600
     focus:text-gray-600
+
+    active:bg-purple-100
+    focus:bg-purple-100
   `}
 
   ${({$hasHover}) => $hasHover && tw`bg-purple-100 text-gray-600`}
@@ -92,6 +91,10 @@ const StyledActionsDiv = tw.div`
   flex-row
   justify-center
   gap-1.5
+`;
+
+const StyledActionButton = tw(Button)`
+  w-full
 `;
 
 /*
@@ -137,11 +140,9 @@ const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopo
   return (
     <StyledCard ref={cardRef}>
       <StyledCardH1>Invitations</StyledCardH1>
-      <StyledContentDiv>
-        {invitations.map(invitation => (
-          <InvitationRow key={invitation.plan.id} invitation={invitation} />
-        ))}
-      </StyledContentDiv>
+      {invitations.map(invitation => (
+        <InvitationRow key={invitation.plan.id} invitation={invitation} />
+      ))}
     </StyledCard>
   );
 };
@@ -169,12 +170,20 @@ const InvitationRow: FC<InvitationRowProps> = ({invitation}) => {
       <VisualPlan plan={invitation.plan} />
 
       <StyledActionsDiv>
-        <Button ref={acceptHoverRef} backgroundColor={theme`colors.purple.400`} onClick={onClickAccept}>
+        <StyledActionButton
+          ref={acceptHoverRef}
+          backgroundColor={theme`colors.purple.400`}
+          onClick={onClickAccept}
+        >
           Accept
-        </Button>
-        <Button ref={declineHoverRef} backgroundColor={theme`colors.red.400`} onClick={onClickDecline}>
+        </StyledActionButton>
+        <StyledActionButton
+          ref={declineHoverRef}
+          backgroundColor={theme`colors.red.400`}
+          onClick={onClickDecline}
+        >
           Decline
-        </Button>
+        </StyledActionButton>
       </StyledActionsDiv>
     </StyledInvitationButton>
   );
