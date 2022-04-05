@@ -31,6 +31,7 @@ interface InvitationRowProps {
  */
 
 const StyledCard = tw(Card)`
+  w-80
   pl-0
   pr-0
   pb-0
@@ -47,10 +48,20 @@ const StyledCardH1 = tw.h1`
   w-full
   text-xl
   text-center
+  font-bold
   tracking-wide
   border-b
   border-gray-200
   pb-2
+`;
+
+const StyledEmptyDiv = tw.div`
+  flex
+  justify-center
+  items-center
+  p-5
+  text-lg
+  text-gray-400
 `;
 
 interface StyledInvitationDivProps {
@@ -138,12 +149,17 @@ export const InvitationsButton: FC = () => {
 const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopover}) => {
   const cardRef = useClickWindow<HTMLDivElement>(closePopover);
 
+  const content =
+    invitations.length > 0 ? (
+      invitations.map(invitation => <InvitationRow key={invitation.plan.id} invitation={invitation} />)
+    ) : (
+      <StyledEmptyDiv>Waiting for invites...</StyledEmptyDiv>
+    );
+
   return (
     <StyledCard ref={cardRef}>
       <StyledCardH1>Invitations</StyledCardH1>
-      {invitations.map(invitation => (
-        <InvitationRow key={invitation.plan.id} invitation={invitation} />
-      ))}
+      {content}
     </StyledCard>
   );
 };
