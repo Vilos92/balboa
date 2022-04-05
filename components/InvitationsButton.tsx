@@ -5,6 +5,7 @@ import tw, {styled, theme} from 'twin.macro';
 import {Invitation} from '../models/invitation';
 import {useNetGetInvitationsForUser} from '../pages/api/invitations';
 import {Handler} from '../types/common';
+import {SessionStatusesEnum, useAuthSession} from '../utils/auth';
 import {useClickWindow, useHover} from '../utils/hooks';
 import {Button} from './Button';
 import {Card} from './Card';
@@ -116,12 +117,16 @@ const StyledActionButton = tw(Button)`
  */
 
 export const InvitationsButton: FC = () => {
+  const {status} = useAuthSession();
+  const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
+
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
 
   const {data: invitations, error} = useNetGetInvitationsForUser();
   if (error) return null;
 
   const onClickButton = (event: MouseEvent<HTMLButtonElement>) => {
+    if (isLoadingSessionStatus) return;
     setTimeout(() => setIsPopoverVisible(!isPopoverVisible));
   };
   const closePopover = () => setIsPopoverVisible(false);

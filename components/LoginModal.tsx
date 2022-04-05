@@ -41,8 +41,13 @@ const StyledLoginButton = styled(Button)`
   ${tw`
     bg-purple-900
     w-full
-    gap-1
   `}
+`;
+
+const StyledButtonDiv = tw.div`
+  flex
+  flex-row
+  gap-1.5
 `;
 
 /*
@@ -65,7 +70,9 @@ export const LoginModal: FC<LoginModalProps> = ({providers, closeModal}) => {
 
 const GoogleLoginButton: FC<LoginButtonProps> = ({provider}) => (
   <StyledLoginButton onClick={() => signInWithProvider(provider.id)}>
-    <GoogleSvg width={24} height={24} viewBox='0 0 48 48' />
-    Sign in with {provider.name}
+    <StyledButtonDiv>
+      <GoogleSvg width={24} height={24} viewBox='0 0 48 48' />
+      Sign in with {provider.name}
+    </StyledButtonDiv>
   </StyledLoginButton>
 );

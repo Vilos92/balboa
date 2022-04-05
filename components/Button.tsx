@@ -26,12 +26,21 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
     justify-center
     text-white
     font-bold
-    py-2
+    py-3
     px-4
     rounded-full
     focus:outline-none
     focus:shadow
   `}
+
+  & > div {
+    ${tw`
+      flex
+      flex-row
+      justify-center
+      items-center
+    `}
+  }
 
   ${({disabled}) =>
     !disabled &&
@@ -41,9 +50,9 @@ const StyledColoredButton = styled.button.attrs<StyledColoredButtonProps>(({$bac
       focus:brightness-125
     `}
 
-  &:hover > * {
+  &:hover > div {
     ${tw`
-      brightness-90
+      brightness-75
     `}
   }
 
@@ -67,7 +76,7 @@ export const Button = forwardRef<HTMLButtonElement, PropsWithChildren<ButtonProp
       onClick={onClick}
       className={className}
     >
-      <span>{children}</span>
+      <div>{children}</div>
     </StyledColoredButton>
   );
 });
