@@ -12,6 +12,7 @@ const invitationStatusesEnumSchema = z.enum(['PENDING', 'ACCEPTED', 'DECLINED'])
 
 // Schema for an invitation retrieved from the database using prisma.
 const dbInvitationSchema = z.object({
+  id: z.string().cuid(),
   createdAt: z.date(),
   planId: z.string(),
   email: z.string().email(),
@@ -22,6 +23,7 @@ const dbInvitationSchema = z.object({
 
 // Schema for plans used by the server and client.
 const invitationSchema = z.object({
+  id: z.string().cuid(),
   createdAt: z.string(),
   plan: planSchema,
   email: z.string().email(),
@@ -111,6 +113,7 @@ function decodeDbInvitations(invitationRows: readonly unknown[]): readonly DbInv
  */
 function encodeInvitation(invitationRow: DbInvitation): Invitation {
   const invitationBlob = {
+    id: invitationRow.id,
     createdAt: invitationRow.createdAt.toISOString(),
     email: invitationRow.email,
     status: invitationRow.status,
