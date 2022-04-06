@@ -41,14 +41,15 @@ const invitationInclude = {
 export const invitationDraftSchema = z.object({
   planId: z.string().cuid(),
   senderUserId: z.string().cuid(),
-  email: z.string().email()
+  email: z.string().email(),
+  status: z.optional(invitationStatusesEnumSchema)
 });
 
 /*
  * Types.
  */
 
-const InvitationStatusesEnum = invitationStatusesEnumSchema.enum;
+export const InvitationStatusesEnum = invitationStatusesEnumSchema.enum;
 type DbInvitation = z.infer<typeof dbInvitationSchema>;
 export type Invitation = z.infer<typeof invitationSchema>;
 type InvitationDraft = z.infer<typeof invitationDraftSchema>;

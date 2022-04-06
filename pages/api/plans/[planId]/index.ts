@@ -38,7 +38,6 @@ async function getHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const planId = parseQueryString(planIdParam);
 
   const plan = await findPlan(planId);
-
   if (!plan) {
     res.status(404).json({error: 'Plan not found'});
     return;
