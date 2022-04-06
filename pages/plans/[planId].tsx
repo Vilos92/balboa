@@ -1,7 +1,7 @@
 import {GetServerSideProps} from 'next';
 import React, {FC, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
-import {SWRConfig} from 'swr';
+import {KeyedMutator, SWRConfig} from 'swr';
 import tw, {TwStyle, css, styled} from 'twin.macro';
 
 import {AccountFooter} from '../../components/AccountFooter';
@@ -68,6 +68,16 @@ interface PlanPageProps {
 
 interface AnimatedCardProps {
   defaultHeight: number;
+}
+
+interface PlanCardProps {
+  authSession: AuthSession;
+  plan: Plan;
+  mutatePlan: KeyedMutator<Plan>;
+}
+
+interface ShareCardProps {
+  plan: Plan;
 }
 
 interface PlanDetailsProps {
@@ -335,32 +345,12 @@ export default PlanPageContainer;
 const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
   const authSession = useAuthSession();
 
-  const {data: plan, error, mutate} = useNetGetPlan(planId);
+  const {data: plan, error, mutate: mutatePlan} = useNetGetPlan(planId);
 
-  const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
-
-  const updatePlan = async (planDraft: PatchPlan) => {
-    const plan = await patchPlan(planDraft);
-    mutate(plan);
-    setTabView(TabViewsEnum.DETAILS);
-  };
-
-  const mutateAttending = (isAttending: boolean) => {
-    if (!plan || !authSession.user) return;
-    const {users} = plan;
-
-    const newUsers = isAttending
-      ? [...users, authSession.user]
-      : users.filter(user => user.id !== authSession.user?.id);
-
-    mutate({...plan, users: newUsers});
-    return;
-  };
+  if (!plan || error) return <PageSkeleton />;
 
   const {status, isAuthenticated} = authSession;
   const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
-
-  if (!plan || error) return <PageSkeleton />;
 
   if (isLoadingSessionStatus)
     return (
@@ -370,61 +360,15 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
       </>
     );
 
-  const isHosting = computeIsHosting(authSession, plan);
-
   return (
     <>
       <SearchEngineOptimizer title={plan.title} description={plan.description} />
       <ColumnHorizontalCentered>
         <Header providers={providers} />
 
-        <StyledPlanCard>
-          <AnimatedHeight defaultHeight={defaultPlanCardHeight}>
-            {isHosting && (
-              <StyledTabsDiv>
-                <StyledTabButton
-                  $isActive={tabView === TabViewsEnum.DETAILS}
-                  onClick={() => setTabView(TabViewsEnum.DETAILS)}
-                >
-                  <Icon type={IconTypesEnum.PROFILE} size={20} />
-                  Details
-                </StyledTabButton>
-                <StyledTabSeparatorDiv />
-                <StyledTabButton
-                  $isActive={tabView === TabViewsEnum.EDIT}
-                  onClick={() => setTabView(TabViewsEnum.EDIT)}
-                >
-                  <Icon type={IconTypesEnum.PENCIL} size={20} />
-                  Edit
-                </StyledTabButton>
-              </StyledTabsDiv>
-            )}
+        <PlanCard authSession={authSession} plan={plan} mutatePlan={mutatePlan} />
 
-            <StyledContentDiv $isHosting={isHosting}>
-              {tabView === TabViewsEnum.DETAILS && (
-                <PlanDetails authSession={authSession} plan={plan} mutateAttending={mutateAttending} />
-              )}
-
-              {tabView === TabViewsEnum.EDIT && (
-                <>
-                  <StyledEditH2>Edit your event details</StyledEditH2>
-                  <EditPlanForm plan={plan} editPlan={updatePlan} />
-                </>
-              )}
-            </StyledContentDiv>
-          </AnimatedHeight>
-        </StyledPlanCard>
-
-        <StyledShareCard>
-          <AnimatedHeight defaultHeight={defaultShareCardHeight}>
-            <StyledShareCardTitleH2>Send invitation</StyledShareCardTitleH2>
-            <InvitationForm planId={plan.id} />
-            <StyledAttendedDiv>
-              <StyledShareCardTitleH2>Attended by</StyledShareCardTitleH2>
-              <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
-            </StyledAttendedDiv>
-          </AnimatedHeight>
-        </StyledShareCard>
+        <ShareCard plan={plan} />
 
         <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
       </ColumnHorizontalCentered>
@@ -459,6 +403,84 @@ const AnimatedHeight: FC<AnimatedCardProps> = ({children, defaultHeight}) => {
         </div>
       </animated.div>
     </>
+  );
+};
+
+const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutate}) => {
+  const isHosting = computeIsHosting(authSession, plan);
+
+  const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
+
+  const updatePlan = async (planDraft: PatchPlan) => {
+    const plan = await patchPlan(planDraft);
+    mutate(plan);
+    setTabView(TabViewsEnum.DETAILS);
+  };
+
+  const mutateAttending = (isAttending: boolean) => {
+    if (!plan || !authSession.user) return;
+    const {users} = plan;
+
+    const newUsers = isAttending
+      ? [...users, authSession.user]
+      : users.filter(user => user.id !== authSession.user?.id);
+
+    mutate({...plan, users: newUsers});
+    return;
+  };
+
+  return (
+    <StyledPlanCard>
+      <AnimatedHeight defaultHeight={defaultPlanCardHeight}>
+        {isHosting && (
+          <StyledTabsDiv>
+            <StyledTabButton
+              $isActive={tabView === TabViewsEnum.DETAILS}
+              onClick={() => setTabView(TabViewsEnum.DETAILS)}
+            >
+              <Icon type={IconTypesEnum.PROFILE} size={20} />
+              Details
+            </StyledTabButton>
+            <StyledTabSeparatorDiv />
+            <StyledTabButton
+              $isActive={tabView === TabViewsEnum.EDIT}
+              onClick={() => setTabView(TabViewsEnum.EDIT)}
+            >
+              <Icon type={IconTypesEnum.PENCIL} size={20} />
+              Edit
+            </StyledTabButton>
+          </StyledTabsDiv>
+        )}
+
+        <StyledContentDiv $isHosting={isHosting}>
+          {tabView === TabViewsEnum.DETAILS && (
+            <PlanDetails authSession={authSession} plan={plan} mutateAttending={mutateAttending} />
+          )}
+
+          {tabView === TabViewsEnum.EDIT && (
+            <>
+              <StyledEditH2>Edit your event details</StyledEditH2>
+              <EditPlanForm plan={plan} editPlan={updatePlan} />
+            </>
+          )}
+        </StyledContentDiv>
+      </AnimatedHeight>
+    </StyledPlanCard>
+  );
+};
+
+const ShareCard: FC<ShareCardProps> = ({plan}) => {
+  return (
+    <StyledShareCard>
+      <AnimatedHeight defaultHeight={defaultShareCardHeight}>
+        <StyledShareCardTitleH2>Send invitation</StyledShareCardTitleH2>
+        <InvitationForm planId={plan.id} />
+        <StyledAttendedDiv>
+          <StyledShareCardTitleH2>Attended by</StyledShareCardTitleH2>
+          <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
+        </StyledAttendedDiv>
+      </AnimatedHeight>
+    </StyledShareCard>
   );
 };
 
