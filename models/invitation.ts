@@ -58,9 +58,28 @@ type InvitationDraft = z.infer<typeof invitationDraftSchema>;
  */
 
 /**
- * Select invitations belonging to a specific email.
+ * Select an invitation belonging to a specific plan and email.
  */
-export async function findInvitationsForEmail(email: string) {
+export async function findInvitationForPlanAndEmail(planId: string, email: string) {
+  const prisma = makePrismaClient();
+
+  const data = await prisma.invitation.findUnique({
+    where: {
+      planId_email: {planId: planId, email}
+    },
+    include: invitationInclude
+  });
+
+  if (!data) return undefined;
+
+  const dbInvitation = decodeDbInvitation(data);
+  return encodeInvitation(dbInvitation);
+}
+
+/**
+ * Select pending invitations belonging to a specific email.
+ */
+export async function findPendingInvitationsForEmail(email: string) {
   const prisma = makePrismaClient();
 
   const data = await prisma.invitation.findMany({

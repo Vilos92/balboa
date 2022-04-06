@@ -1,6 +1,6 @@
 import {NextApiRequest} from 'next';
 
-import {Invitation, findInvitationsForEmail} from '../../../models/invitation';
+import {Invitation, findPendingInvitationsForEmail} from '../../../models/invitation';
 import {getSessionUser} from '../../../utils/auth';
 import {NetResponse, useNetGet} from '../../../utils/net';
 
@@ -42,7 +42,7 @@ async function getHandler(req: NextApiRequest, res: NetResponse<readonly Invitat
     return;
   }
 
-  const invitations = await findInvitationsForEmail(user.email);
+  const invitations = await findPendingInvitationsForEmail(user.email);
 
   res.status(200).json(invitations);
 }

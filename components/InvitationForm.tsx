@@ -1,3 +1,4 @@
+import axios from 'axios';
 import {ChangeEvent, FC, FormEvent, useState} from 'react';
 import tw from 'twin.macro';
 
@@ -72,7 +73,16 @@ export const InvitationForm: FC<InvitationFormProps> = ({planId}) => {
     }
 
     const invitationDraft = {email};
-    await postInvitation(planId, invitationDraft);
+    try {
+      await postInvitation(planId, invitationDraft);
+    } catch (error) {
+      if (!axios.isAxiosError(error)) {
+        console.error(error);
+      } else if (error.response?.status === 303) {
+        setEmailError(error.response.data.error);
+      }
+      return;
+    }
 
     setEmail('');
 

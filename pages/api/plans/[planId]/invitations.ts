@@ -4,6 +4,7 @@ import {z} from 'zod';
 import {
   Invitation,
   encodeDraftInvitation,
+  findInvitationForPlanAndEmail,
   invitationDraftSchema,
   saveInvitation
 } from '../../../../models/invitation';
@@ -57,6 +58,12 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
   }
 
   const {email} = req.body;
+
+  const existingInvitation = await findInvitationForPlanAndEmail(planId, email);
+  if (existingInvitation) {
+    res.status(303).send({error: `Invitation already exists for: ${email}`});
+    return;
+  }
 
   const invitationBlob = {planId, email, senderUserId: user.id};
   const invitationDraft = encodeDraftInvitation(invitationBlob);
