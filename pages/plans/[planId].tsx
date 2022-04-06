@@ -193,8 +193,9 @@ const StyledContentDiv = styled.div<StyledContentDivProps>`
 // Plan details.
 
 const StyledPlanDetailsDiv = tw.div`
-  border-t-2
-  pt-2
+  pb-2
+  border-b-2
+
   grid
   grid-cols-3
 `;
@@ -413,6 +414,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
         <StyledShareCard>
           <AnimatedHeight defaultHeight={defaultShareCardHeight}>
             <StyledAttendedDiv>
+              <ShareInputWithButton label='Share' shareUrl={''} shareText={plan.title} />
               <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
               <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
             </StyledAttendedDiv>
@@ -474,7 +476,6 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
 
   return (
     <>
-      <ShareInputWithButton label='Share' shareUrl={shareUrl} shareText={plan.title} />
       <StyledPlanDetailsDiv>
         <StyledPlanTitleH2>
           <VisualPlan plan={plan} />
@@ -508,6 +509,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
 
         <StyledDescriptionP>{plan.description}</StyledDescriptionP>
       </StyledPlanDetailsDiv>
+      <ShareInputWithButton label='Share' shareUrl={shareUrl} shareText={plan.title} />
     </>
   );
 };
