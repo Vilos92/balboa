@@ -1,6 +1,7 @@
 import {ChangeEvent, FC, FormEvent, useState} from 'react';
 import tw from 'twin.macro';
 
+import {postInvitation} from '../pages/api/plans/[planId]/invitations';
 import {Handler} from '../types/common';
 import {useTimeout} from '../utils/hooks';
 import {validateEmail} from '../utils/schema';
@@ -63,12 +64,15 @@ export const InvitationForm: FC<InvitationFormProps> = ({planId}) => {
   const [isInviteTooltipVisible, setIsInviteTooltipVisible] = useState(false);
   const [setInviteTooltipTimeout] = useTimeout();
 
-  const sendInvitation = () => {
+  const sendInvitation = async () => {
     const error = validateEmail(email);
     if (error) {
       setEmailError(error);
       return;
     }
+
+    const invitationDraft = {email};
+    await postInvitation(planId, invitationDraft);
 
     setEmail('');
 
@@ -91,14 +95,12 @@ export const InvitationForm: FC<InvitationFormProps> = ({planId}) => {
   );
 };
 
-const InvitationButton: FC<InvitationButtonProps> = ({isInviteTooltipVisible, sendInvitation}) => {
-  return (
-    <StyledInvitationTooltipDiv>
-      <Tooltip text='Invited!' isVisible={isInviteTooltipVisible}>
-        <StyledInvitationButton type='button' onClick={sendInvitation}>
-          Invite
-        </StyledInvitationButton>
-      </Tooltip>
-    </StyledInvitationTooltipDiv>
-  );
-};
+const InvitationButton: FC<InvitationButtonProps> = ({isInviteTooltipVisible, sendInvitation}) => (
+  <StyledInvitationTooltipDiv>
+    <Tooltip text='Invited!' isVisible={isInviteTooltipVisible} placement='left'>
+      <StyledInvitationButton type='button' onClick={sendInvitation}>
+        Invite
+      </StyledInvitationButton>
+    </Tooltip>
+  </StyledInvitationTooltipDiv>
+);

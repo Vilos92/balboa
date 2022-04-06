@@ -38,7 +38,7 @@ const invitationInclude = {
 };
 
 // Schema for invitation drafts. This is used to validate data which will be sent to the DB.
-const invitationDraftSchema = z.object({
+export const invitationDraftSchema = z.object({
   planId: z.string().cuid(),
   senderUserId: z.string().cuid(),
   email: z.string().email()
@@ -130,4 +130,12 @@ function encodeInvitation(invitationRow: DbInvitation): Invitation {
  */
 function encodeInvitations(invitationRows: readonly DbInvitation[]): readonly Invitation[] {
   return invitationRows.map(encodeInvitation);
+}
+
+/**
+ * Used by the server to encode an invitation from the client for the database.
+ * Does not handle any exceptions thrown by the parser.
+ */
+export function encodeDraftInvitation(invitationBlob: unknown): InvitationDraft {
+  return invitationDraftSchema.parse(invitationBlob);
 }

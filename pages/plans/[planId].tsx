@@ -469,20 +469,18 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
   );
 };
 
-const ShareCard: FC<ShareCardProps> = ({plan}) => {
-  return (
-    <StyledShareCard>
-      <AnimatedHeight defaultHeight={defaultShareCardHeight}>
-        <StyledShareCardTitleH2>Send invitation</StyledShareCardTitleH2>
-        <InvitationForm planId={plan.id} />
-        <StyledAttendedDiv>
-          <StyledShareCardTitleH2>Attended by</StyledShareCardTitleH2>
-          <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
-        </StyledAttendedDiv>
-      </AnimatedHeight>
-    </StyledShareCard>
-  );
-};
+const ShareCard: FC<ShareCardProps> = ({plan}) => (
+  <StyledShareCard>
+    <AnimatedHeight defaultHeight={defaultShareCardHeight}>
+      <StyledShareCardTitleH2>Send invitation</StyledShareCardTitleH2>
+      <InvitationForm planId={plan.id} />
+      <StyledAttendedDiv>
+        <StyledShareCardTitleH2>Attended by</StyledShareCardTitleH2>
+        <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
+      </StyledAttendedDiv>
+    </AnimatedHeight>
+  </StyledShareCard>
+);
 
 const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending}) => {
   const [shareUrl, setShareUrl] = useState('');

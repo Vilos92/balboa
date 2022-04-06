@@ -110,6 +110,7 @@ model Invitation {
   email         String
   status        InvitationStatus  @default(PENDING)
 
+  @@unique([planId, email])
   @@index([planId])
   @@index([email])
   @@map("invitation")
