@@ -280,6 +280,11 @@ mt-2
 const StyledShareCardTitleH2 = tw.h2`
   text-xl
   mb-1
+
+  flex
+  flex-row
+  items-center
+  gap-1
 `;
 
 const StyledAttendeesDiv = tw.div`
@@ -472,10 +477,17 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
 const ShareCard: FC<ShareCardProps> = ({plan}) => (
   <StyledShareCard>
     <AnimatedHeight defaultHeight={defaultShareCardHeight}>
-      <StyledShareCardTitleH2>Send invitation</StyledShareCardTitleH2>
+      <StyledShareCardTitleH2>
+        <Icon type={IconTypesEnum.MAIL_SEND} size={20} />
+        <span>Send invitation</span>
+      </StyledShareCardTitleH2>
       <InvitationForm planId={plan.id} />
+
       <StyledAttendedDiv>
-        <StyledShareCardTitleH2>Attended by</StyledShareCardTitleH2>
+        <StyledShareCardTitleH2>
+          <Icon type={IconTypesEnum.GROUP} size={20} />
+          <span>Attended by</span>
+        </StyledShareCardTitleH2>
         <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
       </StyledAttendedDiv>
     </AnimatedHeight>
