@@ -3,7 +3,6 @@ import {FC, Suspense, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
 
-import {useInitialEffect} from '../../utils/hooks';
 import {LocationVisualizerMock} from '../locationVisualizer/LocationVisualizer';
 
 /*
