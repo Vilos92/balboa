@@ -125,7 +125,7 @@ export const InvitationsMenuButton: FC = () => {
   const {data: invitations, error} = useNetGetInvitationsForUser();
   if (error) return null;
 
-  const onClickButton = (event: MouseEvent<HTMLButtonElement>) => {
+  const onClickButton = () => {
     if (isLoadingSessionStatus) return;
     setTimeout(() => setIsPopoverVisible(!isPopoverVisible));
   };

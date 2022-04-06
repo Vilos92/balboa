@@ -367,9 +367,8 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
       <ColumnHorizontalCentered>
         <Header providers={providers} />
 
-        <PlanCard authSession={authSession} plan={plan} mutatePlan={mutatePlan} />
-
-        <ShareCard plan={plan} />
+        <PlanCard key={`plan-${plan.id}`} authSession={authSession} plan={plan} mutatePlan={mutatePlan} />
+        <ShareCard key={`share-${plan.id}`} plan={plan} />
 
         <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
       </ColumnHorizontalCentered>
