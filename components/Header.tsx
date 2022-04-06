@@ -71,7 +71,7 @@ export const Header: FC<HeaderProps> = ({providers}) => {
         <StyledHeaderSpacerDiv />
         <Logo />
         <StyledActionsDiv>
-          {(isAuthenticated || isLoadingSessionStatus) && <InvitationsMenuButton />}
+          {!isLoadingSessionStatus && isAuthenticated && <InvitationsMenuButton />}
           <MenuButton providers={providers} />
         </StyledActionsDiv>
       </StyledHeaderDiv>
