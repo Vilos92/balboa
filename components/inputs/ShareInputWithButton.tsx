@@ -45,6 +45,7 @@ const StyledShareTooltipDiv = tw.div`
 const StyledShareButton = tw(Button)`
   bg-purple-400
   mt-2
+  h-10
 `;
 
 /*

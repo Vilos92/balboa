@@ -193,7 +193,8 @@ const StyledContentDiv = styled.div<StyledContentDivProps>`
 // Plan details.
 
 const StyledPlanDetailsDiv = tw.div`
-  pb-2
+  py-2
+  mb-2
   border-b-2
 
   grid
