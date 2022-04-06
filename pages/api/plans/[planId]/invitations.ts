@@ -23,7 +23,7 @@ const planInvitationsUrl = '/api/plans/:planId/invitations';
 // Schema used to validate plans posted to this endpoint.
 const postInvitationSchema = invitationDraftSchema.omit({planId: true, senderUserId: true});
 
-const maxAttendeesCount = 100;
+const maxAttendeeCount = 100;
 
 /*
  * Types.
@@ -78,9 +78,9 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
   const attendeeEmails = new Set(plan.users.map(user => user.email));
 
   // Enforce a limit to the max number of attendees in a plan.
-  if (attendeeEmails.size >= maxAttendeesCount) {
+  if (attendeeEmails.size >= maxAttendeeCount) {
     res.status(400).send({
-      error: `There are already ${attendeeEmails.size} / ${maxAttendeesCount} people attending this event.`
+      error: `There are already ${attendeeEmails.size} / ${maxAttendeeCount} people attending this event.`
     });
     return;
   }
@@ -98,7 +98,7 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
     return;
   }
 
-  // Someone already attending will receive an ACCEPTED invitation.
+  // If already attending this user will receive an ACCEPTED invitation (hidden in UI).
   const isAlreadyAttending = attendeeEmails.has(email);
   const invitationBlob = computeInvitationBlob(planId, email, user.id, isAlreadyAttending);
 
