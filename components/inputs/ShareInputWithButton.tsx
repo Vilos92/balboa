@@ -75,7 +75,7 @@ export const ShareInputWithButton: FC<ShareInputWithButtonProps> = ({
 
 const ShareButton: FC<ShareButtonProps> = ({shareUrl, shareText}) => {
   const [isShareTooltipVisible, setIsShareTooltipVisible] = useState(false);
-  const [setShareTimeout] = useTimeout();
+  const [setShareTooltipTimeout] = useTimeout();
 
   const title = `[Grueplan] ${shareText}`;
 
@@ -91,7 +91,7 @@ const ShareButton: FC<ShareButtonProps> = ({shareUrl, shareText}) => {
     } catch {
       await navigator.clipboard.writeText(shareUrl);
       setIsShareTooltipVisible(true);
-      setShareTimeout(() => setIsShareTooltipVisible(false), tooltipVisibilityDuration);
+      setShareTooltipTimeout(() => setIsShareTooltipVisible(false), tooltipVisibilityDuration);
     }
   };
 

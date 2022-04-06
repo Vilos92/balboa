@@ -12,6 +12,7 @@ import {ColumnHorizontalCentered} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {Icon, IconTypesEnum} from '../../components/Icon';
+import {InvitationForm} from '../../components/InvitationForm';
 import {PageSkeleton} from '../../components/PageSkeleton';
 import {SearchEngineOptimizer} from '../../components/SearchEngineOptimizer';
 import {VisualPlan} from '../../components/VisualPlan';
@@ -97,7 +98,6 @@ const StyledPlanCard = tw(Card)`
   mt-4
   mb-4
   w-screen
-  overflow-y-hidden
 
   flex
   flex-col
@@ -112,6 +112,7 @@ const StyledPlanCard = tw(Card)`
 const StyledShareCard = tw(Card)`
   mb-4
   w-screen
+  overflow-y-hidden
 
   flex
   flex-col
@@ -260,10 +261,12 @@ const StyledDescriptionP = tw.p`
 // Attendees information.
 
 const StyledAttendedDiv = tw.div`
-  border-b-2
+pt-2
+mt-2
+  border-t-2
 `;
 
-const StyledAttendedTitleH2 = tw.h2`
+const StyledShareCardTitleH2 = tw.h2`
   text-xl
   mb-1
 `;
@@ -414,9 +417,10 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
 
         <StyledShareCard>
           <AnimatedHeight defaultHeight={defaultShareCardHeight}>
+            <StyledShareCardTitleH2>Send invitation</StyledShareCardTitleH2>
+            <InvitationForm planId={plan.id} />
             <StyledAttendedDiv>
-              <ShareInputWithButton label='Share' shareUrl={''} shareText={plan.title} />
-              <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
+              <StyledShareCardTitleH2>Attended by</StyledShareCardTitleH2>
               <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
             </StyledAttendedDiv>
           </AnimatedHeight>
