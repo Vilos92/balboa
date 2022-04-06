@@ -1,17 +1,17 @@
 import {FC, useState} from 'react';
 import tw from 'twin.macro';
 
-import {useTimeout} from '../../utils/hooks';
-import {Button} from '../Button';
-import {Tooltip} from '../popover/Tooltip';
-import {StaticTypeInputProps} from './Input';
-import {TextInput} from './TextInput';
+import {useTimeout} from '../utils/hooks';
+import {Button} from './Button';
+import {StaticTypeInputProps} from './inputs/Input';
+import {TextInput} from './inputs/TextInput';
+import {Tooltip} from './popover/Tooltip';
 
 /*
  * Types.
  */
 
-interface ShareInputWithButtonProps extends StaticTypeInputProps {
+interface SharePlanButtonProps extends StaticTypeInputProps {
   shareUrl: string;
   shareText: string;
 }
@@ -52,7 +52,7 @@ const StyledShareButton = tw(Button)`
  * Components.
  */
 
-export const ShareInputWithButton: FC<ShareInputWithButtonProps> = ({
+export const SharePlanButton: FC<SharePlanButtonProps> = ({
   label,
   shareUrl,
   shareText,
