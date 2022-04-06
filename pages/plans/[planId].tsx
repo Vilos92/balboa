@@ -397,7 +397,7 @@ const AnimatedHeight: FC<AnimatedHeightProps> = ({children, defaultHeight}) => {
     if (resizeHeight) setCardHeight(resizeHeight);
   };
 
-  const ref = useDetectResize(onResizeCard);
+  const ref = useDetectResize<HTMLDivElement>(onResizeCard);
 
   return (
     <>
