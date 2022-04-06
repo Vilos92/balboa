@@ -66,7 +66,7 @@ interface PlanPageProps {
   planId: string;
 }
 
-interface AnimatedCardProps {
+interface AnimatedHeightProps {
   defaultHeight: number;
 }
 
@@ -108,6 +108,7 @@ const StyledPlanCard = tw(Card)`
   mt-4
   mb-4
   w-screen
+  overflow-y-hidden
 
   flex
   flex-col
@@ -380,12 +381,12 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
  * Components.
  */
 
-const AnimatedHeight: FC<AnimatedCardProps> = ({children, defaultHeight}) => {
+const AnimatedHeight: FC<AnimatedHeightProps> = ({children, defaultHeight}) => {
   const [cardHeight, setCardHeight] = useState(defaultHeight);
 
   const style = useSpring({
-    from: {height: `${defaultHeight}px`, opacity: 0},
-    to: {height: `${cardHeight}px`, opacity: 100}
+    from: {height: `${defaultHeight}px`},
+    to: {height: `${cardHeight}px`}
   });
 
   const onResizeCard = (_resizeWidth?: number, resizeHeight?: number) => {
@@ -406,14 +407,14 @@ const AnimatedHeight: FC<AnimatedCardProps> = ({children, defaultHeight}) => {
   );
 };
 
-const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutate}) => {
+const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
   const isHosting = computeIsHosting(authSession, plan);
 
   const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
 
   const updatePlan = async (planDraft: PatchPlan) => {
     const plan = await patchPlan(planDraft);
-    mutate(plan);
+    mutatePlan(plan);
     setTabView(TabViewsEnum.DETAILS);
   };
 
@@ -425,7 +426,7 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutate}) => {
       ? [...users, authSession.user]
       : users.filter(user => user.id !== authSession.user?.id);
 
-    mutate({...plan, users: newUsers});
+    mutatePlan({...plan, users: newUsers});
     return;
   };
 

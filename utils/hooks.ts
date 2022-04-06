@@ -125,7 +125,7 @@ export function useHover<T extends HTMLElement>(): [RefObject<T>, boolean] {
   return [ref, hasHover];
 }
 
-export function useDetectResize(onResize: OnResize) {
-  const {ref} = useResizeDetector({onResize});
+export function useDetectResize<T>(onResize: OnResize) {
+  const {ref} = useResizeDetector<T>({onResize});
   return ref;
 }
