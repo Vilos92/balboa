@@ -15,7 +15,7 @@ import {Icon, IconTypesEnum} from '../../components/Icon';
 import {InvitationForm} from '../../components/InvitationForm';
 import {PageSkeleton} from '../../components/PageSkeleton';
 import {SearchEngineOptimizer} from '../../components/SearchEngineOptimizer';
-import {ShareButton} from '../../components/SharePlanButton';
+import {SharePlanButton} from '../../components/SharePlanButton';
 import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {EditPlanForm} from '../../components/planForm/EditPlanForm';
@@ -514,7 +514,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
 
         <StyledDescriptionP>{plan.description}</StyledDescriptionP>
       </StyledPlanDetailsDiv>
-      <ShareButton label='Share' shareUrl={shareUrl} shareText={plan.title} />
+      <SharePlanButton label='Share' shareUrl={shareUrl} shareText={plan.title} />
     </>
   );
 };
