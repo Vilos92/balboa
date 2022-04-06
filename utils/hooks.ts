@@ -1,4 +1,5 @@
 import {RefObject, useCallback, useEffect, useRef, useState} from 'react';
+import {useResizeDetector} from 'react-resize-detector';
 
 import {Handler} from '../types/common';
 
@@ -8,6 +9,8 @@ import {Handler} from '../types/common';
 
 type SetTimeout = (handler: Handler, timeout?: number) => void;
 type ClearTimeout = Handler;
+
+type OnResize = (resizeWidth?: number, resizeHeight?: number) => void;
 
 /*
  * Hooks.
@@ -120,4 +123,9 @@ export function useHover<T extends HTMLElement>(): [RefObject<T>, boolean] {
   });
 
   return [ref, hasHover];
+}
+
+export function useDetectResize(onResize: OnResize) {
+  const {ref} = useResizeDetector({onResize});
+  return ref;
 }

@@ -1,6 +1,5 @@
 import {GetServerSideProps} from 'next';
 import React, {FC, useEffect, useState} from 'react';
-import {useResizeDetector} from 'react-resize-detector';
 import {animated, useSpring} from 'react-spring';
 import {SWRConfig} from 'swr';
 import tw, {TwStyle, css, styled} from 'twin.macro';
@@ -30,7 +29,7 @@ import {
   useAuthSession
 } from '../../utils/auth';
 import {openGoogleCalendarLink} from '../../utils/calendar';
-import {usePrevious} from '../../utils/hooks';
+import {useDetectResize, usePrevious} from '../../utils/hooks';
 import {parseQueryString} from '../../utils/net';
 import {formatLocationString} from '../../utils/window';
 import {PatchPlan, patchPlan} from '../api/plans';
@@ -41,7 +40,8 @@ import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
  * Constants.
  */
 
-const defaultCardHeight = 290;
+const defaultPlanCardHeight = 230;
+const defaultShareCardHeight = 60;
 
 /*
  * Types.
@@ -63,6 +63,10 @@ interface PlanPageContainerProps {
 interface PlanPageProps {
   providers: Providers;
   planId: string;
+}
+
+interface AnimatedCardProps {
+  defaultHeight: number;
 }
 
 interface PlanDetailsProps {
@@ -88,7 +92,8 @@ interface AttendeesProps {
  * Styles.
  */
 
-const StyledCard = tw(Card)`
+const StyledPlanCard = tw(Card)`
+  p-0
   mt-4
   mb-4
   w-screen
@@ -98,9 +103,20 @@ const StyledCard = tw(Card)`
   flex-col
   gap-4
 
-  p-0
-
   sm:mt-8
+  sm:mb-8
+  sm:w-7/12
+  sm:max-w-xl
+`;
+
+const StyledShareCard = tw(Card)`
+  mb-4
+  w-screen
+
+  flex
+  flex-col
+  gap-4
+
   sm:mb-8
   sm:w-7/12
   sm:max-w-xl
@@ -242,8 +258,7 @@ const StyledDescriptionP = tw.p`
 // Attendees information.
 
 const StyledAttendedDiv = tw.div`
-  border-t-2
-  pt-2
+  border-b-2
 `;
 
 const StyledAttendedTitleH2 = tw.h2`
@@ -318,18 +333,6 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
   const {data: plan, error, mutate} = useNetGetPlan(planId);
 
   const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
-  const [cardHeight, setCardHeight] = useState(defaultCardHeight);
-
-  const style = useSpring({
-    from: {height: `${defaultCardHeight}px`, opacity: 0},
-    to: {height: `${cardHeight}px`, opacity: 100}
-  });
-
-  const onResizeCard = (_resizeWidth?: number, resizeHeight?: number) => {
-    if (resizeHeight) setCardHeight(resizeHeight);
-  };
-
-  const {ref} = useResizeDetector({onResize: onResizeCard});
 
   const updatePlan = async (planDraft: PatchPlan) => {
     const plan = await patchPlan(planDraft);
@@ -370,45 +373,51 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
       <ColumnHorizontalCentered>
         <Header providers={providers} />
 
-        <StyledCard>
-          {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
-          <animated.div style={style}>
-            <div ref={ref}>
-              {isHosting && (
-                <StyledTabsDiv>
-                  <StyledTabButton
-                    $isActive={tabView === TabViewsEnum.DETAILS}
-                    onClick={() => setTabView(TabViewsEnum.DETAILS)}
-                  >
-                    <Icon type={IconTypesEnum.PROFILE} size={20} />
-                    Details
-                  </StyledTabButton>
-                  <StyledTabSeparatorDiv />
-                  <StyledTabButton
-                    $isActive={tabView === TabViewsEnum.EDIT}
-                    onClick={() => setTabView(TabViewsEnum.EDIT)}
-                  >
-                    <Icon type={IconTypesEnum.PENCIL} size={20} />
-                    Edit
-                  </StyledTabButton>
-                </StyledTabsDiv>
+        <StyledPlanCard>
+          <AnimatedCard defaultHeight={defaultPlanCardHeight}>
+            {isHosting && (
+              <StyledTabsDiv>
+                <StyledTabButton
+                  $isActive={tabView === TabViewsEnum.DETAILS}
+                  onClick={() => setTabView(TabViewsEnum.DETAILS)}
+                >
+                  <Icon type={IconTypesEnum.PROFILE} size={20} />
+                  Details
+                </StyledTabButton>
+                <StyledTabSeparatorDiv />
+                <StyledTabButton
+                  $isActive={tabView === TabViewsEnum.EDIT}
+                  onClick={() => setTabView(TabViewsEnum.EDIT)}
+                >
+                  <Icon type={IconTypesEnum.PENCIL} size={20} />
+                  Edit
+                </StyledTabButton>
+              </StyledTabsDiv>
+            )}
+
+            <StyledContentDiv $isHosting={isHosting}>
+              {tabView === TabViewsEnum.DETAILS && (
+                <PlanDetails authSession={authSession} plan={plan} mutateAttending={mutateAttending} />
               )}
 
-              <StyledContentDiv $isHosting={isHosting}>
-                {tabView === TabViewsEnum.DETAILS && (
-                  <PlanDetails authSession={authSession} plan={plan} mutateAttending={mutateAttending} />
-                )}
+              {tabView === TabViewsEnum.EDIT && (
+                <>
+                  <StyledEditH2>Edit your event details</StyledEditH2>
+                  <EditPlanForm plan={plan} editPlan={updatePlan} />
+                </>
+              )}
+            </StyledContentDiv>
+          </AnimatedCard>
+        </StyledPlanCard>
 
-                {tabView === TabViewsEnum.EDIT && (
-                  <>
-                    <StyledEditH2>Edit your event details</StyledEditH2>
-                    <EditPlanForm plan={plan} editPlan={updatePlan} />
-                  </>
-                )}
-              </StyledContentDiv>
-            </div>
-          </animated.div>
-        </StyledCard>
+        <StyledShareCard>
+          <AnimatedCard defaultHeight={defaultShareCardHeight}>
+            <StyledAttendedDiv>
+              <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
+              <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
+            </StyledAttendedDiv>
+          </AnimatedCard>
+        </StyledShareCard>
 
         <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
       </ColumnHorizontalCentered>
@@ -420,6 +429,32 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
  * Components.
  */
 
+const AnimatedCard: FC<AnimatedCardProps> = ({children, defaultHeight}) => {
+  const [cardHeight, setCardHeight] = useState(defaultHeight);
+
+  const style = useSpring({
+    from: {height: `${defaultHeight}px`, opacity: 0},
+    to: {height: `${cardHeight}px`, opacity: 100}
+  });
+
+  const onResizeCard = (_resizeWidth?: number, resizeHeight?: number) => {
+    if (resizeHeight) setCardHeight(resizeHeight);
+  };
+
+  const ref = useDetectResize(onResizeCard);
+
+  return (
+    <>
+      {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
+      <animated.div style={style}>
+        <div ref={ref}>
+          <>{children}</>
+        </div>
+      </animated.div>
+    </>
+  );
+};
+
 const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending}) => {
   const [shareUrl, setShareUrl] = useState('');
   // window.location is not available in SSR, so set this in an effect.
@@ -428,7 +463,7 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
   }, []);
 
   const {isAuthenticated} = authSession;
-  const {hostUser, users} = plan;
+  const {users} = plan;
 
   const isHosting = computeIsHosting(authSession, plan);
   const isAttendButtonDisabled = !isAuthenticated || isHosting;
@@ -473,10 +508,6 @@ const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending})
 
         <StyledDescriptionP>{plan.description}</StyledDescriptionP>
       </StyledPlanDetailsDiv>
-      <StyledAttendedDiv>
-        <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
-        <Attendees users={users} hostUserId={hostUser.id} />
-      </StyledAttendedDiv>
     </>
   );
 };

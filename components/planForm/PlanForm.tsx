@@ -80,13 +80,6 @@ const StyledDateTimeDiv = tw.div`
   mb-2
 `;
 
-interface StyledLocationDivProps {
-  $isExpanded: boolean;
-}
-export const StyledLocationDiv = styled.div<StyledLocationDivProps>`
-  ${({$isExpanded}) => !$isExpanded && tw`invisible`}
-`;
-
 const StyledTextAreaInput = styled(TextAreaInput)`
   min-height: 72px;
 `;
