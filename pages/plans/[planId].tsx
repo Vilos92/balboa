@@ -374,7 +374,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
         <Header providers={providers} />
 
         <StyledPlanCard>
-          <AnimatedCard defaultHeight={defaultPlanCardHeight}>
+          <AnimatedHeight defaultHeight={defaultPlanCardHeight}>
             {isHosting && (
               <StyledTabsDiv>
                 <StyledTabButton
@@ -407,16 +407,16 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
                 </>
               )}
             </StyledContentDiv>
-          </AnimatedCard>
+          </AnimatedHeight>
         </StyledPlanCard>
 
         <StyledShareCard>
-          <AnimatedCard defaultHeight={defaultShareCardHeight}>
+          <AnimatedHeight defaultHeight={defaultShareCardHeight}>
             <StyledAttendedDiv>
               <StyledAttendedTitleH2>Attended by</StyledAttendedTitleH2>
               <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
             </StyledAttendedDiv>
-          </AnimatedCard>
+          </AnimatedHeight>
         </StyledShareCard>
 
         <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
@@ -429,7 +429,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
  * Components.
  */
 
-const AnimatedCard: FC<AnimatedCardProps> = ({children, defaultHeight}) => {
+const AnimatedHeight: FC<AnimatedCardProps> = ({children, defaultHeight}) => {
   const [cardHeight, setCardHeight] = useState(defaultHeight);
 
   const style = useSpring({
