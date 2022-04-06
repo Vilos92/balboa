@@ -2,7 +2,7 @@ import React, {FC} from 'react';
 import tw from 'twin.macro';
 
 import {Providers, SessionStatusesEnum, useAuthSession} from '../utils/auth';
-import {InvitationsButton} from './InvitationsButton';
+import {InvitationsMenuButton} from './InvitationsMenuButton';
 import {Logo} from './Logo';
 import {MenuButton} from './MenuButton';
 
@@ -71,7 +71,7 @@ export const Header: FC<HeaderProps> = ({providers}) => {
         <StyledHeaderSpacerDiv />
         <Logo />
         <StyledActionsDiv>
-          {(isAuthenticated || isLoadingSessionStatus) && <InvitationsButton />}
+          {(isAuthenticated || isLoadingSessionStatus) && <InvitationsMenuButton />}
           <MenuButton providers={providers} />
         </StyledActionsDiv>
       </StyledHeaderDiv>

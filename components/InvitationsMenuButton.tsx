@@ -116,7 +116,7 @@ const StyledActionButton = tw(Button)`
  * Component.
  */
 
-export const InvitationsButton: FC = () => {
+export const InvitationsMenuButton: FC = () => {
   const {status} = useAuthSession();
   const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
 
