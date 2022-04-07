@@ -6,12 +6,13 @@ import {
   InvitationStatusesEnum,
   encodeDraftInvitation,
   findInvitationForPlanAndEmail,
+  findPendingInvitationsForPlan,
   invitationSaveDraftSchema,
   saveInvitation
 } from '../../../../models/invitation';
 import {findPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
-import {NetResponse, netPost, parseQueryString} from '../../../../utils/net';
+import {NetResponse, netPost, parseQueryString, useNetGet} from '../../../../utils/net';
 import {validateEmail} from '../../../../utils/schema';
 
 /*
@@ -30,7 +31,7 @@ export const maxAttendeeCount = 50;
  * Types.
  */
 
-type ApiResponse = NetResponse<Invitation>;
+type ApiResponse = NetResponse<Invitation | readonly Invitation[]>;
 
 export type PostInvitation = z.infer<typeof postInvitationSchema>;
 
@@ -41,6 +42,9 @@ export type PostInvitation = z.infer<typeof postInvitationSchema>;
 export default async function handler(req: NextApiRequest, res: ApiResponse) {
   try {
     switch (req.method) {
+      case 'GET':
+        await getHandler(req, res);
+        break;
       case 'POST':
         await postHandler(req, res);
         break;
@@ -50,6 +54,15 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
   } catch (error) {
     res.status(500).json({error});
   }
+}
+
+async function getHandler(req: NextApiRequest, res: NetResponse<readonly Invitation[]>) {
+  const {planId: planIdParam} = req.query;
+  const planId = parseQueryString(planIdParam);
+
+  const invitations = await findPendingInvitationsForPlan(planId);
+
+  res.status(200).json(invitations);
 }
 
 async function postHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
@@ -117,6 +130,16 @@ export function postInvitation(planId: string, invitationBlob: PostInvitation) {
   const planInvitationsUrl = computePlanInvitationsUrl(planId);
 
   return netPost<Invitation, PostInvitation>(planInvitationsUrl, invitationBlob);
+}
+
+/*
+ * Hooks.
+ */
+
+export function useNetGetInvitationsForPlan(planId: string) {
+  const planInvitationsUrl = computePlanInvitationsUrl(planId);
+
+  return useNetGet<readonly Invitation[]>(planInvitationsUrl);
 }
 
 /*

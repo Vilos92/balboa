@@ -1,4 +1,3 @@
-import {useMediaQuery} from '@react-hook/media-query';
 import {useRouter} from 'next/router';
 import React, {FC, MouseEvent, useState} from 'react';
 import tw, {styled, theme} from 'twin.macro';

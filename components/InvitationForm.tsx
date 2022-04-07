@@ -2,6 +2,7 @@ import axios from 'axios';
 import {ChangeEvent, FC, FormEvent, useState} from 'react';
 import tw from 'twin.macro';
 
+import {Invitation} from '../models/invitation';
 import {postInvitation} from '../pages/api/plans/[planId]/invitations';
 import {Handler} from '../types/common';
 import {useTimeout} from '../utils/hooks';
@@ -16,6 +17,7 @@ import {Tooltip} from './popover/Tooltip';
 
 interface InvitationFormProps {
   planId: string;
+  mutateInvitations: (invitation: Invitation) => void;
 }
 
 interface InvitationButtonProps {
@@ -54,7 +56,7 @@ const StyledInvitationButton = tw(Button)`
  * Components.
  */
 
-export const InvitationForm: FC<InvitationFormProps> = ({planId}) => {
+export const InvitationForm: FC<InvitationFormProps> = ({planId, mutateInvitations}) => {
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
   const onChangeEmail = (event: ChangeEvent<HTMLInputElement>) => {
@@ -74,7 +76,8 @@ export const InvitationForm: FC<InvitationFormProps> = ({planId}) => {
 
     const invitationDraft = {email};
     try {
-      await postInvitation(planId, invitationDraft);
+      const invitation = await postInvitation(planId, invitationDraft);
+      mutateInvitations(invitation);
     } catch (error) {
       if (!axios.isAxiosError(error)) {
         console.error(error);

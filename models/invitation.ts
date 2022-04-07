@@ -125,6 +125,24 @@ export async function findPendingInvitationsForEmail(email: string) {
   return encodeInvitations(dbInvitations);
 }
 
+/**
+ * Select pending invitations belonging to a specific plan.
+ */
+export async function findPendingInvitationsForPlan(planId: string) {
+  const prisma = makePrismaClient();
+
+  const data = await prisma.invitation.findMany({
+    where: {
+      planId,
+      status: InvitationStatusesEnum.PENDING
+    },
+    include: invitationInclude
+  });
+
+  const dbInvitations = decodeDbInvitations(data);
+  return encodeInvitations(dbInvitations);
+}
+
 export async function saveInvitation(invitationDraft: InvitationSaveDraft) {
   const prisma = makePrismaClient();
 

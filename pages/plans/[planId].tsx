@@ -20,6 +20,7 @@ import {VisualPlan} from '../../components/VisualPlan';
 import {VisualUser} from '../../components/VisualUser';
 import {EditPlanForm} from '../../components/planForm/EditPlanForm';
 import {HoverTooltip} from '../../components/popover/HoverTooltip';
+import {Invitation} from '../../models/invitation';
 import {Plan, findPlan} from '../../models/plan';
 import {User} from '../../models/user';
 import {
@@ -36,7 +37,7 @@ import {formatLocationString} from '../../utils/window';
 import {PatchPlan, patchPlan} from '../api/plans';
 import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
-import {maxAttendeeCount} from '../api/plans/[planId]/invitations';
+import {maxAttendeeCount, useNetGetInvitationsForPlan} from '../api/plans/[planId]/invitations';
 
 /*
  * Constants.
@@ -99,6 +100,9 @@ interface AttendButtonProps {
 interface AttendeesProps {
   users: readonly User[];
   hostUserId: string;
+}
+interface PlanInvitationsProps {
+  invitations: readonly Invitation[];
 }
 
 /*
@@ -301,6 +305,17 @@ const StyledAttendeeWrapperDiv = tw.div`
   flex
   flex-row
   gap-1
+`;
+
+const StyledInvitationsDiv = tw.div`
+  border-t-2
+  pt-2
+  mt-2
+`;
+
+const StyledInvitationsUl = tw.ul`
+  list-disc
+  pl-5
 `;
 
 // Edit form
@@ -594,6 +609,9 @@ const ShareCard: FC<ShareCardProps> = ({authSession, plan}) => {
   const isAttending = isAuthenticated && plan.users.some(user => user.id === authSession.user.id);
   const isInvitationFormVisible = isAttending && plan.users.length < maxAttendeeCount;
 
+  const {data: invitations = [], mutate} = useNetGetInvitationsForPlan(plan.id);
+  const mutateInvitations = (invitation: Invitation) => mutate([...invitations, invitation]);
+
   return (
     <StyledShareCard>
       <AnimatedHeight defaultHeight={defaultShareCardHeight}>
@@ -603,16 +621,13 @@ const ShareCard: FC<ShareCardProps> = ({authSession, plan}) => {
               <Icon type={IconTypesEnum.MAIL_SEND} size={20} />
               <span>Send invitation</span>
             </StyledShareCardTitleH2>
-            <InvitationForm planId={plan.id} />
+            <InvitationForm planId={plan.id} mutateInvitations={mutateInvitations} />
           </StyledInvitationDiv>
         )}
 
         <StyledAttendedDiv>
-          <StyledShareCardTitleH2>
-            <Icon type={IconTypesEnum.GROUP} size={20} />
-            <span>Attended by</span>
-          </StyledShareCardTitleH2>
           <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
+          {invitations.length > 0 && <PlanInvitations invitations={invitations} />}
         </StyledAttendedDiv>
       </AnimatedHeight>
     </StyledShareCard>
@@ -620,15 +635,42 @@ const ShareCard: FC<ShareCardProps> = ({authSession, plan}) => {
 };
 
 const Attendees: FC<AttendeesProps> = ({users, hostUserId}) => (
-  <StyledAttendeesDiv>
-    {users.map(user => (
-      <StyledAttendeeWrapperDiv key={user.id}>
-        <VisualUser user={user} />
-        {user.id === hostUserId ? ' (host)' : ''}
-      </StyledAttendeeWrapperDiv>
-    ))}
-  </StyledAttendeesDiv>
+  <>
+    <StyledShareCardTitleH2>
+      <Icon type={IconTypesEnum.GROUP} size={20} />
+      <span>Attended by</span>
+    </StyledShareCardTitleH2>
+    <StyledAttendeesDiv>
+      {users.map(user => (
+        <StyledAttendeeWrapperDiv key={user.id}>
+          <VisualUser user={user} />
+          {user.id === hostUserId ? ' (host)' : ''}
+        </StyledAttendeeWrapperDiv>
+      ))}
+    </StyledAttendeesDiv>
+  </>
 );
+
+const PlanInvitations: FC<PlanInvitationsProps> = ({invitations}) => {
+  const sortedInvitations = [...invitations].sort(
+    (invitationA, invitationB) =>
+      new Date(invitationA.createdAt).getTime() - new Date(invitationB.createdAt).getTime()
+  );
+
+  return (
+    <StyledInvitationsDiv>
+      <StyledShareCardTitleH2>
+        <Icon type={IconTypesEnum.GROUP} size={20} />
+        <span>Invitations</span>
+      </StyledShareCardTitleH2>
+      <StyledInvitationsUl>
+        {sortedInvitations.map(invitation => (
+          <li key={invitation.id}>{invitation.email}</li>
+        ))}
+      </StyledInvitationsUl>
+    </StyledInvitationsDiv>
+  );
+};
 
 /*
  * Helpers.
