@@ -77,6 +77,7 @@ interface PlanCardProps {
 }
 
 interface ShareCardProps {
+  authSession: AuthSession;
   plan: Plan;
 }
 
@@ -269,14 +270,6 @@ const StyledDescriptionP = tw.p`
   mt-3
 `;
 
-// Attendees information.
-
-const StyledAttendedDiv = tw.div`
-pt-2
-mt-2
-  border-t-2
-`;
-
 const StyledShareCardTitleH2 = tw.h2`
   text-xl
   mb-1
@@ -285,6 +278,17 @@ const StyledShareCardTitleH2 = tw.h2`
   flex-row
   items-center
   gap-1
+`;
+
+const StyledInvitationDiv = tw.div`
+  border-b-2
+  pb-2
+  mb-2
+`;
+
+// Attendees information.
+
+const StyledAttendedDiv = tw.div`
 `;
 
 const StyledAttendeesDiv = tw.div`
@@ -373,7 +377,7 @@ const PlanPage: FC<PlanPageProps> = ({providers, planId}) => {
         <Header providers={providers} />
 
         <PlanCard key={`plan-${plan.id}`} authSession={authSession} plan={plan} mutatePlan={mutatePlan} />
-        <ShareCard key={`share-${plan.id}`} plan={plan} />
+        <ShareCard key={`share-${plan.id}`} authSession={authSession} plan={plan} />
 
         <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
       </ColumnHorizontalCentered>
@@ -473,26 +477,6 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
     </StyledPlanCard>
   );
 };
-
-const ShareCard: FC<ShareCardProps> = ({plan}) => (
-  <StyledShareCard>
-    <AnimatedHeight defaultHeight={defaultShareCardHeight}>
-      <StyledShareCardTitleH2>
-        <Icon type={IconTypesEnum.MAIL_SEND} size={20} />
-        <span>Send invitation</span>
-      </StyledShareCardTitleH2>
-      <InvitationForm planId={plan.id} />
-
-      <StyledAttendedDiv>
-        <StyledShareCardTitleH2>
-          <Icon type={IconTypesEnum.GROUP} size={20} />
-          <span>Attended by</span>
-        </StyledShareCardTitleH2>
-        <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
-      </StyledAttendedDiv>
-    </AnimatedHeight>
-  </StyledShareCard>
-);
 
 const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending}) => {
   const [shareUrl, setShareUrl] = useState('');
@@ -601,6 +585,35 @@ const AttendButton: FC<AttendButtonProps> = ({
     >
       {computeAttendButtonText(isHosting, isAttendingLocal)}
     </StyledAttendButton>
+  );
+};
+
+const ShareCard: FC<ShareCardProps> = ({authSession, plan}) => {
+  const {user} = authSession;
+  const isAttending = user && plan.users.some(attendee => attendee.id === user.id);
+
+  return (
+    <StyledShareCard>
+      <AnimatedHeight defaultHeight={defaultShareCardHeight}>
+        {isAttending && (
+          <StyledInvitationDiv>
+            <StyledShareCardTitleH2>
+              <Icon type={IconTypesEnum.MAIL_SEND} size={20} />
+              <span>Send invitation</span>
+            </StyledShareCardTitleH2>
+            <InvitationForm planId={plan.id} />
+          </StyledInvitationDiv>
+        )}
+
+        <StyledAttendedDiv>
+          <StyledShareCardTitleH2>
+            <Icon type={IconTypesEnum.GROUP} size={20} />
+            <span>Attended by</span>
+          </StyledShareCardTitleH2>
+          <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
+        </StyledAttendedDiv>
+      </AnimatedHeight>
+    </StyledShareCard>
   );
 };
 
