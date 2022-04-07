@@ -31,6 +31,11 @@ interface InvitationsModalProps {
   closeModal: Handler;
 }
 
+interface InvitationsContentProps {
+  invitations: readonly Invitation[];
+  closeMenu: Handler;
+}
+
 interface InvitationRowProps {
   invitation: Invitation;
   closeMenu: Handler;
@@ -170,7 +175,7 @@ export const InvitationsMenuButton: FC = () => {
 
   const {isScreenSmall, isScreenMobile} = useMediaBreakpoint();
 
-  const {data: invitations, error, mutate} = useNetGetInvitationsForUser();
+  const {data: invitations = [], error, mutate} = useNetGetInvitationsForUser();
   if (error) return null;
 
   const onClickButton = () => {
@@ -184,14 +189,14 @@ export const InvitationsMenuButton: FC = () => {
     mutate();
   };
 
-  const isSomeUnread = invitations && invitations.length > 0;
+  const isSomeUnread = invitations.length > 0;
 
   return (
     <>
       <Popover
         placement='bottom-end'
         isVisible={isScreenSmall && isMenuVisible}
-        popoverChildren={<InvitationsPopover invitations={invitations ?? []} closePopover={closeMenu} />}
+        popoverChildren={<InvitationsPopover invitations={invitations} closePopover={closeMenu} />}
       >
         <StyledChromelessButton onClick={onClickButton}>
           <Icon
@@ -231,10 +236,7 @@ const InvitationsModal: FC<InvitationsModalProps> = ({invitations, closeModal}) 
   );
 };
 
-const InvitationsContent: FC<{invitations: readonly Invitation[]; closeMenu: Handler}> = ({
-  invitations,
-  closeMenu
-}) => (
+const InvitationsContent: FC<InvitationsContentProps> = ({invitations, closeMenu}) => (
   <>
     {invitations.length > 0 ? (
       invitations.map(invitation => (
