@@ -39,6 +39,7 @@ const invitationInclude = {
 
 // Schema for invitation drafts. This is used to validate data which will be sent to the DB.
 export const invitationDraftSchema = z.object({
+  id: z.string().cuid().optional(),
   planId: z.string().cuid(),
   senderUserId: z.string().cuid(),
   email: z.string().email(),
@@ -57,6 +58,25 @@ type InvitationDraft = z.infer<typeof invitationDraftSchema>;
 /*
  * Database operations.
  */
+
+/**
+ * Select a single invitation by id.
+ */
+export async function findInvitation(invitationId: string) {
+  const prisma = makePrismaClient();
+
+  const data = await prisma.invitation.findUnique({
+    where: {
+      id: invitationId
+    },
+    include: invitationInclude
+  });
+
+  if (!data) return undefined;
+
+  const dbInvitation = decodeDbInvitation(data);
+  return encodeInvitation(dbInvitation);
+}
 
 /**
  * Select an invitation belonging to a specific plan and email.
@@ -99,6 +119,21 @@ export async function saveInvitation(invitationDraft: InvitationDraft) {
   const prisma = makePrismaClient();
 
   const data = await prisma.invitation.create({
+    data: invitationDraft,
+    include: invitationInclude
+  });
+
+  const dbInvitation = decodeDbInvitation(data);
+  return encodeInvitation(dbInvitation);
+}
+
+export async function updateInvitation(invitationDraft: InvitationDraft) {
+  const prisma = makePrismaClient();
+
+  const data = await prisma.invitation.update({
+    where: {
+      id: invitationDraft.id
+    },
     data: invitationDraft,
     include: invitationInclude
   });

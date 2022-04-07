@@ -146,15 +146,11 @@ export async function savePlan(planDraft: PlanDraft) {
 export async function updatePlan(planDraft: PlanDraft) {
   const prisma = makePrismaClient();
 
-  const draftBlob = {
-    ...planDraft
-  };
-
   const data = await prisma.plan.update({
     where: {
       id: planDraft.id
     },
-    data: draftBlob,
+    data: planDraft,
     include: planInclude
   });
 

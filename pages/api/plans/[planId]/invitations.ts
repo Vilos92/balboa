@@ -20,7 +20,7 @@ import {validateEmail} from '../../../../utils/schema';
 
 const planInvitationsUrl = '/api/plans/:planId/invitations';
 
-// Schema used to validate plans posted to this endpoint.
+// Schema used to validate invitations posted to this endpoint.
 const postInvitationSchema = invitationDraftSchema.omit({planId: true, senderUserId: true});
 
 // API enforced limit for number of attendees a plan can have.
