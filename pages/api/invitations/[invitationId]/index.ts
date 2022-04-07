@@ -9,6 +9,7 @@ import {
   invitationUpdateDraftSchema,
   updateInvitation
 } from '../../../../models/invitation';
+import {encodeDraftUserOnPlan, saveUserOnPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
 import {NetResponse, netPatch, parseQueryString} from '../../../../utils/net';
 
@@ -82,6 +83,20 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
   };
   const invitationDraft = encodeUpdateInvitation(invitationBlob);
   const updatedInvitation = await updateInvitation(invitationDraft);
+
+  // If the invitation was accepted the user needs to be an attendee.
+  if (status === InvitationStatusesEnum.ACCEPTED) {
+    const {plan} = invitation;
+
+    // Nothing to do if the user is already an attendee.
+    const attendeeIds = new Set(plan.users.map(user => user.id));
+    if (!attendeeIds.has(user.id)) {
+      const userOnPlanBlob = {userId: user.id, planId: plan.id};
+      const userOnPlanDraft = encodeDraftUserOnPlan(userOnPlanBlob);
+
+      await saveUserOnPlan(userOnPlanDraft);
+    }
+  }
 
   res.status(201).json(updatedInvitation);
 }
