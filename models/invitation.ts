@@ -8,7 +8,12 @@ import {userSchema} from './user';
  * Zod.
  */
 
-const invitationStatusesEnumSchema = z.enum(['PENDING', 'ACCEPTED', 'DECLINED']);
+export enum InvitationStatusesEnum {
+  PENDING = 'PENDING',
+  ACCEPTED = 'ACCEPTED',
+  DECLINED = 'DECLINED'
+}
+const invitationStatusesEnumSchema = z.nativeEnum(InvitationStatusesEnum);
 
 // Schema for an invitation retrieved from the database using prisma.
 const dbInvitationSchema = z.object({
@@ -55,7 +60,6 @@ export const invitationUpdateDraftSchema = z.object({
  * Types.
  */
 
-export const InvitationStatusesEnum = invitationStatusesEnumSchema.enum;
 type DbInvitation = z.infer<typeof dbInvitationSchema>;
 export type Invitation = z.infer<typeof invitationSchema>;
 type InvitationSaveDraft = z.infer<typeof invitationSaveDraftSchema>;

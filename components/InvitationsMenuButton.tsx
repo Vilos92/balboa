@@ -1,5 +1,5 @@
 import {useRouter} from 'next/router';
-import React, {FC, MouseEvent, useState} from 'react';
+import React, {FC, MouseEvent, useEffect, useState} from 'react';
 import tw, {styled, theme} from 'twin.macro';
 
 import {Invitation, InvitationStatusesEnum} from '../models/invitation';
@@ -27,6 +27,10 @@ interface InvitationsPopoverProps {
 interface InvitationRowProps {
   invitation: Invitation;
   closePopover: Handler;
+}
+
+interface InvitationResponseProps {
+  status: Exclude<InvitationStatusesEnum, InvitationStatusesEnum.PENDING>;
 }
 
 /*
@@ -113,8 +117,31 @@ const StyledActionButton = tw(Button)`
   w-full
 `;
 
+interface StyledInvitationResponseDivProps {
+  $isAccepted?: boolean;
+}
+const StyledInvitationResponseDiv = styled.div<StyledInvitationResponseDivProps>`
+  ${tw`
+    flex
+    justify-center
+    items-center
+
+    font-bold
+    pt-2
+  `}
+
+  & > div {
+    ${tw`
+      p-3
+      rounded-2xl
+    `}
+
+    ${({$isAccepted}) => ($isAccepted ? tw`bg-green-200` : tw`bg-red-200`)}
+  }
+`;
+
 /*
- * Component.
+ * Components.
  */
 
 export const InvitationsMenuButton: FC = () => {
@@ -123,14 +150,19 @@ export const InvitationsMenuButton: FC = () => {
 
   const [isPopoverVisible, setIsPopoverVisible] = useState(false);
 
-  const {data: invitations, error} = useNetGetInvitationsForUser();
+  const {data: invitations, error, mutate} = useNetGetInvitationsForUser();
   if (error) return null;
 
   const onClickButton = () => {
     if (isLoadingSessionStatus) return;
     setTimeout(() => setIsPopoverVisible(!isPopoverVisible));
   };
-  const closePopover = () => setIsPopoverVisible(false);
+  const closePopover = () => {
+    setIsPopoverVisible(false);
+
+    // Reload invitations to account for any changes in status.
+    mutate();
+  };
 
   const isSomeUnread = invitations && invitations.length > 0;
 
@@ -174,11 +206,11 @@ const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopo
 };
 
 const InvitationRow: FC<InvitationRowProps> = ({invitation, closePopover}) => {
+  const router = useRouter();
+
   const [invitationHoverRef, hasInvitationHover] = useHover<HTMLDivElement>();
   const [acceptHoverRef, hasAcceptHover] = useHover<HTMLButtonElement>();
   const [declineHoverRef, hasDeclineHover] = useHover<HTMLButtonElement>();
-
-  const router = useRouter();
 
   const onClick = async (event: MouseEvent<HTMLDivElement>) => {
     // We must cast the target to Node as per official rec:
@@ -193,31 +225,62 @@ const InvitationRow: FC<InvitationRowProps> = ({invitation, closePopover}) => {
   const updateInvitation = async (invitationDraft: PatchInvitation) =>
     await patchInvitation(invitation.id, invitationDraft);
 
-  const onClickAccept = () => updateInvitation({status: InvitationStatusesEnum.ACCEPTED});
-  const onClickDecline = () => updateInvitation({status: InvitationStatusesEnum.DECLINED});
+  const [localStatus, setLocalStatus] = useState<InvitationStatusesEnum>(invitation.status);
+  const onClickAccept = async (event: MouseEvent<HTMLButtonElement>) => {
+    await updateInvitation({status: InvitationStatusesEnum.ACCEPTED});
+    setTimeout(() => setLocalStatus(InvitationStatusesEnum.ACCEPTED));
+  };
+  const onClickDecline = async (event: MouseEvent<HTMLButtonElement>) => {
+    await updateInvitation({status: InvitationStatusesEnum.DECLINED});
+    setTimeout(() => setLocalStatus(InvitationStatusesEnum.DECLINED));
+  };
 
-  const hasHover = hasInvitationHover && !(hasAcceptHover || hasDeclineHover);
+  const isPending = localStatus === InvitationStatusesEnum.PENDING;
+  const hasHover = hasInvitationHover && (!isPending || !(hasAcceptHover || hasDeclineHover));
 
   return (
     <StyledInvitationDiv ref={invitationHoverRef} $hasHover={hasHover} onClick={onClick}>
       <VisualPlan plan={invitation.plan} />
 
-      <StyledActionsDiv>
-        <StyledActionButton
-          ref={acceptHoverRef}
-          backgroundColor={theme`colors.purple.400`}
-          onClick={onClickAccept}
-        >
-          Accept
-        </StyledActionButton>
-        <StyledActionButton
-          ref={declineHoverRef}
-          backgroundColor={theme`colors.red.400`}
-          onClick={onClickDecline}
-        >
-          Decline
-        </StyledActionButton>
-      </StyledActionsDiv>
+      {localStatus === InvitationStatusesEnum.PENDING ? (
+        <StyledActionsDiv>
+          <StyledActionButton
+            ref={acceptHoverRef}
+            backgroundColor={theme`colors.purple.400`}
+            onClick={onClickAccept}
+          >
+            Accept
+          </StyledActionButton>
+          <StyledActionButton
+            ref={declineHoverRef}
+            backgroundColor={theme`colors.red.400`}
+            onClick={onClickDecline}
+          >
+            Decline
+          </StyledActionButton>
+        </StyledActionsDiv>
+      ) : (
+        <InvitationResponse status={localStatus} />
+      )}
     </StyledInvitationDiv>
   );
+};
+
+const InvitationResponse: FC<InvitationResponseProps> = ({status}) => {
+  switch (status) {
+    case InvitationStatusesEnum.ACCEPTED:
+      return (
+        <StyledInvitationResponseDiv $isAccepted>
+          <div>Accepted</div>
+        </StyledInvitationResponseDiv>
+      );
+    case InvitationStatusesEnum.DECLINED:
+      return (
+        <StyledInvitationResponseDiv>
+          <div>Declined</div>
+        </StyledInvitationResponseDiv>
+      );
+    default:
+      return null;
+  }
 };
