@@ -278,7 +278,7 @@ const InvitationRow: FC<InvitationRowProps> = ({invitation, closeMenu: closePopo
   };
 
   const isPending = localStatus === InvitationStatusesEnum.PENDING;
-  const hasHover = hasInvitationHover && (!isPending || !(hasAcceptHover || hasDeclineHover));
+  const hasHover = hasInvitationHover && !(isPending && (hasAcceptHover || hasDeclineHover));
 
   return (
     <StyledInvitationDiv ref={invitationHoverRef} $hasHover={hasHover} onClick={onClick}>
