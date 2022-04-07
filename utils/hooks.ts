@@ -1,3 +1,4 @@
+import {useMediaQuery} from '@react-hook/media-query';
 import {RefObject, useCallback, useEffect, useRef, useState} from 'react';
 import {useResizeDetector} from 'react-resize-detector';
 
@@ -128,4 +129,10 @@ export function useHover<T extends HTMLElement>(): [RefObject<T>, boolean] {
 export function useDetectResize<T>(onResize: OnResize) {
   const {ref} = useResizeDetector<T>({onResize});
   return ref;
+}
+
+export function useMediaBreakpoint() {
+  const isScreenSmall = useMediaQuery('only screen and (min-width: 640px)');
+  const isScreenMobile = !isScreenSmall;
+  return {isScreenSmall, isScreenMobile};
 }

@@ -1,4 +1,3 @@
-import {useMediaQuery} from '@react-hook/media-query';
 import {signOut} from 'next-auth/react';
 import {NextRouter, useRouter} from 'next/router';
 import React, {FC, MouseEvent, useCallback, useState} from 'react';
@@ -6,7 +5,7 @@ import tw, {styled} from 'twin.macro';
 
 import {AsyncHandler, Handler} from '../types/common';
 import {Providers, useAuthSession} from '../utils/auth';
-import {useClickWindow} from '../utils/hooks';
+import {useClickWindow, useMediaBreakpoint} from '../utils/hooks';
 import {ChromelessButton} from './ChromelessButton';
 import {LoginModal} from './LoginModal';
 import {Modal} from './Modal';
@@ -148,8 +147,7 @@ export const MenuButton: FC<MenuButtonProps> = ({providers}) => {
   const onClickOpenLoginModal = () => setTimeout(() => setIsLoginModalVisible(true));
   const closeLoginModal = useCallback(() => setIsLoginModalVisible(false), [setIsLoginModalVisible]);
 
-  const isScreenSmall = useMediaQuery('only screen and (min-width: 640px)');
-  const isScreenMobile = !isScreenSmall;
+  const {isScreenSmall, isScreenMobile} = useMediaBreakpoint();
 
   return (
     <StyledMenuWrapperDiv>

@@ -1,3 +1,4 @@
+import {useMediaQuery} from '@react-hook/media-query';
 import {useRouter} from 'next/router';
 import React, {FC, MouseEvent, useState} from 'react';
 import tw, {styled, theme} from 'twin.macro';
@@ -7,11 +8,12 @@ import {useNetGetInvitationsForUser} from '../pages/api/invitations';
 import {PatchInvitation, patchInvitation} from '../pages/api/invitations/[invitationId]';
 import {Handler} from '../types/common';
 import {SessionStatusesEnum, useAuthSession} from '../utils/auth';
-import {useClickWindow, useHover} from '../utils/hooks';
+import {useClickWindow, useHover, useMediaBreakpoint} from '../utils/hooks';
 import {Button} from './Button';
 import {Card} from './Card';
 import {ChromelessButton} from './ChromelessButton';
 import {Icon, IconTypesEnum} from './Icon';
+import {Modal} from './Modal';
 import {VisualPlan} from './VisualPlan';
 import {Popover} from './popover/Popover';
 
@@ -24,9 +26,14 @@ interface InvitationsPopoverProps {
   closePopover: Handler;
 }
 
+interface InvitationsModalProps {
+  invitations: readonly Invitation[];
+  closeModal: Handler;
+}
+
 interface InvitationRowProps {
   invitation: Invitation;
-  closePopover: Handler;
+  closeMenu: Handler;
 }
 
 interface InvitationResponseProps {
@@ -60,6 +67,17 @@ const StyledCardH1 = tw.h1`
   border-b
   border-gray-200
   pb-2
+`;
+
+const StyledModalH1 = tw.h1`
+  w-full
+  text-2xl
+  text-center
+  font-bold
+  tracking-wide
+  border-b-2
+  border-gray-200
+  pb-3
 `;
 
 const StyledEmptyDiv = tw.div`
@@ -148,17 +166,19 @@ export const InvitationsMenuButton: FC = () => {
   const {status} = useAuthSession();
   const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
 
-  const [isPopoverVisible, setIsPopoverVisible] = useState(false);
+  const [isMenuVisible, setIsMenuVisible] = useState(false);
+
+  const {isScreenSmall, isScreenMobile} = useMediaBreakpoint();
 
   const {data: invitations, error, mutate} = useNetGetInvitationsForUser();
   if (error) return null;
 
   const onClickButton = () => {
     if (isLoadingSessionStatus) return;
-    setTimeout(() => setIsPopoverVisible(!isPopoverVisible));
+    setTimeout(() => setIsMenuVisible(!isMenuVisible));
   };
-  const closePopover = () => {
-    setIsPopoverVisible(false);
+  const closeMenu = () => {
+    setIsMenuVisible(false);
 
     // Reload invitations to account for any changes in status.
     mutate();
@@ -167,45 +187,66 @@ export const InvitationsMenuButton: FC = () => {
   const isSomeUnread = invitations && invitations.length > 0;
 
   return (
-    <Popover
-      placement='bottom-end'
-      isVisible={isPopoverVisible}
-      popoverChildren={<InvitationsPopover invitations={invitations ?? []} closePopover={closePopover} />}
-    >
-      <StyledChromelessButton onClick={onClickButton}>
-        <Icon
-          type={isSomeUnread ? IconTypesEnum.MAIL_UNREAD : IconTypesEnum.MAIL}
-          size={32}
-          fill={isSomeUnread ? theme`colors.purple.400` : theme`colors.white`}
-          hoverFill={isSomeUnread ? theme`colors.purple.400` : theme`colors.purple.200`}
-          isActive={isPopoverVisible}
-        />
-      </StyledChromelessButton>
-    </Popover>
+    <>
+      <Popover
+        placement='bottom-end'
+        isVisible={isScreenSmall && isMenuVisible}
+        popoverChildren={<InvitationsPopover invitations={invitations ?? []} closePopover={closeMenu} />}
+      >
+        <StyledChromelessButton onClick={onClickButton}>
+          <Icon
+            type={isSomeUnread ? IconTypesEnum.MAIL_UNREAD : IconTypesEnum.MAIL}
+            size={32}
+            fill={isSomeUnread ? theme`colors.purple.400` : theme`colors.white`}
+            hoverFill={isSomeUnread ? theme`colors.purple.400` : theme`colors.purple.200`}
+            isActive={isMenuVisible}
+          />
+        </StyledChromelessButton>
+      </Popover>
+
+      {isScreenMobile && isMenuVisible && (
+        <InvitationsModal invitations={invitations} closeModal={closeMenu} />
+      )}
+    </>
   );
 };
 
 const InvitationsPopover: FC<InvitationsPopoverProps> = ({invitations, closePopover}) => {
   const cardRef = useClickWindow<HTMLDivElement>(closePopover);
 
-  const content =
-    invitations.length > 0 ? (
-      invitations.map(invitation => (
-        <InvitationRow key={invitation.plan.id} invitation={invitation} closePopover={closePopover} />
-      ))
-    ) : (
-      <StyledEmptyDiv>Waiting for invites...</StyledEmptyDiv>
-    );
-
   return (
     <StyledCard ref={cardRef}>
       <StyledCardH1>Invitations</StyledCardH1>
-      {content}
+      <InvitationsContent invitations={invitations} closeMenu={closePopover} />
     </StyledCard>
   );
 };
 
-const InvitationRow: FC<InvitationRowProps> = ({invitation, closePopover}) => {
+const InvitationsModal: FC<InvitationsModalProps> = ({invitations, closeModal}) => {
+  return (
+    <Modal closeModal={closeModal}>
+      <StyledModalH1>Invitations</StyledModalH1>
+      <InvitationsContent invitations={invitations} closeMenu={closeModal} />
+    </Modal>
+  );
+};
+
+const InvitationsContent: FC<{invitations: readonly Invitation[]; closeMenu: Handler}> = ({
+  invitations,
+  closeMenu
+}) => (
+  <>
+    {invitations.length > 0 ? (
+      invitations.map(invitation => (
+        <InvitationRow key={invitation.plan.id} invitation={invitation} closeMenu={closeMenu} />
+      ))
+    ) : (
+      <StyledEmptyDiv>Waiting for invites...</StyledEmptyDiv>
+    )}
+  </>
+);
+
+const InvitationRow: FC<InvitationRowProps> = ({invitation, closeMenu: closePopover}) => {
   const router = useRouter();
 
   const [invitationHoverRef, hasInvitationHover] = useHover<HTMLDivElement>();
