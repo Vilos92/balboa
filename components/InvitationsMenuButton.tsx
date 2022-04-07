@@ -1,5 +1,5 @@
 import {useRouter} from 'next/router';
-import React, {FC, MouseEvent, useEffect, useState} from 'react';
+import React, {FC, MouseEvent, useState} from 'react';
 import tw, {styled, theme} from 'twin.macro';
 
 import {Invitation, InvitationStatusesEnum} from '../models/invitation';

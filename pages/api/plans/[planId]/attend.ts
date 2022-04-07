@@ -1,6 +1,5 @@
 import {NextApiRequest} from 'next';
 
-import {InvitationsMenuButton} from '../../../../components/InvitationsMenuButton';
 import {
   InvitationStatusesEnum,
   encodeUpdateInvitation,
@@ -61,7 +60,7 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const plan = await saveUserOnPlan(userOnPlanDraft);
 
   // If any invitations exist for this plan and user, mark it as accepted.
-  const invitation = await findInvitationForPlanAndEmail(plan.id, user.email);
+  const invitation = await findInvitationForPlanAndEmail(planId, user.email);
   if (invitation && invitation.status !== InvitationStatusesEnum.ACCEPTED) {
     const invitationBlob = {
       id: invitation.id,
@@ -86,6 +85,17 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   }
 
   await deleteUserOnPlan(planId, user.id);
+
+  // If any invitations exist for this plan and user, mark it as declined.
+  const invitation = await findInvitationForPlanAndEmail(planId, user.email);
+  if (invitation && invitation.status !== InvitationStatusesEnum.DECLINED) {
+    const invitationBlob = {
+      id: invitation.id,
+      status: InvitationStatusesEnum.DECLINED
+    };
+    const invitationDraft = encodeUpdateInvitation(invitationBlob);
+    await updateInvitation(invitationDraft);
+  }
 
   res.status(204).end();
 }
