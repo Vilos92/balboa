@@ -3,6 +3,7 @@ import {styled, theme} from 'twin.macro';
 
 import CalendarEventSvg from '../public/remixIcon/calendar-event-line.svg';
 import GroupSvg from '../public/remixIcon/group-line.svg';
+import InboxSvg from '../public/remixIcon/inbox-line.svg';
 import MailSvg from '../public/remixIcon/mail-line.svg';
 import MailSendSvg from '../public/remixIcon/mail-send-line.svg';
 import MailUnreadSvg from '../public/remixIcon/mail-unread-line.svg';
@@ -18,6 +19,7 @@ import RestartSvg from '../public/remixIcon/restart-line.svg';
 export enum IconTypesEnum {
   CALENDAR_EVENT = 'calendar_event',
   GROUP = 'group',
+  INBOX = 'inbox',
   MAIL = 'mail',
   MAIL_SEND = 'mail_send',
   MAIL_UNREAD = 'mail_unread',
@@ -87,6 +89,8 @@ const IconSvg: FC<IconSvgProps> = ({type, size}) => {
       return <CalendarEventSvg {...iconProps} />;
     case IconTypesEnum.GROUP:
       return <GroupSvg {...iconProps} />;
+    case IconTypesEnum.INBOX:
+      return <InboxSvg {...iconProps} />;
     case IconTypesEnum.MAIL:
       return <MailSvg {...iconProps} />;
     case IconTypesEnum.MAIL_SEND:

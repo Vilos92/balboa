@@ -660,8 +660,8 @@ const PlanInvitations: FC<PlanInvitationsProps> = ({invitations}) => {
   return (
     <StyledInvitationsDiv>
       <StyledShareCardTitleH2>
-        <Icon type={IconTypesEnum.GROUP} size={20} />
-        <span>Invitations</span>
+        <Icon type={IconTypesEnum.INBOX} size={20} />
+        <span>Pending invitations</span>
       </StyledShareCardTitleH2>
       <StyledInvitationsUl>
         {sortedInvitations.map(invitation => (
