@@ -39,7 +39,6 @@ const invitationInclude = {
 
 // Schema for new invitation drafts. This is used to validate data which will be sent to the DB.
 export const invitationSaveDraftSchema = z.object({
-  id: z.string().cuid().optional(),
   planId: z.string().cuid(),
   senderUserId: z.string().cuid(),
   email: z.string().email(),
