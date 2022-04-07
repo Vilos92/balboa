@@ -23,7 +23,8 @@ const planInvitationsUrl = '/api/plans/:planId/invitations';
 // Schema used to validate plans posted to this endpoint.
 const postInvitationSchema = invitationDraftSchema.omit({planId: true, senderUserId: true});
 
-const maxAttendeeCount = 100;
+// API enforced limit for number of attendees a plan can have.
+export const maxAttendeeCount = 50;
 
 /*
  * Types.

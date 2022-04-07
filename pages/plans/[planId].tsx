@@ -36,6 +36,7 @@ import {formatLocationString} from '../../utils/window';
 import {PatchPlan, patchPlan} from '../api/plans';
 import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
+import {maxAttendeeCount} from '../api/plans/[planId]/invitations';
 
 /*
  * Constants.
@@ -589,13 +590,14 @@ const AttendButton: FC<AttendButtonProps> = ({
 };
 
 const ShareCard: FC<ShareCardProps> = ({authSession, plan}) => {
-  const {user} = authSession;
-  const isAttending = user && plan.users.some(attendee => attendee.id === user.id);
+  const {isAuthenticated} = authSession;
+  const isAttending = isAuthenticated && plan.users.some(user => user.id === authSession.user.id);
+  const isInvitationFormVisible = isAttending && plan.users.length < maxAttendeeCount;
 
   return (
     <StyledShareCard>
       <AnimatedHeight defaultHeight={defaultShareCardHeight}>
-        {isAttending && (
+        {isInvitationFormVisible && (
           <StyledInvitationDiv>
             <StyledShareCardTitleH2>
               <Icon type={IconTypesEnum.MAIL_SEND} size={20} />
