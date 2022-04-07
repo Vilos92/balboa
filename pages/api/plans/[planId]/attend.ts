@@ -1,5 +1,12 @@
 import {NextApiRequest} from 'next';
 
+import {InvitationsMenuButton} from '../../../../components/InvitationsMenuButton';
+import {
+  InvitationStatusesEnum,
+  encodeUpdateInvitation,
+  findInvitationForPlanAndEmail,
+  updateInvitation
+} from '../../../../models/invitation';
 import {Plan, deleteUserOnPlan, encodeDraftUserOnPlan, saveUserOnPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
 import {NetResponse, netDelete, netPost, parseQueryString} from '../../../../utils/net';
@@ -52,6 +59,17 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const userOnPlanDraft = encodeDraftUserOnPlan(userOnPlanBlob);
 
   const plan = await saveUserOnPlan(userOnPlanDraft);
+
+  // If any invitations exist for this plan and user, mark it as accepted.
+  const invitation = await findInvitationForPlanAndEmail(plan.id, user.email);
+  if (invitation && invitation.status !== InvitationStatusesEnum.ACCEPTED) {
+    const invitationBlob = {
+      id: invitation.id,
+      status: InvitationStatusesEnum.ACCEPTED
+    };
+    const invitationDraft = encodeUpdateInvitation(invitationBlob);
+    await updateInvitation(invitationDraft);
+  }
 
   res.status(200).json(plan);
 }
