@@ -6,7 +6,7 @@ import {
   InvitationStatusesEnum,
   encodeDraftInvitation,
   findInvitationForPlanAndEmail,
-  invitationDraftSchema,
+  invitationSaveDraftSchema,
   saveInvitation
 } from '../../../../models/invitation';
 import {findPlan} from '../../../../models/plan';
@@ -21,7 +21,7 @@ import {validateEmail} from '../../../../utils/schema';
 const planInvitationsUrl = '/api/plans/:planId/invitations';
 
 // Schema used to validate invitations posted to this endpoint.
-const postInvitationSchema = invitationDraftSchema.omit({planId: true, senderUserId: true});
+const postInvitationSchema = invitationSaveDraftSchema.omit({planId: true, senderUserId: true});
 
 // API enforced limit for number of attendees a plan can have.
 export const maxAttendeeCount = 50;

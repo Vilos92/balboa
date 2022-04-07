@@ -37,13 +37,19 @@ const invitationInclude = {
   plan: {include: planInclude}
 };
 
-// Schema for invitation drafts. This is used to validate data which will be sent to the DB.
-export const invitationDraftSchema = z.object({
+// Schema for new invitation drafts. This is used to validate data which will be sent to the DB.
+export const invitationSaveDraftSchema = z.object({
   id: z.string().cuid().optional(),
   planId: z.string().cuid(),
   senderUserId: z.string().cuid(),
   email: z.string().email(),
   status: z.optional(invitationStatusesEnumSchema)
+});
+
+// Schema for updating an invitation's status.
+export const invitationUpdateDraftSchema = z.object({
+  id: z.string().cuid(),
+  status: invitationStatusesEnumSchema
 });
 
 /*
@@ -53,7 +59,8 @@ export const invitationDraftSchema = z.object({
 export const InvitationStatusesEnum = invitationStatusesEnumSchema.enum;
 type DbInvitation = z.infer<typeof dbInvitationSchema>;
 export type Invitation = z.infer<typeof invitationSchema>;
-type InvitationDraft = z.infer<typeof invitationDraftSchema>;
+type InvitationSaveDraft = z.infer<typeof invitationSaveDraftSchema>;
+type InvitationUpdateDraft = z.infer<typeof invitationUpdateDraftSchema>;
 
 /*
  * Database operations.
@@ -115,7 +122,7 @@ export async function findPendingInvitationsForEmail(email: string) {
   return encodeInvitations(dbInvitations);
 }
 
-export async function saveInvitation(invitationDraft: InvitationDraft) {
+export async function saveInvitation(invitationDraft: InvitationSaveDraft) {
   const prisma = makePrismaClient();
 
   const data = await prisma.invitation.create({
@@ -127,7 +134,7 @@ export async function saveInvitation(invitationDraft: InvitationDraft) {
   return encodeInvitation(dbInvitation);
 }
 
-export async function updateInvitation(invitationDraft: InvitationDraft) {
+export async function updateInvitation(invitationDraft: InvitationUpdateDraft) {
   const prisma = makePrismaClient();
 
   const data = await prisma.invitation.update({
@@ -191,6 +198,14 @@ function encodeInvitations(invitationRows: readonly DbInvitation[]): readonly In
  * Used by the server to encode an invitation from the client for the database.
  * Does not handle any exceptions thrown by the parser.
  */
-export function encodeDraftInvitation(invitationBlob: unknown): InvitationDraft {
-  return invitationDraftSchema.parse(invitationBlob);
+export function encodeDraftInvitation(invitationBlob: unknown): InvitationSaveDraft {
+  return invitationSaveDraftSchema.parse(invitationBlob);
+}
+
+/**
+ * Used by the server to encode an invitation update from the client for the database.
+ * Does not handle any exceptions thrown by the parser.
+ */
+export function encodeUpdateInvitation(updateBlob: unknown): InvitationUpdateDraft {
+  return invitationUpdateDraftSchema.parse(updateBlob);
 }

@@ -3,9 +3,10 @@ import {z} from 'zod';
 
 import {
   Invitation,
-  encodeDraftInvitation,
+  InvitationStatusesEnum,
+  encodeUpdateInvitation,
   findInvitation,
-  invitationDraftSchema,
+  invitationUpdateDraftSchema,
   updateInvitation
 } from '../../../../models/invitation';
 import {getSessionUser} from '../../../../utils/auth';
@@ -18,7 +19,7 @@ import {NetResponse, netPatch, parseQueryString} from '../../../../utils/net';
 const invitationUrl = '/api/invitations/:invitationId';
 
 // Schema used to validate invitations posted to this endpoint.
-const patchInvitationSchema = invitationDraftSchema.omit({planId: true, email: true, senderUserId: true});
+const patchInvitationSchema = invitationUpdateDraftSchema.omit({id: true});
 
 /*
  * Types.
@@ -26,7 +27,7 @@ const patchInvitationSchema = invitationDraftSchema.omit({planId: true, email: t
 
 type ApiResponse = NetResponse<Invitation>;
 
-type PatchInvitation = z.infer<typeof patchInvitationSchema>;
+export type PatchInvitation = z.infer<typeof patchInvitationSchema>;
 
 /*
  * Request handler.
@@ -68,11 +69,18 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
     return;
   }
 
+  if (invitation.status !== InvitationStatusesEnum.PENDING) {
+    res.status(401).json({error: 'Invitation already has a response'});
+    return;
+  }
+
   const {status} = req.body;
 
-  const invitationBlob = {id: invitationId, status};
-  const invitationDraft = encodeDraftInvitation(invitationBlob);
-
+  const invitationBlob = {
+    id: invitationId,
+    status
+  };
+  const invitationDraft = encodeUpdateInvitation(invitationBlob);
   const updatedInvitation = await updateInvitation(invitationDraft);
 
   res.status(201).json(updatedInvitation);
@@ -82,7 +90,7 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
  * Client.
  */
 
-export function patchPlan(invitationId: string, invitationBlob: PatchInvitation) {
+export function patchInvitation(invitationId: string, invitationBlob: PatchInvitation) {
   const url = computeInvitationUrl(invitationId);
 
   return netPatch<Invitation, PatchInvitation>(url, invitationBlob);

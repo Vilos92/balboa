@@ -2,8 +2,9 @@ import {useRouter} from 'next/router';
 import React, {FC, MouseEvent, useState} from 'react';
 import tw, {styled, theme} from 'twin.macro';
 
-import {Invitation} from '../models/invitation';
+import {Invitation, InvitationStatusesEnum} from '../models/invitation';
 import {useNetGetInvitationsForUser} from '../pages/api/invitations';
+import {PatchInvitation, patchInvitation} from '../pages/api/invitations/[invitationId]';
 import {Handler} from '../types/common';
 import {SessionStatusesEnum, useAuthSession} from '../utils/auth';
 import {useClickWindow, useHover} from '../utils/hooks';
@@ -189,8 +190,11 @@ const InvitationRow: FC<InvitationRowProps> = ({invitation, closePopover}) => {
     closePopover();
   };
 
-  const onClickAccept = () => undefined;
-  const onClickDecline = () => undefined;
+  const updateInvitation = async (invitationDraft: PatchInvitation) =>
+    await patchInvitation(invitation.id, invitationDraft);
+
+  const onClickAccept = () => updateInvitation({status: InvitationStatusesEnum.ACCEPTED});
+  const onClickDecline = () => updateInvitation({status: InvitationStatusesEnum.DECLINED});
 
   const hasHover = hasInvitationHover && !(hasAcceptHover || hasDeclineHover);
 
