@@ -20,7 +20,7 @@ const planAttendUrl = '/api/plans/:planId/attend';
  * Types.
  */
 
-type ApiResponse = NetResponse<Plan>;
+type ApiResponse = NetResponse<Plan> | NetResponse;
 
 /*
  * Request handler.
@@ -73,9 +73,8 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   res.status(200).json(plan);
 }
 
-async function deleteHandler(req: NextApiRequest, res: NetResponse<Plan>) {
+async function deleteHandler(req: NextApiRequest, res: NetResponse) {
   const user = await getSessionUser(req);
-
   const {planId: planIdParam} = req.query;
   const planId = parseQueryString(planIdParam);
 
@@ -113,7 +112,7 @@ export function postPlanAttend(planId: string) {
 export function deletePlanAttend(planId: string) {
   const url = computePlanAttendUrl(planId);
 
-  return netDelete<undefined, Plan>(url);
+  return netDelete(url);
 }
 
 /*

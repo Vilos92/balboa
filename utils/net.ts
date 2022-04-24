@@ -7,7 +7,7 @@ import useSWR, {SWRResponse} from 'swr';
  * Types.
  */
 
-export type NetResponse<T> = NextApiResponse<
+export type NetResponse<T = void> = NextApiResponse<
   | T
   | {
       error: string | unknown;

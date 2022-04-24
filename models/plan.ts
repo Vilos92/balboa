@@ -1,4 +1,4 @@
-import {z} from 'zod';
+import {date, z} from 'zod';
 
 import {makePrismaClient} from '../utils/prisma';
 import {userSchema} from './user';
@@ -149,6 +149,27 @@ export async function updatePlan(planDraft: PlanDraft) {
   const data = await prisma.plan.update({
     where: {
       id: planDraft.id
+    },
+    data: planDraft,
+    include: planInclude
+  });
+
+  const dbPlan = decodeDbPlan(data);
+  return encodePlan(dbPlan);
+}
+
+/**
+ * Soft-deletes the plan by updating the isDeleted field.
+ */
+export async function deletePlan(planId: string) {
+  const prisma = makePrismaClient();
+
+  const now = new Date();
+  const planDraft = {deletedAt: now.toISOString()};
+
+  const data = await prisma.plan.update({
+    where: {
+      id: planId
     },
     data: planDraft,
     include: planInclude

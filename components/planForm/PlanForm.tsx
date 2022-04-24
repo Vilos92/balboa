@@ -4,6 +4,7 @@ import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
+import {deletePlan} from '../../pages/api/plans/[planId]';
 import {PlanFormState, usePlanFormState} from '../../state/planForm';
 import {PlanFormInputsEnum} from '../../state/planForm';
 import {Handler} from '../../types/common';
@@ -221,6 +222,11 @@ export const PlanForm: FC<PlanFormProps> = props => {
   // Cannot select dates before today.
   const minimumDate = computeInputDateFromObject(new Date());
 
+  const onDeletePlan = async () => {
+    if (!planId) return;
+    await deletePlan(planId);
+  };
+
   return (
     <form onSubmit={onSubmit}>
       <StyledColorTitleGroupDiv>
@@ -277,6 +283,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
           Go time!
         </Button>
 
+        {!isClearButtonVisible && <ClearFormButton onClick={onDeletePlan} />}
         {isClearButtonVisible && <ClearFormButton onClick={onClearForm} />}
       </StyledFooterDiv>
     </form>

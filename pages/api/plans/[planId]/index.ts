@@ -1,7 +1,8 @@
 import {NextApiRequest} from 'next';
 
-import {Plan, findPlan} from '../../../../models/plan';
-import {NetResponse, parseQueryString, useNetGet} from '../../../../utils/net';
+import {Plan, deletePlan as deletePlanFromDb, findPlan} from '../../../../models/plan';
+import {getSessionUser} from '../../../../utils/auth';
+import {NetResponse, netDelete, parseQueryString, useNetGet} from '../../../../utils/net';
 
 /*
  * Constants.
@@ -25,6 +26,9 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
       case 'GET':
         await getHandler(req, res);
         break;
+      case 'DELETE':
+        await deleteHandler(req, res);
+        break;
       default:
         res.status(404);
     }
@@ -44,6 +48,45 @@ async function getHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   }
 
   res.status(200).json(plan);
+}
+
+async function deleteHandler(req: NextApiRequest, res: NetResponse) {
+  const user = await getSessionUser(req);
+
+  const {planId: planIdParam} = req.query;
+  const planId = parseQueryString(planIdParam);
+
+  if (!user) {
+    res.status(401).send({error: 'Unauthorized'});
+    return;
+  }
+
+  const plan = await findPlan(planId);
+  if (!plan) {
+    res.status(404).json({error: 'Plan not found'});
+    return;
+  }
+
+  // Validate that this user is the host.
+  if (plan.hostUser.id !== user.id) {
+    res.status(401).json({error: 'Plan belongs to another user'});
+  }
+
+  const deletedPlan = await deletePlanFromDb(planId);
+  // todo: remove assign and console because we do not need to verify
+  console.log(deletedPlan);
+
+  res.status(204).end();
+}
+
+/*
+ * Client.
+ */
+
+export function deletePlan(planId: string) {
+  const url = computePlanUrl(planId);
+
+  return netDelete(url);
 }
 
 /*
