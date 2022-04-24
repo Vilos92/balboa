@@ -9,6 +9,7 @@ import useSWR, {SWRResponse} from 'swr';
 
 export type NetResponse<T = void> = NextApiResponse<
   | T
+  | void
   | {
       error: string | unknown;
     }

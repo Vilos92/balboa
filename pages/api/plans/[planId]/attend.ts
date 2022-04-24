@@ -20,7 +20,7 @@ const planAttendUrl = '/api/plans/:planId/attend';
  * Types.
  */
 
-type ApiResponse = NetResponse<Plan> | NetResponse;
+type ApiResponse = NetResponse<Plan>;
 
 /*
  * Request handler.
