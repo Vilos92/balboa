@@ -66,19 +66,14 @@ export const Header: FC<HeaderProps> = ({providers}) => {
   const {status, isAuthenticated} = useAuthSession();
   const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
 
-  const {theme, setTheme} = useThemeContext();
-  const toggleTheme = () => {
-    if (!setTheme) return;
-    if (theme === 'light') setTheme('dark');
-    if (theme === 'dark') setTheme('light');
-  };
+  const {toggleTheme} = useThemeContext();
 
   return (
     <>
       <StyledFalseHeaderDiv />
       <StyledHeaderDiv>
         <StyledHeaderSpacerDiv>
-          <ChromelessButton onClick={toggleTheme}>Toggle Theme: {theme}</ChromelessButton>
+          <ChromelessButton onClick={toggleTheme}>Toggle Theme</ChromelessButton>
         </StyledHeaderSpacerDiv>
         <Logo />
         <StyledActionsDiv>

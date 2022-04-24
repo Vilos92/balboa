@@ -1,44 +1,75 @@
 import React, {FC, useContext} from 'react';
 
-const getInitialTheme = () => {
+import {Handler} from '../types/common';
+
+/*
+ * Types.
+ */
+
+enum ThemesEnum {
+  LIGHT = 'light',
+  DARK = 'dark'
+}
+
+interface ThemeContextState {
+  theme: ThemesEnum;
+  setTheme?: (updatedTheme: ThemesEnum) => void;
+}
+
+/*
+ * Constants.
+ */
+
+const themeStorageKey = 'color-theme';
+
+/*
+ * Helpers.
+ */
+
+/**
+ * Determine the initial theme for our user by checking in order:
+ * - Their preference in local storage.
+ * - Their window preference.
+ * - If no matches, default to a light theme.
+ */
+const getInitialTheme = (): ThemesEnum => {
   if (typeof window !== 'undefined' && window.localStorage) {
-    const storedPrefs = window.localStorage.getItem('color-theme');
-    if (typeof storedPrefs === 'string') {
-      return storedPrefs;
+    const themePref = window.localStorage.getItem(themeStorageKey);
+    if (typeof themePref === 'string' && Object.values(ThemesEnum).includes(themePref as ThemesEnum)) {
+      return themePref as ThemesEnum;
     }
 
     const userMedia = window.matchMedia('(prefers-color-scheme: dark)');
     if (userMedia.matches) {
-      return 'dark';
+      return ThemesEnum.DARK;
     }
   }
 
-  return 'dark';
+  return ThemesEnum.LIGHT;
 };
 
-interface ThemeContextState {
-  theme: string;
-  setTheme?: (updatedTheme: string) => void;
-}
+/*
+ * Context.
+ */
 
 const ThemeContext = React.createContext<ThemeContextState>({theme: getInitialTheme()});
 
-const ThemeProvider: FC<{initialTheme?: string}> = ({initialTheme, children}) => {
-  const [theme, setTheme] = React.useState(getInitialTheme);
+/*
+ * Provider.
+ */
 
-  const rawSetTheme = (theme: string) => {
+export const ThemeProvider: FC = ({children}) => {
+  const [theme, setTheme] = React.useState<ThemesEnum>(getInitialTheme);
+
+  const rawSetTheme = (theme: ThemesEnum) => {
+    const oldTheme = theme === ThemesEnum.DARK ? ThemesEnum.LIGHT : ThemesEnum.DARK;
+
     const root = window.document.documentElement;
-    const isDark = theme === 'dark';
-
-    root.classList.remove(isDark ? 'light' : 'dark');
+    root.classList.remove(oldTheme);
     root.classList.add(theme);
 
-    localStorage.setItem('color-theme', theme);
+    localStorage.setItem(themeStorageKey, theme);
   };
-
-  if (initialTheme) {
-    rawSetTheme(initialTheme);
-  }
 
   React.useEffect(() => {
     rawSetTheme(theme);
@@ -47,6 +78,22 @@ const ThemeProvider: FC<{initialTheme?: string}> = ({initialTheme, children}) =>
   return <ThemeContext.Provider value={{theme, setTheme}}>{children}</ThemeContext.Provider>;
 };
 
-const useThemeContext = () => useContext(ThemeContext);
+/*
+ * Hook.
+ */
 
-export {ThemeContext, ThemeProvider, useThemeContext};
+export const useThemeContext = () => {
+  const {theme, setTheme} = useContext(ThemeContext);
+
+  const toggleTheme = () => {
+    if (!setTheme) return;
+
+    if (theme === ThemesEnum.LIGHT) {
+      setTheme(ThemesEnum.DARK);
+      return;
+    }
+    setTheme(ThemesEnum.LIGHT);
+  };
+
+  return {theme, toggleTheme};
+};
