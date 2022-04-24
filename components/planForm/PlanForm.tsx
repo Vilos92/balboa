@@ -405,7 +405,7 @@ const DeletePlanButton: FC<DeletePlanButtonProps> = ({deletePlan}) => {
       {isModalVisible && (
         <Modal closeModal={closeModal}>
           <StyledDeleteModalCard>
-            <StyledDeleteModalH1>Delete this plan?</StyledDeleteModalH1>
+            <StyledDeleteModalH1>Cancel this plan?</StyledDeleteModalH1>
             <StyledDeleteModalH2>You can always recreate it later.</StyledDeleteModalH2>
             <StyledConfirmButtonDiv>
               <StyledDeleteConfirmButton onClick={onClickConfirm}>Confirm</StyledDeleteConfirmButton>
