@@ -62,7 +62,10 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   }
 
   const isPlanExists = await planExists(planId);
-  if (!isPlanExists) throw new Error('Cannot attend a plan which does not exist');
+  if (!isPlanExists) {
+    res.status(404).json({error: 'Cannot attend a plan which does not exist'});
+    return;
+  }
 
   const userOnPlanBlob = {userId: user.id, planId};
   const userOnPlanDraft = encodeDraftUserOnPlan(userOnPlanBlob);
@@ -94,7 +97,10 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse) {
   }
 
   const isPlanExists = await planExists(planId);
-  if (!isPlanExists) throw new Error('Cannot unattend a plan which does not exist');
+  if (!isPlanExists) {
+    res.status(404).json({error: 'Cannot unattend a plan which does not exist'});
+    return;
+  }
 
   await deleteUserOnPlan(planId, user.id);
 

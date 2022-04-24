@@ -70,7 +70,10 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
   }
 
   const isPlanExists = await planExists(invitation.plan.id);
-  if (!isPlanExists) throw new Error('Cannot respond to invitation for a plan which does not exist');
+  if (!isPlanExists) {
+    res.status(404).json({error: 'Cannot respond to invitation for a plan which does not exist'});
+    return;
+  }
 
   if (invitation.email !== user.email) {
     res.status(401).json({error: 'Invitation belongs to another user'});

@@ -104,7 +104,10 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Plan>) {
   const planDraft = encodeDraftPlan(planBlob);
 
   const isPlanExists = await planExists(id);
-  if (!isPlanExists) throw new Error('Cannot update a plan which does not exist');
+  if (!isPlanExists) {
+    res.status(404).json({error: 'Cannot update a plan which does not exist'});
+    return;
+  }
 
   const plan = await updatePlan(planDraft);
 
