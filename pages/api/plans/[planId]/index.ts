@@ -72,9 +72,7 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse) {
     res.status(401).json({error: 'Plan belongs to another user'});
   }
 
-  const deletedPlan = await deletePlanFromDb(planId);
-  // todo: remove assign and console because we do not need to verify
-  console.log(deletedPlan);
+  await deletePlanFromDb(planId);
 
   res.status(204).end();
 }

@@ -35,7 +35,7 @@ import {useDetectResize, usePrevious} from '../../utils/hooks';
 import {parseQueryString} from '../../utils/net';
 import {formatLocationString} from '../../utils/window';
 import {PatchPlan, patchPlan} from '../api/plans';
-import {computePlanUrl, useNetGetPlan} from '../api/plans/[planId]';
+import {computePlanUrl, deletePlan as deletePlanFromApi, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
 import {maxAttendeeCount, useNetGetInvitationsForPlan} from '../api/plans/[planId]/invitations';
 
@@ -442,6 +442,10 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
     setTabView(TabViewsEnum.DETAILS);
   };
 
+  const deletePlan = async () => {
+    await deletePlanFromApi(plan.id);
+  };
+
   const mutateAttending = (isAttending: boolean) => {
     if (!plan || !authSession.user) return;
     const {users} = plan;
@@ -485,7 +489,7 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
           {tabView === TabViewsEnum.EDIT && (
             <>
               <StyledEditH2>Edit your event details</StyledEditH2>
-              <EditPlanForm plan={plan} editPlan={updatePlan} />
+              <EditPlanForm plan={plan} editPlan={updatePlan} deletePlan={deletePlan} />
             </>
           )}
         </StyledContentDiv>

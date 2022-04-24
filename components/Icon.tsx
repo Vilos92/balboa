@@ -2,6 +2,7 @@ import React, {FC, SVGProps} from 'react';
 import {styled, theme} from 'twin.macro';
 
 import CalendarEventSvg from '../public/remixIcon/calendar-event-line.svg';
+import DeleteBinSvg from '../public/remixIcon/delete-bin-line.svg';
 import GroupSvg from '../public/remixIcon/group-line.svg';
 import InboxSvg from '../public/remixIcon/inbox-line.svg';
 import MailSvg from '../public/remixIcon/mail-line.svg';
@@ -18,6 +19,7 @@ import RestartSvg from '../public/remixIcon/restart-line.svg';
 
 export enum IconTypesEnum {
   CALENDAR_EVENT = 'calendar_event',
+  DELETE_BIN = 'delete_bin',
   GROUP = 'group',
   INBOX = 'inbox',
   MAIL = 'mail',
@@ -87,6 +89,8 @@ const IconSvg: FC<IconSvgProps> = ({type, size}) => {
   switch (type) {
     case IconTypesEnum.CALENDAR_EVENT:
       return <CalendarEventSvg {...iconProps} />;
+    case IconTypesEnum.DELETE_BIN:
+      return <DeleteBinSvg {...iconProps} />;
     case IconTypesEnum.GROUP:
       return <GroupSvg {...iconProps} />;
     case IconTypesEnum.INBOX:

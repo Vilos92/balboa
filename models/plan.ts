@@ -20,6 +20,7 @@ export const dbPlanSchema = z.object({
   id: z.string().cuid(),
   hostUserId: z.string().cuid(),
   createdAt: z.date(),
+  deletedAt: z.date().optional(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
   start: z.date(),
@@ -40,6 +41,7 @@ const userOnPlanDraftSchema = z.object({
 export const planSchema = z.object({
   id: z.string().cuid(),
   createdAt: z.string(),
+  deletedAt: z.string().optional(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
   start: z.string(),
@@ -247,6 +249,7 @@ export function encodePlan(planRow: DbPlan): Plan {
   const planBlob = {
     id: planRow.id,
     createdAt: planRow.createdAt.toISOString(),
+    deletedAt: planRow.deletedAt?.toISOString(),
     title: planRow.title,
     color: planRow.color,
     start: planRow.start.toISOString(),

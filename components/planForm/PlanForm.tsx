@@ -7,7 +7,7 @@ import {PatchPlan, PostPlan} from '../../pages/api/plans';
 import {deletePlan} from '../../pages/api/plans/[planId]';
 import {PlanFormState, usePlanFormState} from '../../state/planForm';
 import {PlanFormInputsEnum} from '../../state/planForm';
-import {Handler} from '../../types/common';
+import {AsyncHandler, Handler} from '../../types/common';
 import {computeDateTime, computeInputDateFromObject} from '../../utils/dateTime';
 import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
@@ -41,6 +41,7 @@ interface PlanFormProps {
   validatePlan: (planDraft: PostPlan | PatchPlan) => readonly ZodIssue[] | undefined;
   submitPlan: (planDraft: PostPlan | PatchPlan) => Promise<void>;
   persistForm?: (planForm: Partial<PlanFormState>) => void;
+  deletePlan?: () => Promise<void>;
 }
 
 interface ColorInputWithTooltipProps {
@@ -51,6 +52,10 @@ interface ColorInputWithTooltipProps {
 
 interface ClearFormButtonProps {
   onClick: Handler;
+}
+
+interface DeletePlanButtonProps {
+  onClick: AsyncHandler;
 }
 
 /*
@@ -112,7 +117,8 @@ export const PlanForm: FC<PlanFormProps> = props => {
     description: planDescription,
     submitPlan,
     validatePlan,
-    persistForm
+    persistForm,
+    deletePlan
   } = props;
 
   const {
@@ -222,11 +228,6 @@ export const PlanForm: FC<PlanFormProps> = props => {
   // Cannot select dates before today.
   const minimumDate = computeInputDateFromObject(new Date());
 
-  const onDeletePlan = async () => {
-    if (!planId) return;
-    await deletePlan(planId);
-  };
-
   return (
     <form onSubmit={onSubmit}>
       <StyledColorTitleGroupDiv>
@@ -283,7 +284,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
           Go time!
         </Button>
 
-        {!isClearButtonVisible && <ClearFormButton onClick={onDeletePlan} />}
+        {!isClearButtonVisible && deletePlan && <DeletePlanButton onClick={deletePlan} />}
         {isClearButtonVisible && <ClearFormButton onClick={onClearForm} />}
       </StyledFooterDiv>
     </form>
@@ -335,6 +336,30 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
       <animated.div style={animatedStyle}>
         <ChromelessButton ref={hoverRef} onClick={onClick}>
           <Icon type={IconTypesEnum.RESTART} size={24} />
+        </ChromelessButton>
+      </animated.div>
+    </>
+  );
+};
+
+const DeletePlanButton: FC<DeletePlanButtonProps> = ({onClick}) => {
+  const [hoverRef, hasHover] = useHover<HTMLButtonElement>();
+
+  const yTranslatePct = hasHover ? -12.5 : 0;
+
+  const style = useSpring({
+    transform: `translate(0, ${yTranslatePct}%)`,
+    reverse: !hasHover
+  });
+
+  const animatedStyle = {...style};
+
+  return (
+    <>
+      {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
+      <animated.div style={animatedStyle}>
+        <ChromelessButton ref={hoverRef} onClick={onClick}>
+          <Icon type={IconTypesEnum.DELETE_BIN} size={24} />
         </ChromelessButton>
       </animated.div>
     </>
