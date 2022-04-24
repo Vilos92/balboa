@@ -103,6 +103,14 @@ export async function findPlan(planId: string) {
 }
 
 /**
+ * Check by id whether a plan exists and has not been soft-deleted.
+ */
+export async function planExists(planId: string): Promise<boolean> {
+  const plan = await findPlan(planId);
+  return Boolean(plan && !plan.deletedAt);
+}
+
+/**
  * Select plans which have not yet started or ended.
  */
 export async function findPlansForUser(userId: string) {
@@ -150,10 +158,6 @@ export async function savePlan(planDraft: PlanDraft) {
 export async function updatePlan(planDraft: PlanDraft) {
   const prisma = makePrismaClient();
 
-  if (!planDraft.id) throw new Error('planDraft for updatePlan is missing id');
-  const plan = await findPlan(planDraft.id);
-  if (!plan || plan.deletedAt) throw new Error('Cannot update a plan which does not exist');
-
   const data = await prisma.plan.update({
     where: {
       id: planDraft.id
@@ -192,9 +196,6 @@ export async function saveUserOnPlan(userOnPlanDraft: UserOnPlanDraft) {
 
   const {planId, userId} = userOnPlanDraft;
 
-  const plan = await findPlan(planId);
-  if (!plan || plan.deletedAt) throw new Error('Cannot attend a plan which does not exist');
-
   const users = {
     create: [{user: {connect: {id: userId}}}]
   };
@@ -217,9 +218,6 @@ export async function saveUserOnPlan(userOnPlanDraft: UserOnPlanDraft) {
 
 export async function deleteUserOnPlan(planId: string, userId: string) {
   const prisma = makePrismaClient();
-
-  const plan = await findPlan(planId);
-  if (!plan || plan.deletedAt) throw new Error('Cannot unattend a plan which does not exist');
 
   await prisma.userOnPlan.delete({
     where: {

@@ -6,7 +6,14 @@ import {
   findInvitationForPlanAndEmail,
   updateInvitation
 } from '../../../../models/invitation';
-import {Plan, deleteUserOnPlan, encodeDraftUserOnPlan, saveUserOnPlan} from '../../../../models/plan';
+import {
+  Plan,
+  deleteUserOnPlan,
+  encodeDraftUserOnPlan,
+  findPlan,
+  planExists,
+  saveUserOnPlan
+} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
 import {NetResponse, netDelete, netPost, parseQueryString} from '../../../../utils/net';
 
@@ -54,12 +61,15 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Plan>) {
     return;
   }
 
+  const isPlanExists = await planExists(planId);
+  if (!isPlanExists) throw new Error('Cannot attend a plan which does not exist');
+
   const userOnPlanBlob = {userId: user.id, planId};
   const userOnPlanDraft = encodeDraftUserOnPlan(userOnPlanBlob);
 
   const plan = await saveUserOnPlan(userOnPlanDraft);
 
-  // If any invitations exist for this plan and user, mark it as accepted.
+  // If an invitation exist for this plan and user, mark it as accepted.
   const invitation = await findInvitationForPlanAndEmail(planId, user.email);
   if (invitation && invitation.status !== InvitationStatusesEnum.ACCEPTED) {
     const invitationBlob = {
@@ -82,6 +92,9 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse) {
     res.status(401).send({error: 'Unauthorized'});
     return;
   }
+
+  const isPlanExists = await planExists(planId);
+  if (!isPlanExists) throw new Error('Cannot unattend a plan which does not exist');
 
   await deleteUserOnPlan(planId, user.id);
 

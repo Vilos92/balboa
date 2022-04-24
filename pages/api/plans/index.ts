@@ -4,8 +4,10 @@ import {ZodIssue, z} from 'zod';
 import {
   Plan,
   encodeDraftPlan,
+  findPlan,
   findPlansForUser,
   planDraftSchema,
+  planExists,
   savePlan,
   updatePlan
 } from '../../../models/plan';
@@ -100,6 +102,9 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Plan>) {
 
   const planBlob = {id, hostUserId: user.id, title, color, start, end, location, description};
   const planDraft = encodeDraftPlan(planBlob);
+
+  const isPlanExists = await planExists(id);
+  if (!isPlanExists) throw new Error('Cannot update a plan which does not exist');
 
   const plan = await updatePlan(planDraft);
 

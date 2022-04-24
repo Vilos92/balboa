@@ -10,7 +10,7 @@ import {
   invitationUpdateDraftSchema,
   updateInvitation
 } from '../../../../models/invitation';
-import {encodeDraftUserOnPlan, saveUserOnPlan} from '../../../../models/plan';
+import {encodeDraftUserOnPlan, findPlan, planExists, saveUserOnPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
 import {NetResponse, netDelete, netPatch, parseQueryString} from '../../../../utils/net';
 
@@ -68,6 +68,9 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
     res.status(404).json({error: 'Invitation not found'});
     return;
   }
+
+  const isPlanExists = await planExists(invitation.plan.id);
+  if (!isPlanExists) throw new Error('Cannot respond to invitation for a plan which does not exist');
 
   if (invitation.email !== user.email) {
     res.status(401).json({error: 'Invitation belongs to another user'});
