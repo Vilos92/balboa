@@ -96,7 +96,7 @@ export async function findPlan(planId: string) {
     include: planInclude
   });
 
-  if (!data) return undefined;
+  if (!data || data.deletedAt) return undefined;
 
   const dbPlan = decodeDbPlan(data);
   return encodePlan(dbPlan);
@@ -114,7 +114,8 @@ export async function findPlansForUser(userId: string) {
         some: {
           userId
         }
-      }
+      },
+      deletedAt: null
     },
     include: planInclude
   });
@@ -147,6 +148,11 @@ export async function savePlan(planDraft: PlanDraft) {
 
 export async function updatePlan(planDraft: PlanDraft) {
   const prisma = makePrismaClient();
+
+  // Check that this plan has not been deleted yet.
+  if (!planDraft.id) return undefined;
+  const plan = await findPlan(planDraft.id);
+  if (!plan || plan.deletedAt) return undefined;
 
   const data = await prisma.plan.update({
     where: {
@@ -186,6 +192,10 @@ export async function saveUserOnPlan(userOnPlanDraft: UserOnPlanDraft) {
 
   const {planId, userId} = userOnPlanDraft;
 
+  // Check that this plan has not been deleted yet.
+  const plan = await findPlan(planId);
+  if (!plan || plan.deletedAt) return undefined;
+
   const users = {
     create: [{user: {connect: {id: userId}}}]
   };
@@ -208,6 +218,10 @@ export async function saveUserOnPlan(userOnPlanDraft: UserOnPlanDraft) {
 
 export async function deleteUserOnPlan(planId: string, userId: string) {
   const prisma = makePrismaClient();
+
+  // Check that this plan has not been deleted yet.
+  const plan = await findPlan(planId);
+  if (!plan || plan.deletedAt) return undefined;
 
   await prisma.userOnPlan.delete({
     where: {
