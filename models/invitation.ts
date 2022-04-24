@@ -116,6 +116,10 @@ export async function findPendingInvitationsForEmail(email: string) {
   const data = await prisma.invitation.findMany({
     where: {
       email,
+      // Ensure that invitations for soft-deleted plans are omitted.
+      plan: {
+        deletedAt: null
+      },
       status: InvitationStatusesEnum.PENDING
     },
     include: invitationInclude
