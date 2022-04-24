@@ -134,7 +134,8 @@ export async function savePlan(planDraft: PlanDraft) {
 
   const draftBlob = {
     ...planDraft,
-    users
+    users,
+    deletedAt: null
   };
 
   const data = await prisma.plan.create({

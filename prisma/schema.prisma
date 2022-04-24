@@ -69,7 +69,7 @@ model VerificationToken {
 model Plan {
   id          String        @id @default(cuid())
   createdAt   DateTime      @map("created_at") @default(now())
-  deletedAt   DateTime?     @map("deleted_at")
+  deletedAt   DateTime?     @map("deleted_at") @db.Timestamp(0)
   hostUser    User          @relation(fields: [hostUserId], references: [id])
   hostUserId  String        @map("host_user_id")
   title       String
