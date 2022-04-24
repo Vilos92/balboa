@@ -11,6 +11,7 @@ import {
   updateInvitation
 } from '../../../../models/invitation';
 import {encodeDraftUserOnPlan, planExists, saveUserOnPlan} from '../../../../models/plan';
+import {User} from '../../../../models/user';
 import {getSessionUser} from '../../../../utils/auth';
 import {NetResponse, netDelete, netPatch, parseQueryString} from '../../../../utils/net';
 
@@ -133,9 +134,7 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse) {
     return;
   }
 
-  // Check that current user either sent the invitation or is the plan host.
-  const {senderUser, plan: hostUser} = invitation;
-  if (senderUser.id !== user.id && hostUser.id !== user.id) {
+  if (!computeCanUserDelete(user, invitation)) {
     res.status(401).json({error: 'Invitation and plan belong to different users'});
     return;
   }
@@ -171,4 +170,14 @@ export function deleteInvitation(invitationId: string) {
 
 export function computeInvitationUrl(invitationId: string) {
   return invitationUrl.replace(':invitationId', invitationId.toString());
+}
+
+/**
+ * Check that a user either sent the invitation or is the plan host.
+ */
+export function computeCanUserDelete(user: User, invitation: Invitation) {
+  const {senderUser, plan} = invitation;
+  const {hostUser} = plan;
+
+  return senderUser.id === user.id || hostUser.id === user.id;
 }

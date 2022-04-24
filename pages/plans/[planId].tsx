@@ -35,6 +35,10 @@ import {openGoogleCalendarLink} from '../../utils/calendar';
 import {useDetectResize, usePrevious} from '../../utils/hooks';
 import {parseQueryString} from '../../utils/net';
 import {formatLocationString} from '../../utils/window';
+import {
+  computeCanUserDelete,
+  deleteInvitation as deleteInvitationFromApi
+} from '../api/invitations/[invitationId]';
 import {PatchPlan, patchPlan} from '../api/plans';
 import {computePlanUrl, deletePlan as deletePlanFromApi, useNetGetPlan} from '../api/plans/[planId]';
 import {deletePlanAttend, postPlanAttend} from '../api/plans/[planId]/attend';
@@ -103,7 +107,14 @@ interface AttendeesProps {
   hostUserId: string;
 }
 interface PlanInvitationsProps {
+  authSession: AuthSession;
   invitations: readonly Invitation[];
+}
+
+interface InvitationRowProps {
+  authSession: AuthSession;
+  invitation: Invitation;
+  deleteInvitation: (invitationId: string) => void;
 }
 
 /*
@@ -317,6 +328,9 @@ const StyledInvitationsDiv = tw.div`
 const StyledInvitationsUl = tw.ul`
   list-disc
   pl-5
+`;
+
+const StyledInvitationsLi = tw.li`
 `;
 
 // Edit form
@@ -635,7 +649,7 @@ const ShareCard: FC<ShareCardProps> = ({authSession, plan}) => {
 
         <StyledAttendedDiv>
           <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
-          {invitations.length > 0 && <PlanInvitations invitations={invitations} />}
+          {invitations.length > 0 && <PlanInvitations authSession={authSession} invitations={invitations} />}
         </StyledAttendedDiv>
       </AnimatedHeight>
     </StyledShareCard>
@@ -659,11 +673,13 @@ const Attendees: FC<AttendeesProps> = ({users, hostUserId}) => (
   </>
 );
 
-const PlanInvitations: FC<PlanInvitationsProps> = ({invitations}) => {
+const PlanInvitations: FC<PlanInvitationsProps> = ({authSession, invitations}) => {
   const sortedInvitations = [...invitations].sort(
     (invitationA, invitationB) =>
       new Date(invitationA.createdAt).getTime() - new Date(invitationB.createdAt).getTime()
   );
+
+  const deleteInvitation = async (invitationId: string) => deleteInvitationFromApi(invitationId);
 
   return (
     <StyledInvitationsDiv>
@@ -673,10 +689,29 @@ const PlanInvitations: FC<PlanInvitationsProps> = ({invitations}) => {
       </StyledShareCardTitleH2>
       <StyledInvitationsUl>
         {sortedInvitations.map(invitation => (
-          <li key={invitation.id}>{invitation.email}</li>
+          <StyledInvitationsLi key={invitation.id}>
+            <InvitationRow
+              authSession={authSession}
+              invitation={invitation}
+              deleteInvitation={deleteInvitation}
+            />
+          </StyledInvitationsLi>
         ))}
       </StyledInvitationsUl>
     </StyledInvitationsDiv>
+  );
+};
+
+const InvitationRow: FC<InvitationRowProps> = ({authSession, invitation, deleteInvitation}) => {
+  const canUserDelete = authSession.isAuthenticated && computeCanUserDelete(authSession.user, invitation);
+
+  const onClick = () => deleteInvitation(invitation.id);
+
+  return (
+    <>
+      <span>{invitation.email}</span>
+      {canUserDelete && <button onClick={onClick}>Delete</button>}
+    </>
   );
 };
 
