@@ -3,7 +3,7 @@ import {useRouter} from 'next/router';
 import React, {FC, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import {KeyedMutator, SWRConfig} from 'swr';
-import tw, {TwStyle, css, styled} from 'twin.macro';
+import tw, {TwStyle, css, styled, theme} from 'twin.macro';
 
 import {AccountFooter} from '../../components/AccountFooter';
 import {Button} from '../../components/Button';
@@ -13,6 +13,7 @@ import {ColumnHorizontalCentered} from '../../components/Commons';
 import {DateTimeRange} from '../../components/DateTimeRange';
 import {Header} from '../../components/Header';
 import {Icon, IconTypesEnum} from '../../components/Icon';
+import {IconButton} from '../../components/IconButton';
 import {InvitationForm} from '../../components/InvitationForm';
 import {PageSkeleton} from '../../components/PageSkeleton';
 import {SearchEngineOptimizer} from '../../components/SearchEngineOptimizer';
@@ -91,7 +92,7 @@ interface ShareCardProps {
 interface PlanDetailsProps {
   authSession: AuthSession;
   plan: Plan;
-  mutateAttending: (isAttending: boolean) => void;
+  mutateAttending: (isAttending: boolean) => Promise<void>;
 }
 
 interface AttendButtonProps {
@@ -99,7 +100,7 @@ interface AttendButtonProps {
   isHosting: boolean;
   isAttending: boolean;
   isDisabled: boolean;
-  mutateAttending: (isAttending: boolean) => void;
+  mutateAttending: (isAttending: boolean) => Promise<void>;
 }
 
 interface AttendeesProps {
@@ -109,6 +110,7 @@ interface AttendeesProps {
 interface PlanInvitationsProps {
   authSession: AuthSession;
   invitations: readonly Invitation[];
+  mutateRemoveInvitation: (invitationId: string) => Promise<void>;
 }
 
 interface InvitationRowProps {
@@ -467,7 +469,7 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
     await router.push(`/`);
   };
 
-  const mutateAttending = (isAttending: boolean) => {
+  const mutateAttending = async (isAttending: boolean) => {
     if (!plan || !authSession.user) return;
     const {users} = plan;
 
@@ -475,8 +477,7 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
       ? [...users, authSession.user]
       : users.filter(user => user.id !== authSession.user?.id);
 
-    mutatePlan({...plan, users: newUsers});
-    return;
+    await mutatePlan({...plan, users: newUsers});
   };
 
   return (
@@ -595,11 +596,11 @@ const AttendButton: FC<AttendButtonProps> = ({
   const handlePlanAttend = isAttendingLocal
     ? async () => {
         await deletePlanAttend(planId);
-        mutateAttending(false);
+        await mutateAttending(false);
       }
     : async () => {
         await postPlanAttend(planId);
-        mutateAttending(true);
+        await mutateAttending(true);
       };
 
   const onClick = async () => {
@@ -635,7 +636,11 @@ const ShareCard: FC<ShareCardProps> = ({authSession, plan}) => {
   const isInvitationFormVisible = isAttending && plan.users.length < maxAttendeeCount;
 
   const {data: invitations = [], mutate} = useNetGetInvitationsForPlan(plan.id);
-  const mutateInvitations = (invitation: Invitation) => mutate([...invitations, invitation]);
+  const mutatePushInvitation = async (invitation: Invitation) => mutate([...invitations, invitation]);
+  const mutateRemoveInvitation = async (invitationId: string) => {
+    const updatedInvitations = invitations.filter(invitation => invitation.id !== invitationId);
+    mutate(updatedInvitations);
+  };
 
   return (
     <StyledShareCard>
@@ -646,13 +651,19 @@ const ShareCard: FC<ShareCardProps> = ({authSession, plan}) => {
               <Icon type={IconTypesEnum.MAIL_SEND} size={20} />
               <span>Send invitation</span>
             </StyledShareCardTitleH2>
-            <InvitationForm planId={plan.id} mutateInvitations={mutateInvitations} />
+            <InvitationForm planId={plan.id} mutateInvitations={mutatePushInvitation} />
           </StyledInvitationDiv>
         )}
 
         <StyledAttendedDiv>
           <Attendees users={plan.users} hostUserId={plan.hostUser.id} />
-          {invitations.length > 0 && <PlanInvitations authSession={authSession} invitations={invitations} />}
+          {invitations.length > 0 && (
+            <PlanInvitations
+              authSession={authSession}
+              invitations={invitations}
+              mutateRemoveInvitation={mutateRemoveInvitation}
+            />
+          )}
         </StyledAttendedDiv>
       </AnimatedHeight>
     </StyledShareCard>
@@ -676,13 +687,16 @@ const Attendees: FC<AttendeesProps> = ({users, hostUserId}) => (
   </>
 );
 
-const PlanInvitations: FC<PlanInvitationsProps> = ({authSession, invitations}) => {
+const PlanInvitations: FC<PlanInvitationsProps> = ({authSession, invitations, mutateRemoveInvitation}) => {
   const sortedInvitations = [...invitations].sort(
     (invitationA, invitationB) =>
       new Date(invitationA.createdAt).getTime() - new Date(invitationB.createdAt).getTime()
   );
 
-  const deleteInvitation = async (invitationId: string) => deleteInvitationFromApi(invitationId);
+  const deleteInvitation = async (invitationId: string) => {
+    await deleteInvitationFromApi(invitationId);
+    await mutateRemoveInvitation(invitationId);
+  };
 
   return (
     <StyledInvitationsDiv>
@@ -710,10 +724,24 @@ const InvitationRow: FC<InvitationRowProps> = ({authSession, invitation, deleteI
 
   const onClick = () => deleteInvitation(invitation.id);
 
+  // Move the the icon to the right on hover.
+  const computeTransform = (hasHover: boolean) => {
+    const xTranslatePct = hasHover ? 12.5 : 0;
+    return `translate(${xTranslatePct}%)`;
+  };
+
   return (
     <StyledInvitationRowDiv>
       <span>{invitation.email}</span>
-      {canUserDelete && <button onClick={onClick}>Delete</button>}
+      {canUserDelete && (
+        <IconButton
+          iconType={IconTypesEnum.DELETE_BACK}
+          size={24}
+          hoverFill={theme`colors.red.400`}
+          computeTransform={computeTransform}
+          onClick={onClick}
+        />
+      )}
     </StyledInvitationRowDiv>
   );
 };

@@ -1,5 +1,4 @@
 import {ChangeEvent, FC, FormEvent, MouseEvent, useEffect, useState} from 'react';
-import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
@@ -8,11 +7,11 @@ import {PlanFormState, usePlanFormState} from '../../state/planForm';
 import {PlanFormInputsEnum} from '../../state/planForm';
 import {AsyncHandler, Handler} from '../../types/common';
 import {computeDateTime, computeInputDateFromObject} from '../../utils/dateTime';
-import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
+import {useDebounce, useInitialEffect, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
 import {Card} from '../Card';
-import {ChromelessButton} from '../ChromelessButton';
-import {Icon, IconTypesEnum} from '../Icon';
+import {IconTypesEnum} from '../Icon';
+import {IconButton} from '../IconButton';
 import {Modal} from '../Modal';
 import {ColorInput} from '../inputs/ColorInput';
 import {DateInput} from '../inputs/DateInput';
@@ -348,41 +347,20 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorH
 };
 
 const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
-  const [hoverRef, hasHover] = useHover<HTMLButtonElement>();
-
-  const degrees = hasHover ? 180 : 0;
-
-  const style = useSpring({
-    transform: `rotate(${degrees}deg)`,
-    reverse: !hasHover
-  });
-
-  const animatedStyle = {...style, transformOrigin: '12px 12px'};
+  // Spin the icon on hover.
+  const computeTransform = (hasHover: boolean) => `rotate(${hasHover ? 180 : 0}deg)`;
 
   return (
-    <>
-      {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
-      <animated.div style={animatedStyle}>
-        <ChromelessButton ref={hoverRef} onClick={onClick}>
-          <Icon type={IconTypesEnum.RESTART} size={24} />
-        </ChromelessButton>
-      </animated.div>
-    </>
+    <IconButton
+      iconType={IconTypesEnum.RESTART}
+      size={24}
+      computeTransform={computeTransform}
+      onClick={onClick}
+    />
   );
 };
 
 const DeletePlanButton: FC<DeletePlanButtonProps> = ({deletePlan}) => {
-  const [hoverRef, hasHover] = useHover<HTMLButtonElement>();
-
-  const yTranslatePct = hasHover ? -12.5 : 0;
-
-  const style = useSpring({
-    transform: `translate(0, ${yTranslatePct}%)`,
-    reverse: !hasHover
-  });
-
-  const animatedStyle = {...style};
-
   const [isModalVisible, setIsModalVisible] = useState(false);
   const onClick = () => setTimeout(() => setIsModalVisible(true));
   const closeModal = () => setIsModalVisible(false);
@@ -393,14 +371,20 @@ const DeletePlanButton: FC<DeletePlanButtonProps> = ({deletePlan}) => {
     await deletePlan();
   };
 
+  // Lift the icon slightly on hover.
+  const computeTransform = (hasHover: boolean) => {
+    const yTranslatePct = hasHover ? -12.5 : 0;
+    return `translate(0, ${yTranslatePct}%)`;
+  };
+
   return (
     <>
-      {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
-      <animated.div style={animatedStyle}>
-        <ChromelessButton ref={hoverRef} onClick={onClick}>
-          <Icon type={IconTypesEnum.DELETE_BIN} size={24} />
-        </ChromelessButton>
-      </animated.div>
+      <IconButton
+        iconType={IconTypesEnum.DELETE_BIN}
+        size={24}
+        computeTransform={computeTransform}
+        onClick={onClick}
+      />
 
       {isModalVisible && (
         <Modal closeModal={closeModal}>
