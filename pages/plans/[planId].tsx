@@ -330,7 +330,10 @@ const StyledInvitationsUl = tw.ul`
   pl-5
 `;
 
-const StyledInvitationsLi = tw.li`
+const StyledInvitationRowDiv = tw.div`
+  flex
+  flex-row
+  justify-between
 `;
 
 // Edit form
@@ -689,13 +692,13 @@ const PlanInvitations: FC<PlanInvitationsProps> = ({authSession, invitations}) =
       </StyledShareCardTitleH2>
       <StyledInvitationsUl>
         {sortedInvitations.map(invitation => (
-          <StyledInvitationsLi key={invitation.id}>
+          <li key={invitation.id}>
             <InvitationRow
               authSession={authSession}
               invitation={invitation}
               deleteInvitation={deleteInvitation}
             />
-          </StyledInvitationsLi>
+          </li>
         ))}
       </StyledInvitationsUl>
     </StyledInvitationsDiv>
@@ -708,10 +711,10 @@ const InvitationRow: FC<InvitationRowProps> = ({authSession, invitation, deleteI
   const onClick = () => deleteInvitation(invitation.id);
 
   return (
-    <>
+    <StyledInvitationRowDiv>
       <span>{invitation.email}</span>
       {canUserDelete && <button onClick={onClick}>Delete</button>}
-    </>
+    </StyledInvitationRowDiv>
   );
 };
 

@@ -161,10 +161,6 @@ export function deleteInvitation(invitationId: string) {
 }
 
 /*
- * Hooks.
- */
-
-/*
  * Helpers.
  */
 
