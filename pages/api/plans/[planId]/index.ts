@@ -70,6 +70,7 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse) {
   // Validate that this user is the host.
   if (plan.hostUser.id !== user.id) {
     res.status(401).json({error: 'Plan belongs to another user'});
+    return;
   }
 
   await deletePlanFromDb(planId);

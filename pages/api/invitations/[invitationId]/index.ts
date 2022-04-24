@@ -4,6 +4,7 @@ import {z} from 'zod';
 import {
   Invitation,
   InvitationStatusesEnum,
+  deleteInvitation as deleteInvitationFromDb,
   encodeUpdateInvitation,
   findInvitation,
   invitationUpdateDraftSchema,
@@ -11,7 +12,7 @@ import {
 } from '../../../../models/invitation';
 import {encodeDraftUserOnPlan, saveUserOnPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
-import {NetResponse, netPatch, parseQueryString} from '../../../../utils/net';
+import {NetResponse, netDelete, netPatch, parseQueryString} from '../../../../utils/net';
 
 /*
  * Constants.
@@ -39,6 +40,9 @@ export default async function handler(req: NextApiRequest, res: ApiResponse) {
     switch (req.method) {
       case 'PATCH':
         await patchHandler(req, res);
+        break;
+      case 'DELETE':
+        await deleteHandler(req, res);
         break;
       default:
         res.status(404);
@@ -101,6 +105,34 @@ async function patchHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
   res.status(201).json(updatedInvitation);
 }
 
+async function deleteHandler(req: NextApiRequest, res: NetResponse) {
+  const user = await getSessionUser(req);
+  const {invitationId: invitationIdParam} = req.query;
+  const invitationId = parseQueryString(invitationIdParam);
+
+  if (!user) {
+    res.status(401).send({error: 'Unauthorized'});
+    return;
+  }
+
+  const invitation = await findInvitation(invitationId);
+  if (!invitation) {
+    res.status(404).json({error: 'Invitation not found'});
+    return;
+  }
+
+  // Check that current user either sent the invitation or is the plan host.
+  const {senderUser, plan: hostUser} = invitation;
+  if (senderUser.id !== user.id && hostUser.id !== user.id) {
+    res.status(401).json({error: 'Invitation and plan belong to different users'});
+    return;
+  }
+
+  await deleteInvitationFromDb(invitationId);
+
+  res.status(204).end();
+}
+
 /*
  * Client.
  */
@@ -109,6 +141,12 @@ export function patchInvitation(invitationId: string, invitationBlob: PatchInvit
   const url = computeInvitationUrl(invitationId);
 
   return netPatch<Invitation, PatchInvitation>(url, invitationBlob);
+}
+
+export function deleteInvitation(invitationId: string) {
+  const url = computeInvitationUrl(invitationId);
+
+  return netDelete(url);
 }
 
 /*

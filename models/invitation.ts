@@ -170,6 +170,19 @@ export async function updateInvitation(invitationDraft: InvitationUpdateDraft) {
   return encodeInvitation(dbInvitation);
 }
 
+/**
+ * Hard-deletes an invitation.
+ */
+export async function deleteInvitation(invitationId: string) {
+  const prisma = makePrismaClient();
+
+  await prisma.invitation.delete({
+    where: {
+      id: invitationId
+    }
+  });
+}
+
 /*
  * Runtime decoding/encoding.
  */
