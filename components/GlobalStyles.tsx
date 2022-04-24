@@ -8,11 +8,22 @@ const CustomStyles = createGlobalStyle`
   body {
     -webkit-tap-highlight-color: ${theme`colors.purple.400`};
     ${tw`
-      bg-gray-200
       antialiased
     `}
 
     font-family: Lato, sans-serif;
+  }
+`;
+
+const ThemeStyles = createGlobalStyle`
+  .light {
+    --bg-primary: #e2e8f0;
+  }
+  .dark {
+    --bg-primary: #334155;
+  }
+  body {
+    ${tw`bg-primary transition-all duration-200`}
   }
 `;
 
@@ -21,6 +32,7 @@ const GlobalStyles: FC = () => {
     <>
       <BaseStyles />
       <CustomStyles />
+      <ThemeStyles />
     </>
   );
 };

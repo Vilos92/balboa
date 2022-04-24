@@ -1,7 +1,9 @@
 import React, {FC} from 'react';
 import tw from 'twin.macro';
 
+import {useThemeContext} from '../store/ThemeProvider';
 import {Providers, SessionStatusesEnum, useAuthSession} from '../utils/auth';
+import {ChromelessButton} from './ChromelessButton';
 import {InvitationsMenuButton} from './InvitationsMenuButton';
 import {Logo} from './Logo';
 import {MenuButton} from './MenuButton';
@@ -64,11 +66,20 @@ export const Header: FC<HeaderProps> = ({providers}) => {
   const {status, isAuthenticated} = useAuthSession();
   const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
 
+  const {theme, setTheme} = useThemeContext();
+  const toggleTheme = () => {
+    if (!setTheme) return;
+    if (theme === 'light') setTheme('dark');
+    if (theme === 'dark') setTheme('light');
+  };
+
   return (
     <>
       <StyledFalseHeaderDiv />
       <StyledHeaderDiv>
-        <StyledHeaderSpacerDiv />
+        <StyledHeaderSpacerDiv>
+          <ChromelessButton onClick={toggleTheme}>Toggle Theme: {theme}</ChromelessButton>
+        </StyledHeaderSpacerDiv>
         <Logo />
         <StyledActionsDiv>
           {!isLoadingSessionStatus && isAuthenticated && <InvitationsMenuButton />}
