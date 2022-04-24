@@ -4,7 +4,6 @@ import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
 
 import {PatchPlan, PostPlan} from '../../pages/api/plans';
-import {deletePlan} from '../../pages/api/plans/[planId]';
 import {PlanFormState, usePlanFormState} from '../../state/planForm';
 import {PlanFormInputsEnum} from '../../state/planForm';
 import {AsyncHandler, Handler} from '../../types/common';
