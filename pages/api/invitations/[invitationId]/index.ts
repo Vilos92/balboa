@@ -10,7 +10,7 @@ import {
   invitationUpdateDraftSchema,
   updateInvitation
 } from '../../../../models/invitation';
-import {encodeDraftUserOnPlan, findPlan, planExists, saveUserOnPlan} from '../../../../models/plan';
+import {encodeDraftUserOnPlan, planExists, saveUserOnPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
 import {NetResponse, netDelete, netPatch, parseQueryString} from '../../../../utils/net';
 
@@ -124,6 +124,12 @@ async function deleteHandler(req: NextApiRequest, res: NetResponse) {
   const invitation = await findInvitation(invitationId);
   if (!invitation) {
     res.status(404).json({error: 'Invitation not found'});
+    return;
+  }
+
+  const isPlanExists = await planExists(invitation.plan.id);
+  if (!isPlanExists) {
+    res.status(404).json({error: 'Cannot delete invitation for a plan which does not exist'});
     return;
   }
 

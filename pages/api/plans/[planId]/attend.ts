@@ -10,7 +10,6 @@ import {
   Plan,
   deleteUserOnPlan,
   encodeDraftUserOnPlan,
-  findPlan,
   planExists,
   saveUserOnPlan
 } from '../../../../models/plan';
