@@ -20,7 +20,7 @@ export const dbPlanSchema = z.object({
   id: z.string().cuid(),
   hostUserId: z.string().cuid(),
   createdAt: z.date(),
-  deletedAt: z.date().optional(),
+  deletedAt: z.date().nullable().optional(),
   title: z.string(),
   color: z.string().regex(/^#[A-Fa-f0-9]{6}/),
   start: z.date(),
@@ -246,10 +246,9 @@ function decodeDbPlans(planRows: readonly unknown[]): readonly DbPlan[] {
  * the database to be sent to the client.
  */
 export function encodePlan(planRow: DbPlan): Plan {
-  const planBlob = {
+  const baseBlob = {
     id: planRow.id,
     createdAt: planRow.createdAt.toISOString(),
-    deletedAt: planRow.deletedAt?.toISOString(),
     title: planRow.title,
     color: planRow.color,
     start: planRow.start.toISOString(),
@@ -259,6 +258,14 @@ export function encodePlan(planRow: DbPlan): Plan {
     hostUser: planRow.hostUser,
     users: planRow.users.map(userOnPlan => userOnPlan.user)
   };
+
+  // Send neither null or undefined parameters to the client.
+  const planBlob = planRow.deletedAt
+    ? {
+        ...baseBlob,
+        deletedAt: planRow.deletedAt.toISOString()
+      }
+    : baseBlob;
 
   return planSchema.parse(planBlob);
 }

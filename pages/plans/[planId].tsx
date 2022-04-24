@@ -1,4 +1,5 @@
 import {GetServerSideProps} from 'next';
+import {useRouter} from 'next/router';
 import React, {FC, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import {KeyedMutator, SWRConfig} from 'swr';
@@ -432,6 +433,8 @@ const AnimatedHeight: FC<AnimatedHeightProps> = ({children, defaultHeight}) => {
 };
 
 const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
+  const router = useRouter();
+
   const isHosting = computeIsHosting(authSession, plan);
 
   const [tabView, setTabView] = useState<TabViewsEnum>(TabViewsEnum.DETAILS);
@@ -444,6 +447,7 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
 
   const deletePlan = async () => {
     await deletePlanFromApi(plan.id);
+    await router.push(`/`);
   };
 
   const mutateAttending = (isAttending: boolean) => {

@@ -1,4 +1,4 @@
-import {ChangeEvent, FC, FormEvent, useEffect, useState} from 'react';
+import {ChangeEvent, FC, FormEvent, MouseEvent, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import tw, {styled} from 'twin.macro';
 import {ZodIssue} from 'zod';
@@ -10,8 +10,10 @@ import {AsyncHandler, Handler} from '../../types/common';
 import {computeDateTime, computeInputDateFromObject} from '../../utils/dateTime';
 import {useDebounce, useHover, useInitialEffect, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
+import {Card} from '../Card';
 import {ChromelessButton} from '../ChromelessButton';
 import {Icon, IconTypesEnum} from '../Icon';
+import {Modal} from '../Modal';
 import {ColorInput} from '../inputs/ColorInput';
 import {DateInput} from '../inputs/DateInput';
 import {TextAreaInput} from '../inputs/TextAreaInput';
@@ -54,7 +56,7 @@ interface ClearFormButtonProps {
 }
 
 interface DeletePlanButtonProps {
-  onClick: AsyncHandler;
+  deletePlan: AsyncHandler;
 }
 
 /*
@@ -94,6 +96,34 @@ const StyledFooterDiv = tw.div`
   flex-row
   justify-between
   items-center
+`;
+
+const StyledDeleteModalCard = tw(Card)`
+  p-20
+  shadow-none
+  sm:max-w-md
+`;
+
+const StyledDeleteModalH1 = tw.h1`
+  text-2xl
+  mb-2
+`;
+
+const StyledDeleteModalH2 = tw.h2`
+  text-sm
+  mb-4
+`;
+
+const StyledConfirmButtonDiv = tw.div`
+  flex
+  flex-row
+  align-middle
+  justify-center
+`;
+
+const StyledDeleteConfirmButton = tw(Button)`
+  bg-red-400
+  w-36
 `;
 
 /*
@@ -283,7 +313,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
           Go time!
         </Button>
 
-        {!isClearButtonVisible && deletePlan && <DeletePlanButton onClick={deletePlan} />}
+        {!isClearButtonVisible && deletePlan && <DeletePlanButton deletePlan={deletePlan} />}
         {isClearButtonVisible && <ClearFormButton onClick={onClearForm} />}
       </StyledFooterDiv>
     </form>
@@ -341,7 +371,7 @@ const ClearFormButton: FC<ClearFormButtonProps> = ({onClick}) => {
   );
 };
 
-const DeletePlanButton: FC<DeletePlanButtonProps> = ({onClick}) => {
+const DeletePlanButton: FC<DeletePlanButtonProps> = ({deletePlan}) => {
   const [hoverRef, hasHover] = useHover<HTMLButtonElement>();
 
   const yTranslatePct = hasHover ? -12.5 : 0;
@@ -353,6 +383,16 @@ const DeletePlanButton: FC<DeletePlanButtonProps> = ({onClick}) => {
 
   const animatedStyle = {...style};
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const onClick = () => setTimeout(() => setIsModalVisible(true));
+  const closeModal = () => setIsModalVisible(false);
+
+  const onClickConfirm = async (event: MouseEvent<HTMLButtonElement>) => {
+    // This button exists within a form, so bypass the regular submit.
+    event.preventDefault();
+    await deletePlan();
+  };
+
   return (
     <>
       {/* @ts-ignore: https://github.com/pmndrs/react-spring/issues/1515 */}
@@ -361,6 +401,18 @@ const DeletePlanButton: FC<DeletePlanButtonProps> = ({onClick}) => {
           <Icon type={IconTypesEnum.DELETE_BIN} size={24} />
         </ChromelessButton>
       </animated.div>
+
+      {isModalVisible && (
+        <Modal closeModal={closeModal}>
+          <StyledDeleteModalCard>
+            <StyledDeleteModalH1>Delete this plan?</StyledDeleteModalH1>
+            <StyledDeleteModalH2>You can always recreate it later.</StyledDeleteModalH2>
+            <StyledConfirmButtonDiv>
+              <StyledDeleteConfirmButton onClick={onClickConfirm}>Confirm</StyledDeleteConfirmButton>
+            </StyledConfirmButtonDiv>
+          </StyledDeleteModalCard>
+        </Modal>
+      )}
     </>
   );
 };
