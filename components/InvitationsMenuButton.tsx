@@ -201,7 +201,7 @@ export const InvitationsMenuButton: FC = () => {
           <Icon
             type={isSomeUnread ? IconTypesEnum.MAIL_UNREAD : IconTypesEnum.MAIL}
             size={32}
-            fill={isSomeUnread ? theme`colors.red.400` : theme`colors.white`}
+            fill={isSomeUnread ? theme`colors.red.400` : theme`textColor.secondary`}
             hoverFill={isSomeUnread ? theme`colors.red.200` : theme`colors.purple.400`}
             isActive={isMenuVisible}
           />

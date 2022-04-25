@@ -50,7 +50,8 @@ const StyledMenuButton = tw(ChromelessButton)`
 const StyledHamburgerPattyDiv = tw.div`
   w-9
   h-0.5
-  bg-white
+  bg-primary
+
 `;
 
 interface StyledHamburgerDivProps {

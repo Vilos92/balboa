@@ -1,8 +1,8 @@
-import React, {FC, useState} from 'react';
+import React, {FC} from 'react';
 import tw, {styled} from 'twin.macro';
 
 import {ThemesEnum, useThemeContext} from '../store/ThemeProvider';
-import {useInitialEffect, useIsClient} from '../utils/hooks';
+import {useIsClient} from '../utils/hooks';
 import {ChromelessButton} from './ChromelessButton';
 
 /*
@@ -16,18 +16,19 @@ const StyledCheckDiv = styled.div<StyledCheckDivProps>`
   ${tw`
     w-16
     h-10
-    bg-gray-200
+    bg-gray-700
     rounded-full
     p-1
 
     flex
     items-center
 
+    transition-colors
     duration-200
     ease-in-out
   `};
 
-  ${({$theme}) => $theme === ThemesEnum.LIGHT && tw`bg-gray-700`}
+  ${({$theme}) => $theme === ThemesEnum.LIGHT && tw`bg-gray-200`}
 `;
 
 interface StyledSwitchDivProps {
@@ -35,7 +36,7 @@ interface StyledSwitchDivProps {
 }
 const StyledSwitchDiv = styled.div<StyledSwitchDivProps>`
   ${tw`
-    bg-gray-700
+    bg-gray-200
     w-8
     h-8
     rounded-full
@@ -44,7 +45,7 @@ const StyledSwitchDiv = styled.div<StyledSwitchDivProps>`
     ease-in-out
   `}
 
-  ${({$theme}) => $theme === ThemesEnum.LIGHT && tw`bg-gray-200`}
+  ${({$theme}) => $theme === ThemesEnum.LIGHT && tw`bg-gray-700`}
   ${({$theme}) => $theme === ThemesEnum.DARK && tw`translate-x-6`}
 `;
 
