@@ -1,48 +1,11 @@
 import React, {FC, useContext, useEffect, useState} from 'react';
 
-/*
- * Types.
- */
-
-export enum ThemesEnum {
-  LIGHT = 'light',
-  DARK = 'dark'
-}
+import {ThemesEnum, getInitialTheme, rawSetTheme} from '../utils/theme';
 
 interface ThemeContextState {
   theme: ThemesEnum;
   setTheme?: (updatedTheme: ThemesEnum) => void;
 }
-
-/*
- * Constants.
- */
-
-const themeStorageKey = 'color-theme';
-
-/*
- * Helpers.
- */
-
-/**
- * Determine the initial theme for our user by checking in order:
- * - Their preference in local storage.
- * - Their window preference.
- * - If no matches, default to a light theme.
- */
-const getInitialTheme = (): ThemesEnum => {
-  if (typeof window === 'undefined' || !window.localStorage) {
-    return ThemesEnum.LIGHT;
-  }
-
-  const themePref = window.localStorage.getItem(themeStorageKey);
-  if (typeof themePref === 'string' && Object.values(ThemesEnum).includes(themePref as ThemesEnum)) {
-    return themePref as ThemesEnum;
-  }
-
-  const userMedia = window.matchMedia('(prefers-color-scheme: dark)');
-  return userMedia.matches ? ThemesEnum.DARK : ThemesEnum.LIGHT;
-};
 
 /*
  * Context.
@@ -56,16 +19,6 @@ const ThemeContext = React.createContext<ThemeContextState>({theme: getInitialTh
 
 export const ThemeProvider: FC = ({children}) => {
   const [theme, setTheme] = useState<ThemesEnum>(getInitialTheme);
-
-  const rawSetTheme = (theme: ThemesEnum) => {
-    const oldTheme = theme === ThemesEnum.DARK ? ThemesEnum.LIGHT : ThemesEnum.DARK;
-
-    const root = window.document.documentElement;
-    root.classList.remove(oldTheme);
-    root.classList.add(theme);
-
-    localStorage.setItem(themeStorageKey, theme);
-  };
 
   useEffect(() => {
     rawSetTheme(theme);

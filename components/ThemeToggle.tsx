@@ -1,8 +1,9 @@
 import React, {FC} from 'react';
 import tw, {styled} from 'twin.macro';
 
-import {ThemesEnum, useThemeContext} from '../store/ThemeProvider';
+import {useThemeContext} from '../store/ThemeProvider';
 import {useIsClient} from '../utils/hooks';
+import {ThemesEnum} from '../utils/theme';
 import {ChromelessButton} from './ChromelessButton';
 
 /*
