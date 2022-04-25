@@ -25,7 +25,13 @@ const ThemeStyles = createGlobalStyle`
     --text-primary: #ffffff;
   }
   body {
-    ${tw`bg-primary text-primary transition-all duration-200`}
+    ${tw`
+      bg-primary
+      text-primary
+      transition-all
+      duration-200
+      ease-in-out
+    `}
   }
 `;
 

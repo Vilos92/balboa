@@ -1,12 +1,13 @@
-import React, {FC, useContext} from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 
 import {Handler} from '../types/common';
+import {useInitialEffect} from '../utils/hooks';
 
 /*
  * Types.
  */
 
-enum ThemesEnum {
+export enum ThemesEnum {
   LIGHT = 'light',
   DARK = 'dark'
 }
@@ -33,19 +34,17 @@ const themeStorageKey = 'color-theme';
  * - If no matches, default to a light theme.
  */
 const getInitialTheme = (): ThemesEnum => {
-  if (typeof window !== 'undefined' && window.localStorage) {
-    const themePref = window.localStorage.getItem(themeStorageKey);
-    if (typeof themePref === 'string' && Object.values(ThemesEnum).includes(themePref as ThemesEnum)) {
-      return themePref as ThemesEnum;
-    }
-
-    const userMedia = window.matchMedia('(prefers-color-scheme: dark)');
-    if (userMedia.matches) {
-      return ThemesEnum.DARK;
-    }
+  if (typeof window === 'undefined' || !window.localStorage) {
+    return ThemesEnum.LIGHT;
   }
 
-  return ThemesEnum.LIGHT;
+  const themePref = window.localStorage.getItem(themeStorageKey);
+  if (typeof themePref === 'string' && Object.values(ThemesEnum).includes(themePref as ThemesEnum)) {
+    return themePref as ThemesEnum;
+  }
+
+  const userMedia = window.matchMedia('(prefers-color-scheme: dark)');
+  return userMedia.matches ? ThemesEnum.DARK : ThemesEnum.LIGHT;
 };
 
 /*
@@ -59,7 +58,7 @@ const ThemeContext = React.createContext<ThemeContextState>({theme: getInitialTh
  */
 
 export const ThemeProvider: FC = ({children}) => {
-  const [theme, setTheme] = React.useState<ThemesEnum>(getInitialTheme);
+  const [theme, setTheme] = useState<ThemesEnum>(getInitialTheme);
 
   const rawSetTheme = (theme: ThemesEnum) => {
     const oldTheme = theme === ThemesEnum.DARK ? ThemesEnum.LIGHT : ThemesEnum.DARK;
@@ -71,7 +70,7 @@ export const ThemeProvider: FC = ({children}) => {
     localStorage.setItem(themeStorageKey, theme);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     rawSetTheme(theme);
   }, [theme]);
 
