@@ -268,11 +268,11 @@ const InvitationRow: FC<InvitationRowProps> = ({invitation, closeMenu: closePopo
     await patchInvitation(invitation.id, invitationDraft);
 
   const [localStatus, setLocalStatus] = useState<InvitationStatusesEnum>(invitation.status);
-  const onClickAccept = async (event: MouseEvent<HTMLButtonElement>) => {
+  const onClickAccept = async (_event: MouseEvent<HTMLButtonElement>) => {
     await updateInvitation({status: InvitationStatusesEnum.ACCEPTED});
     setTimeout(() => setLocalStatus(InvitationStatusesEnum.ACCEPTED));
   };
-  const onClickDecline = async (event: MouseEvent<HTMLButtonElement>) => {
+  const onClickDecline = async (_event: MouseEvent<HTMLButtonElement>) => {
     await updateInvitation({status: InvitationStatusesEnum.DECLINED});
     setTimeout(() => setLocalStatus(InvitationStatusesEnum.DECLINED));
   };

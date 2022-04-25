@@ -136,3 +136,16 @@ export function useMediaBreakpoint() {
   const isScreenMobile = !isScreenSmall;
   return {isScreenSmall, isScreenMobile};
 }
+
+/**
+ * Determine if currently rendering from the client. Always return false
+ * on first render to keep consistency between SSR and client rendering.
+ */
+export function useIsClient() {
+  const [isClient, setIsClient] = useState(false);
+  useInitialEffect(() => {
+    setIsClient(typeof window !== 'undefined');
+  });
+
+  return isClient;
+}

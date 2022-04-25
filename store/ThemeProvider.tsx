@@ -1,8 +1,5 @@
 import React, {FC, useContext, useEffect, useState} from 'react';
 
-import {Handler} from '../types/common';
-import {useInitialEffect} from '../utils/hooks';
-
 /*
  * Types.
  */
