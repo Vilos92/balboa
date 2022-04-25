@@ -1,19 +1,15 @@
 /*
- * NOTE: Any changes to the below utilities should be reflected in public/theme.js
+ * NOTE: This script should always reflect the contents of utils/theme.ts
  */
-
-/*
- * Types.
- */
-
-export enum ThemesEnum {
-  LIGHT = 'light',
-  DARK = 'dark'
-}
 
 /*
  * Constants.
  */
+
+const ThemesEnum = {
+  LIGHT: 'light',
+  DARK: 'dark'
+};
 
 const themeStorageKey = 'color-theme';
 
@@ -21,30 +17,21 @@ const themeStorageKey = 'color-theme';
  * Utilities.
  */
 
-/**
- * Determine the initial theme for our user by checking in order:
- * - Their preference in local storage.
- * - Their window preference.
- * - If no matches, default to a light theme.
- */
-export function getInitialTheme(): ThemesEnum {
+function getInitialTheme() {
   if (typeof window === 'undefined' || !window.localStorage) {
     return ThemesEnum.LIGHT;
   }
 
   const themePref = window.localStorage.getItem(themeStorageKey);
-  if (typeof themePref === 'string' && Object.values(ThemesEnum).includes(themePref as ThemesEnum)) {
-    return themePref as ThemesEnum;
+  if (typeof themePref === 'string' && Object.values(ThemesEnum).includes(themePref)) {
+    return themePref;
   }
 
   const userMedia = window.matchMedia('(prefers-color-scheme: dark)');
   return userMedia.matches ? ThemesEnum.DARK : ThemesEnum.LIGHT;
 }
 
-/**
- * Directly apply a theme to the document root.
- */
-export function rawSetTheme(theme: ThemesEnum) {
+function rawSetTheme(theme) {
   const oldTheme = theme === ThemesEnum.DARK ? ThemesEnum.LIGHT : ThemesEnum.DARK;
 
   const root = window.document.documentElement;
@@ -53,3 +40,7 @@ export function rawSetTheme(theme: ThemesEnum) {
 
   localStorage.setItem(themeStorageKey, theme);
 }
+
+// Setup initial theme.
+const initialTheme = getInitialTheme();
+rawSetTheme(initialTheme);
