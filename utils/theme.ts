@@ -37,6 +37,9 @@ export function getInitialTheme(): ThemesEnum {
   return userMedia.matches ? ThemesEnum.DARK : ThemesEnum.LIGHT;
 }
 
+/**
+ * Directly apply a theme to the document root.
+ */
 export function rawSetTheme(theme: ThemesEnum) {
   const oldTheme = theme === ThemesEnum.DARK ? ThemesEnum.LIGHT : ThemesEnum.DARK;
 
