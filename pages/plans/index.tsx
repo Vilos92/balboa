@@ -54,7 +54,6 @@ const StyledContentDiv = tw.div`
 `;
 
 const StyledSectionH1 = tw.h1`
-  text-black
   text-2xl
   mt-2
   mb-1

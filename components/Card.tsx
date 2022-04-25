@@ -17,6 +17,7 @@ interface CardProps {
 const StyledCardDiv = tw.div`
   p-3
   bg-white
+  text-black
   shadow-xl
 
   w-full

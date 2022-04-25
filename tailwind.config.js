@@ -3,6 +3,9 @@ module.exports = {
     extend: {
       backgroundColor: {
         primary: 'var(--bg-primary)'
+      },
+      textColor: {
+        primary: 'var(--text-primary)'
       }
     }
   }

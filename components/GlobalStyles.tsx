@@ -18,12 +18,14 @@ const CustomStyles = createGlobalStyle`
 const ThemeStyles = createGlobalStyle`
   .light {
     --bg-primary: #e2e8f0;
+    --text-primary: #000000;
   }
   .dark {
     --bg-primary: #334155;
+    --text-primary: #ffffff;
   }
   body {
-    ${tw`bg-primary transition-all duration-200`}
+    ${tw`bg-primary text-primary transition-all duration-200`}
   }
 `;
 
