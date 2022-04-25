@@ -10,13 +10,13 @@ import {ChromelessButton} from './ChromelessButton';
  */
 
 interface StyledCheckDivProps {
-  $theme: ThemesEnum;
+  $isActive: boolean;
 }
 const StyledCheckDiv = styled.div<StyledCheckDivProps>`
   ${tw`
     w-16
     h-10
-    bg-gray-700
+    bg-gray-200
     rounded-full
     p-1
 
@@ -28,15 +28,15 @@ const StyledCheckDiv = styled.div<StyledCheckDivProps>`
     ease-in-out
   `};
 
-  ${({$theme}) => $theme === ThemesEnum.LIGHT && tw`bg-gray-200`}
+  ${({$isActive}) => $isActive && tw`bg-gray-700`}
 `;
 
 interface StyledSwitchDivProps {
-  $theme: ThemesEnum;
+  $isActive: boolean;
 }
 const StyledSwitchDiv = styled.div<StyledSwitchDivProps>`
   ${tw`
-    bg-gray-200
+    bg-gray-700
     w-8
     h-8
     rounded-full
@@ -45,8 +45,8 @@ const StyledSwitchDiv = styled.div<StyledSwitchDivProps>`
     ease-in-out
   `}
 
-  ${({$theme}) => $theme === ThemesEnum.LIGHT && tw`bg-gray-700`}
-  ${({$theme}) => $theme === ThemesEnum.DARK && tw`translate-x-6`}
+  ${({$isActive}) => $isActive && tw`bg-gray-200`}
+  ${({$isActive}) => $isActive && tw`translate-x-6`}
 `;
 
 /*
@@ -59,10 +59,12 @@ export const ThemeToggle: FC = () => {
   const isClient = useIsClient();
   if (!isClient) return null;
 
+  const isActive = theme === ThemesEnum.DARK;
+
   return (
     <ChromelessButton onClick={toggleTheme}>
-      <StyledCheckDiv $theme={theme}>
-        <StyledSwitchDiv $theme={theme} />
+      <StyledCheckDiv $isActive={isActive}>
+        <StyledSwitchDiv $isActive={isActive} />
       </StyledCheckDiv>
     </ChromelessButton>
   );
