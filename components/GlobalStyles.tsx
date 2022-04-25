@@ -18,17 +18,21 @@ const CustomStyles = createGlobalStyle`
 const ThemeStyles = createGlobalStyle`
   .light {
     --bg-primary: #e2e8f0;
-    --text-primary: #000000;
+    --bg-secondary: #1f2937;
+    --text-primary: #1f2937;
+    --text-secondary: #e2e8f0;
   }
   .dark {
     --bg-primary: #334155;
-    --text-primary: #ffffff;
+    --bg-secondary: #f1f5f9;
+    --text-primary: #e2e8f0;
+    --text-secondary: #1f2937;
   }
   body {
     ${tw`
       bg-primary
       text-primary
-      transition-all
+      transition-colors
       duration-200
       ease-in-out
     `}

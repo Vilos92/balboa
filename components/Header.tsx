@@ -1,7 +1,6 @@
 import React, {FC} from 'react';
 import tw, {styled} from 'twin.macro';
 
-import {ThemesEnum} from '../store/ThemeProvider';
 import {Providers, SessionStatusesEnum, useAuthSession} from '../utils/auth';
 import {InvitationsMenuButton} from './InvitationsMenuButton';
 import {Logo} from './Logo';
@@ -33,13 +32,18 @@ const StyledHeaderDiv = tw.div`
   border-gray-50
 
   z-20
-  bg-gray-800
-  w-full
-  h-16
-  flex
-  justify-between
   fixed
   top-0
+  w-full
+  h-16
+
+  flex
+  justify-between
+
+  bg-secondary
+  transition-colors
+  duration-200
+  ease-in-out
 `;
 
 const StyledThemeSwitchDiv = styled.div`
