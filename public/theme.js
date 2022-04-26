@@ -1,46 +1,56 @@
-/*
- * NOTE: This script should always reflect the contents of utils/theme.ts
+/**
+ * IIFE wrapper to enable private variables and functions.
  */
+(function () {
+  /*
+   * Constants.
+   */
 
-/*
- * Constants.
- */
+  const ThemesEnum = {
+    LIGHT: 'light',
+    DARK: 'dark'
+  };
 
-const ThemesEnum = {
-  LIGHT: 'light',
-  DARK: 'dark'
-};
+  const themeStorageKey = 'color-theme';
 
-const themeStorageKey = 'color-theme';
+  /*
+   * Utilities.
+   */
 
-/*
- * Utilities.
- */
+  /**
+   * Determine the initial theme for our user by checking in order:
+   * - Their preference in local storage.
+   * - Their window preference.
+   * - If no matches, default to a light theme.
+   */
+  function getInitialTheme() {
+    const themePref = window.localStorage.getItem(themeStorageKey);
+    if (Object.values(ThemesEnum).includes(themePref)) {
+      return themePref;
+    }
 
-function getInitialTheme() {
-  if (typeof window === 'undefined' || !window.localStorage) {
-    return ThemesEnum.LIGHT;
+    const userMedia = window.matchMedia('(prefers-color-scheme: dark)');
+    return userMedia.matches ? ThemesEnum.DARK : ThemesEnum.LIGHT;
   }
 
-  const themePref = window.localStorage.getItem(themeStorageKey);
-  if (typeof themePref === 'string' && Object.values(ThemesEnum).includes(themePref)) {
-    return themePref;
+  /**
+   * Directly apply a theme to the document root.
+   */
+  function rawSetTheme(theme) {
+    const oldTheme = theme === ThemesEnum.DARK ? ThemesEnum.LIGHT : ThemesEnum.DARK;
+
+    const root = window.document.documentElement;
+    root.classList.remove(oldTheme);
+    root.classList.add(theme);
+
+    localStorage.setItem(themeStorageKey, theme);
   }
 
-  const userMedia = window.matchMedia('(prefers-color-scheme: dark)');
-  return userMedia.matches ? ThemesEnum.DARK : ThemesEnum.LIGHT;
-}
+  // Setup initial theme.
+  const initialTheme = getInitialTheme();
+  rawSetTheme(initialTheme);
 
-function rawSetTheme(theme) {
-  const oldTheme = theme === ThemesEnum.DARK ? ThemesEnum.LIGHT : ThemesEnum.DARK;
-
-  const root = window.document.documentElement;
-  root.classList.remove(oldTheme);
-  root.classList.add(theme);
-
-  localStorage.setItem(themeStorageKey, theme);
-}
-
-// Setup initial theme.
-const initialTheme = getInitialTheme();
-rawSetTheme(initialTheme);
+  // Attach helpers to window for usage in React application.
+  window.__getInitialTheme = getInitialTheme;
+  window.__rawSetTheme = rawSetTheme;
+})();
