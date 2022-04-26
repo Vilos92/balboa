@@ -10,10 +10,10 @@ import {ChromelessButton} from './ChromelessButton';
  * Styles.
  */
 
-interface StyledCheckDivProps {
+interface StyledToggleDivProps {
   $isActive: boolean;
 }
-const StyledCheckDiv = styled.div<StyledCheckDivProps>`
+const StyledToggleDiv = styled.div<StyledToggleDivProps>`
   ${tw`
     w-16
     h-10
@@ -64,9 +64,9 @@ export const ThemeToggle: FC = () => {
 
   return (
     <ChromelessButton onClick={toggleTheme}>
-      <StyledCheckDiv $isActive={isActive}>
+      <StyledToggleDiv $isActive={isActive}>
         <StyledSwitchDiv $isActive={isActive} />
-      </StyledCheckDiv>
+      </StyledToggleDiv>
     </ChromelessButton>
   );
 };
