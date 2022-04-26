@@ -1,11 +1,11 @@
 /*
- * NOTE: Any changes to the below utilities should be reflected in public/theme.js
- */
-
-/*
  * Types.
  */
 
+/**
+ * The below methods are defined and attached to window in public/scripts/theme.js
+ * The script itself is run in _document.tsx
+ */
 declare global {
   interface Window {
     __getInitialTheme: () => ThemesEnum;
@@ -23,7 +23,7 @@ export enum ThemesEnum {
  */
 
 /**
- * JSDoc in public/theme.js
+ * JSDoc in public/scripts/theme.js
  */
 export function getInitialTheme(): ThemesEnum {
   if (!global.window) return ThemesEnum.LIGHT;
@@ -31,7 +31,7 @@ export function getInitialTheme(): ThemesEnum {
 }
 
 /**
- * JSDoc in public/theme.js
+ * JSDoc in public/scripts/theme.js
  */
 export function rawSetTheme(theme: ThemesEnum) {
   if (!global.window) return;

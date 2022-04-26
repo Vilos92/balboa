@@ -29,7 +29,7 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <script type='text/javascript' src='/theme.js' defer />
+          <script type='text/javascript' src='/scripts/theme.js' defer />
           <link href='https://fonts.googleapis.com/css2?family=Lato&display=optional' rel='stylesheet' />
         </Head>
         <body>
