@@ -4,14 +4,17 @@ import {ThemesEnum, getInitialTheme, rawSetTheme} from '../utils/theme';
 
 interface ThemeContextState {
   theme: ThemesEnum;
-  setTheme?: (updatedTheme: ThemesEnum) => void;
+  setTheme: (updatedTheme: ThemesEnum) => void;
 }
 
 /*
  * Context.
  */
 
-const ThemeContext = React.createContext<ThemeContextState>({theme: getInitialTheme()});
+const ThemeContext = React.createContext<ThemeContextState>({
+  theme: getInitialTheme(),
+  setTheme: () => undefined
+});
 
 /*
  * Provider.
@@ -35,13 +38,8 @@ export const useThemeContext = () => {
   const {theme, setTheme} = useContext(ThemeContext);
 
   const toggleTheme = () => {
-    if (!setTheme) return;
-
-    if (theme === ThemesEnum.LIGHT) {
-      setTheme(ThemesEnum.DARK);
-      return;
-    }
-    setTheme(ThemesEnum.LIGHT);
+    const updatedTheme = theme === ThemesEnum.LIGHT ? ThemesEnum.DARK : ThemesEnum.LIGHT;
+    setTheme(updatedTheme);
   };
 
   return {theme, toggleTheme};
