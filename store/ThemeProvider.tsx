@@ -31,7 +31,7 @@ export const ThemeProvider: FC = ({children}) => {
 };
 
 /*
- * Hook.
+ * Hooks.
  */
 
 export const useThemeContext = () => {
