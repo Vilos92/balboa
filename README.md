@@ -2,10 +2,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+First, run the local development server:
 
 ```bash
-pnpm run dev
+pnpm run local
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
