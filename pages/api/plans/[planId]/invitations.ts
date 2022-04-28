@@ -12,8 +12,10 @@ import {
 } from '../../../../models/invitation';
 import {findPlan} from '../../../../models/plan';
 import {getSessionUser} from '../../../../utils/auth';
+import {sendInvitationEmail} from '../../../../utils/mail';
 import {NetResponse, netPost, parseQueryString, useNetGet} from '../../../../utils/net';
 import {validateEmail} from '../../../../utils/schema';
+import {computePlanPageUrl} from '../../../plans/[planId]';
 
 /*
  * Constants.
@@ -118,6 +120,12 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
 
   const invitationDraft = encodeDraftInvitation(invitationBlob);
   const invitation = await saveInvitation(invitationDraft);
+
+  // Send an email for the newly created invitation.
+  const {headers} = req;
+  const {host} = headers;
+  const planUrl = computePlanPageUrl(host ?? '', plan.id);
+  sendInvitationEmail(invitation.email, user.name, plan.title, planUrl);
 
   res.status(200).json(invitation);
 }

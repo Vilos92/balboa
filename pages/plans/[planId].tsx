@@ -35,7 +35,7 @@ import {
 import {openGoogleCalendarLink} from '../../utils/calendar';
 import {useDetectResize, usePrevious} from '../../utils/hooks';
 import {parseQueryString} from '../../utils/net';
-import {formatLocationString} from '../../utils/window';
+import {formatLocationString, useLocationString} from '../../utils/window';
 import {
   computeCanUserDelete,
   deleteInvitation as deleteInvitationFromApi
@@ -521,11 +521,7 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
 };
 
 const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending}) => {
-  const [shareUrl, setShareUrl] = useState('');
-  // window.location is not available in SSR, so set this in an effect.
-  useEffect(() => {
-    setShareUrl(formatLocationString());
-  }, []);
+  const shareUrl = useLocationString();
 
   const {isAuthenticated} = authSession;
   const {users} = plan;
@@ -780,4 +776,8 @@ function computeStyledAttendButtonBackground(
   if (isAttending) return tw`bg-green-500`;
 
   return undefined;
+}
+
+export function computePlanPageUrl(host: string, planId: string) {
+  return `https://${host}/plans/${planId}`;
 }

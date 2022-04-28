@@ -26,14 +26,14 @@ export enum ThemesEnum {
  * JSDoc in public/scripts/theme.js
  */
 export function getInitialTheme(): ThemesEnum {
-  if (!global.window) return ThemesEnum.LIGHT;
-  return global.window.__getInitialTheme();
+  if (!globalThis.window) return ThemesEnum.LIGHT;
+  return globalThis.window.__getInitialTheme();
 }
 
 /**
  * JSDoc in public/scripts/theme.js
  */
 export function rawSetTheme(theme: ThemesEnum) {
-  if (!global.window) return;
-  global.window.__rawSetTheme(theme);
+  if (!globalThis.window) return;
+  globalThis.window.__rawSetTheme(theme);
 }
