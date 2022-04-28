@@ -35,7 +35,7 @@ import {
 import {openGoogleCalendarLink} from '../../utils/calendar';
 import {useDetectResize, usePrevious} from '../../utils/hooks';
 import {parseQueryString} from '../../utils/net';
-import {formatLocationString, useLocationString} from '../../utils/window';
+import {useLocationString} from '../../utils/window';
 import {
   computeCanUserDelete,
   deleteInvitation as deleteInvitationFromApi
