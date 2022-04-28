@@ -68,6 +68,10 @@ async function getHandler(req: NextApiRequest, res: NetResponse<readonly Invitat
 }
 
 async function postHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
+  const {
+    headers: {host}
+  } = req;
+
   const user = await getSessionUser(req);
   if (!user) {
     res.status(401).send({error: 'Unauthorized'});
@@ -122,8 +126,6 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
   const invitation = await saveInvitation(invitationDraft);
 
   // Send an email for the newly created invitation.
-  const {headers} = req;
-  const {host} = headers;
   const planUrl = computePlanPageUrl(host ?? '', plan.id);
   sendInvitationEmail(invitation.email, user.name, plan.title, planUrl);
 
