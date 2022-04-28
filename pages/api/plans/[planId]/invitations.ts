@@ -126,8 +126,10 @@ async function postHandler(req: NextApiRequest, res: NetResponse<Invitation>) {
   const invitation = await saveInvitation(invitationDraft);
 
   // Send an email for the newly created invitation.
-  const planUrl = computePlanPageUrl(host ?? '', plan.id);
-  sendInvitationEmail(invitation.email, user.name, plan.title, planUrl);
+  if (!isAlreadyAttending) {
+    const planUrl = computePlanPageUrl(host ?? '', plan.id);
+    sendInvitationEmail(invitation.email, user.name, plan.title, planUrl);
+  }
 
   res.status(200).json(invitation);
 }
