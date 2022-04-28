@@ -35,7 +35,7 @@ import {
 import {openGoogleCalendarLink} from '../../utils/calendar';
 import {useDetectResize, usePrevious} from '../../utils/hooks';
 import {parseQueryString} from '../../utils/net';
-import {useLocationString} from '../../utils/window';
+import {formatLocationString} from '../../utils/window';
 import {
   computeCanUserDelete,
   deleteInvitation as deleteInvitationFromApi
@@ -521,7 +521,7 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
 };
 
 const PlanDetails: FC<PlanDetailsProps> = ({authSession, plan, mutateAttending}) => {
-  const shareUrl = useLocationString();
+  const shareUrl = formatLocationString();
 
   const {isAuthenticated} = authSession;
   const {users} = plan;
