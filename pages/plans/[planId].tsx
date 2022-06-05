@@ -466,7 +466,7 @@ const PlanCard: FC<PlanCardProps> = ({authSession, plan, mutatePlan}) => {
 
   const deletePlan = async () => {
     await deletePlanFromApi(plan.id);
-    await router.push(`/`);
+    await router.push('/create');
   };
 
   const mutateAttending = async (isAttending: boolean) => {

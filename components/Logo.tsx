@@ -43,7 +43,7 @@ const StyledLogoH1 = tw.h1`
 
 export const Logo: FC = () => {
   const router = useRouter();
-  const onClick = () => router.push(`/`);
+  const onClick = () => router.push('/');
 
   return (
     <StyledLogoDiv onClick={onClick}>
