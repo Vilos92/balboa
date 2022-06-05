@@ -217,7 +217,7 @@ function renderRoutes(
   closeMenu: Handler
 ) {
   const onClickCreate = async () => {
-    await router.push('/');
+    await router.push('/create');
     closeMenu();
   };
   const onClickPlans = async () => {

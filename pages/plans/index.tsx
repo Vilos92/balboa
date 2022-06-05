@@ -157,7 +157,7 @@ const PlansPage: FC = () => {
     .filter(plan => new Date(plan.end) < now)
     .sort((planA, planB) => calculateDateDifference(planA.start, planB.start));
 
-  const onClickCreateNow = () => router.push('/');
+  const onClickCreateNow = () => router.push('/create');
 
   const emptyUpcomingMessage =
     ongoingPlans.length === 0 && upcomingPlans.length === 0 ? (
