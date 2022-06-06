@@ -7,7 +7,7 @@ import {PlanFormState, usePlanFormState} from '../../state/planForm';
 import {PlanFormInputsEnum} from '../../state/planForm';
 import {AsyncHandler, Handler} from '../../types/common';
 import {computeDateTime, computeInputDateFromObject} from '../../utils/dateTime';
-import {useDebounce, useInitialEffect, useTimeout} from '../../utils/hooks';
+import {useDebounce, useInitialEffect, useMediaBreakpoint, useTimeout} from '../../utils/hooks';
 import {Button} from '../Button';
 import {Card} from '../Card';
 import {IconTypesEnum} from '../Icon';
@@ -320,6 +320,8 @@ export const PlanForm: FC<PlanFormProps> = props => {
 };
 
 const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorHint, value, onChange}) => {
+  const {isScreenSmall} = useMediaBreakpoint();
+
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   // Set initial visibility after first render to avoid location flash.
@@ -340,7 +342,12 @@ const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorH
   }, [setTimeout]);
 
   return (
-    <Tooltip isVisible={isTooltipVisible} text='Set a color' onClick={hideTooltip} placement='top-end'>
+    <Tooltip
+      isVisible={isScreenSmall && isTooltipVisible}
+      text='Set a color'
+      onClick={hideTooltip}
+      placement='top-end'
+    >
       <StyledColorInput label='Color' value={value} onChange={onChangeColor} />
     </Tooltip>
   );

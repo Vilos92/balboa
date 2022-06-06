@@ -3,14 +3,12 @@ import {useRouter} from 'next/router';
 import {FC, useState} from 'react';
 import tw from 'twin.macro';
 
-import {AccountFooter} from '../components/AccountFooter';
 import {ChromelessButton} from '../components/ChromelessButton';
 import {ColumnHorizontalCentered} from '../components/Commons';
 import {Header} from '../components/Header';
 import {Icon, IconTypesEnum} from '../components/Icon';
 import {LoginModal} from '../components/LoginModal';
 import {SearchEngineOptimizer} from '../components/SearchEngineOptimizer';
-import {AppProvider} from '../store/AppProvider';
 import {Handler} from '../types/common';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 
