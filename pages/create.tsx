@@ -64,7 +64,7 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
 
   return (
     <>
-      <SearchEngineOptimizer />
+      <SearchEngineOptimizer title='Create' description='Create a new plan' />
       <AppProvider>
         <ColumnHorizontalCentered>
           <Header providers={providers} />

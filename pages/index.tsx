@@ -1,14 +1,17 @@
 import {GetStaticProps, NextPage} from 'next';
 import {useRouter} from 'next/router';
+import {FC, useState} from 'react';
 import tw from 'twin.macro';
 
 import {AccountFooter} from '../components/AccountFooter';
-import {Card} from '../components/Card';
 import {ChromelessButton} from '../components/ChromelessButton';
 import {ColumnHorizontalCentered} from '../components/Commons';
 import {Header} from '../components/Header';
+import {Icon, IconTypesEnum} from '../components/Icon';
+import {LoginModal} from '../components/LoginModal';
 import {SearchEngineOptimizer} from '../components/SearchEngineOptimizer';
 import {AppProvider} from '../store/AppProvider';
+import {Handler} from '../types/common';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 
 /*
@@ -19,14 +22,22 @@ interface LandingPageProps {
   providers: Providers;
 }
 
+interface LandingButtonProps {
+  text: string;
+  iconType: IconTypesEnum;
+  onClick: Handler;
+}
+
 /*
  * Styles.
  */
 
 const StyledButtonRowDiv = tw.div`
   flex
-  flex-row
+  flex-col
+  sm:flex-row
   justify-center
+  items-center
   gap-3
 
   w-screen
@@ -37,17 +48,36 @@ const StyledButtonRowDiv = tw.div`
   sm:mb-8
 `;
 
-const StyledCard = tw(Card)`
+const StyledButtonDiv = tw.div`
   flex
-  flex-col
   justify-center
   items-center
   
-  sm:w-60
-  sm:h-40
+  h-24
+  w-40
+  sm:h-32
+  sm:w-56
 
+  p-3
+  rounded-2xl
+
+  bg-white
+  text-black
+  text-left
+  text-xl
+
+  shadow-xl
   hover:bg-purple-100
+`;
 
+const StyledButtonContentDiv = tw.div`
+  w-28
+
+  flex
+  flex-row
+  items-center
+  justify-center
+  gap-1.5
 `;
 
 /*
@@ -75,25 +105,44 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
 
   const isLoadingSessionStatus = status === SessionStatusesEnum.LOADING;
 
+  const [isLoginModalVisible, setIsLoginModalVisible] = useState(false);
+  const openLoginModal = () => setTimeout(() => setIsLoginModalVisible(true));
+  const closeLoginModal = () => setIsLoginModalVisible(false);
+
+  const secondButton =
+    isLoadingSessionStatus || isAuthenticated ? (
+      <LandingButton text='Upcoming plans' iconType={IconTypesEnum.LIST_UNORDERED} onClick={onClickPlans} />
+    ) : (
+      <LandingButton text='Create account' iconType={IconTypesEnum.ACCOUNT_CIRCLE} onClick={openLoginModal} />
+    );
+
   return (
     <>
       <SearchEngineOptimizer />
-      <AppProvider>
-        <ColumnHorizontalCentered>
-          <Header providers={providers} />
-          <StyledButtonRowDiv>
-            <ChromelessButton onClick={onClickCreate}>
-              <StyledCard>Create a plan</StyledCard>
-            </ChromelessButton>
-            <ChromelessButton onClick={onClickPlans}>
-              <StyledCard>Upcoming plans</StyledCard>
-            </ChromelessButton>
-          </StyledButtonRowDiv>
-          <AccountFooter isHidden={isAuthenticated || isLoadingSessionStatus} providers={providers} />
-        </ColumnHorizontalCentered>
-      </AppProvider>
+      <ColumnHorizontalCentered>
+        <Header providers={providers} />
+        <StyledButtonRowDiv>
+          <LandingButton text='Create a plan' iconType={IconTypesEnum.ADD_CIRCLE} onClick={onClickCreate} />
+          {secondButton}
+        </StyledButtonRowDiv>
+      </ColumnHorizontalCentered>
+      {isLoginModalVisible && <LoginModal providers={providers} closeModal={closeLoginModal} />}
     </>
   );
 };
 
 export default LandingPage;
+
+/*
+ * Components.
+ */
+
+const LandingButton: FC<LandingButtonProps> = ({text, iconType, onClick}) => (
+  <ChromelessButton onClick={onClick}>
+    <StyledButtonDiv>
+      <StyledButtonContentDiv>
+        <span>{text}</span> <Icon type={iconType} size={32} />
+      </StyledButtonContentDiv>
+    </StyledButtonDiv>
+  </ChromelessButton>
+);

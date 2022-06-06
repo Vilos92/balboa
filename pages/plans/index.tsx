@@ -58,6 +58,7 @@ const StyledSectionH1 = tw.h1`
   text-2xl
   mt-2
   mb-1
+  text-center
 `;
 
 const StyledChromelessButton = tw(ChromelessButton)`
