@@ -30,7 +30,7 @@ interface LandingButtonProps {
  * Styles.
  */
 
-const StyledButtonRowDiv = tw.div`
+const StyledButtonContainerDiv = tw.div`
   flex
   flex-col
   sm:flex-row
@@ -46,7 +46,7 @@ const StyledButtonRowDiv = tw.div`
   sm:mb-8
 `;
 
-const StyledButtonDiv = tw.div`
+const StyledButtonDiv = tw(ChromelessButton)`
   flex
   justify-center
   items-center
@@ -54,16 +54,12 @@ const StyledButtonDiv = tw.div`
   h-24
   w-40
   sm:h-32
-  sm:w-56
+  sm:w-48
 
   p-3
   rounded-2xl
 
   bg-white
-  text-black
-  text-left
-  text-xl
-
   shadow-xl
   hover:bg-purple-100
 `;
@@ -74,8 +70,12 @@ const StyledButtonContentDiv = tw.div`
   flex
   flex-row
   items-center
-  justify-center
+  justify-evenly
   gap-1.5
+
+  text-black
+  text-left
+  text-xl
 `;
 
 /*
@@ -119,10 +119,10 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
       <SearchEngineOptimizer />
       <ColumnHorizontalCentered>
         <Header providers={providers} />
-        <StyledButtonRowDiv>
+        <StyledButtonContainerDiv>
           <LandingButton text='Create a plan' iconType={IconTypesEnum.ADD_CIRCLE} onClick={onClickCreate} />
           {secondButton}
-        </StyledButtonRowDiv>
+        </StyledButtonContainerDiv>
       </ColumnHorizontalCentered>
       {isLoginModalVisible && <LoginModal providers={providers} closeModal={closeLoginModal} />}
     </>
@@ -136,11 +136,9 @@ export default LandingPage;
  */
 
 const LandingButton: FC<LandingButtonProps> = ({text, iconType, onClick}) => (
-  <ChromelessButton onClick={onClick}>
-    <StyledButtonDiv>
-      <StyledButtonContentDiv>
-        <span>{text}</span> <Icon type={iconType} size={32} />
-      </StyledButtonContentDiv>
-    </StyledButtonDiv>
-  </ChromelessButton>
+  <StyledButtonDiv onClick={onClick}>
+    <StyledButtonContentDiv>
+      <span>{text}</span> <Icon type={iconType} size={32} />
+    </StyledButtonContentDiv>
+  </StyledButtonDiv>
 );
