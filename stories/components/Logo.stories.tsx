@@ -16,8 +16,7 @@ type LogoType = typeof LogoComponent;
 
 export default {
   title: 'Components/Grue',
-  component: LogoComponent,
-  args: {}
+  component: LogoComponent
 } as ComponentMeta<LogoType>;
 
 const Template: ComponentStory<LogoType> = args => (

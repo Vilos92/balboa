@@ -16,8 +16,7 @@ type LoadingGrueType = typeof LoadingGrueComponent;
 
 export default {
   title: 'Components/Grue',
-  component: LoadingGrueComponent,
-  args: {}
+  component: LoadingGrueComponent
 } as ComponentMeta<LoadingGrueType>;
 
 const Template: ComponentStory<LoadingGrueType> = args => (
