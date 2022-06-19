@@ -14,7 +14,7 @@ interface IconButtonProps {
   iconType: IconTypesEnum;
   size: number;
   hoverFill?: string;
-  computeTransform: (hasHover: boolean) => string;
+  computeTransform?: (hasHover: boolean) => string;
   onClick: Handler;
 }
 
@@ -26,7 +26,7 @@ export const IconButton: FC<IconButtonProps> = ({iconType, size, hoverFill, comp
   const [hoverRef, hasHover] = useHover<HTMLButtonElement>();
 
   const style = useSpring({
-    transform: computeTransform(hasHover),
+    transform: computeTransform ? computeTransform(hasHover) : undefined,
     reverse: !hasHover
   });
 
