@@ -4,6 +4,16 @@ import React from 'react';
 import {IconTypesEnum} from '../../components/Icon';
 import {IconButton as IconButtonComponent} from '../../components/IconButton';
 
+/*
+ * Types.
+ */
+
+type IconButtonType = typeof IconButtonComponent;
+
+/*
+ * Config.
+ */
+
 // Lift the icon slightly on hover.
 const computeTransform = (hasHover: boolean) => {
   const yTranslatePct = hasHover ? -12.5 : 0;
@@ -17,11 +27,15 @@ export default {
     iconType: IconTypesEnum.ADD_CIRCLE,
     hoverFill: 'red'
   }
-} as ComponentMeta<typeof IconButtonComponent>;
+} as ComponentMeta<IconButtonType>;
 
-const Template: ComponentStory<typeof IconButtonComponent> = args => (
+const Template: ComponentStory<IconButtonType> = args => (
   <IconButtonComponent {...args}>Icon Button</IconButtonComponent>
 );
+
+/*
+ * Stories.
+ */
 
 export const IconButton = Template.bind({});
 
