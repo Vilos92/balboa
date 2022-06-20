@@ -4,6 +4,7 @@ import {usePopper} from 'react-popper';
 import tw, {styled} from 'twin.macro';
 
 import {Handler} from '../../types/common';
+import {useInitialEffect} from '../../utils/hooks';
 
 /*
  * Types.
@@ -57,10 +58,11 @@ export const Popover: FC<PopoverProps> = props => {
     placement
   });
 
-  const [isVisibleLocal, setIsVisibleLocal] = useState(false);
-  useEffect(() => {
-    setIsVisibleLocal(isVisible);
-  }, [isVisible]);
+  // Do not display popover until after the initial render to avoid position issues.
+  const [hasMounted, setHasMounted] = useState(false);
+  useInitialEffect(() => {
+    setHasMounted(true);
+  });
 
   return (
     <>
@@ -72,7 +74,7 @@ export const Popover: FC<PopoverProps> = props => {
         ref={popperRef}
         style={styles.popper}
         {...attributes.popper}
-        $isVisible={isVisibleLocal}
+        $isVisible={hasMounted && isVisible}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
