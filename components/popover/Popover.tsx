@@ -59,9 +59,9 @@ export const Popover: FC<PopoverProps> = props => {
   });
 
   // Do not display popover until after the initial render to avoid position issues.
-  const [hasMounted, setHasMounted] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   useInitialEffect(() => {
-    setHasMounted(true);
+    setIsMounted(true);
   });
 
   return (
@@ -74,7 +74,7 @@ export const Popover: FC<PopoverProps> = props => {
         ref={popperRef}
         style={styles.popper}
         {...attributes.popper}
-        $isVisible={hasMounted && isVisible}
+        $isVisible={isMounted && isVisible}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
