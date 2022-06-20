@@ -50,7 +50,7 @@ specifiers:
   jest: ^27.4.7
   mapbox-gl: ^2.6.1
   next: 12.1.4
-  next-auth: ^4.0.2
+  next-auth: ^4.3.3
   next-seo: ^5.1.0
   nextjs-progressbar: ^0.0.13
   prettier: ^2.4.1
@@ -73,7 +73,7 @@ specifiers:
   zod: ^3.11.6
 
 dependencies:
-  '@next-auth/prisma-adapter': 0.5.2-next.19_6jx5z6d56klmckkofq6rtidwna
+  '@next-auth/prisma-adapter': 0.5.2-next.19_eg27jd7xzbm6sld53vx3qwvohq
   '@popperjs/core': 2.10.2
   '@prisma/client': 3.6.0_prisma@3.6.0
   '@react-hook/media-query': 1.1.1_react@18.0.0
@@ -85,7 +85,7 @@ dependencies:
   html-to-text: 8.2.0
   mapbox-gl: 2.6.1
   next: 12.1.4_ekyhmzuhwihbgzowoafa4awnlm
-  next-auth: 4.0.2_zpnidt7m3osuk7shl3s4oenomq
+  next-auth: 4.5.0_zpnidt7m3osuk7shl3s4oenomq
   next-seo: 5.1.0_ycv3wu2xpvbe7yzamsmed7oh2q
   nextjs-progressbar: 0.0.13_next@12.1.4+react@18.0.0
   react: 18.0.0
@@ -2230,14 +2230,14 @@ packages:
       glob-to-regexp: 0.3.0
     dev: true
 
-  /@next-auth/prisma-adapter/0.5.2-next.19_6jx5z6d56klmckkofq6rtidwna:
+  /@next-auth/prisma-adapter/0.5.2-next.19_eg27jd7xzbm6sld53vx3qwvohq:
     resolution: {integrity: sha512-146DWE4PEbgVKF6W0CjJSxeP2rrw2T2s8zX1GQzbQsMK8trRSzheURJRphCn6ZGhVSpHJhU4NZe7F0kwRL5lwQ==}
     peerDependencies:
       '@prisma/client': '>=2.26.0'
       next-auth: '>4 || 4.0.0-beta.1 - 4.0.0-beta.x'
     dependencies:
       '@prisma/client': 3.6.0_prisma@3.6.0
-      next-auth: 4.0.2_zpnidt7m3osuk7shl3s4oenomq
+      next-auth: 4.5.0_zpnidt7m3osuk7shl3s4oenomq
     dev: false
 
   /@next/env/12.1.4:
@@ -4081,7 +4081,7 @@ packages:
     engines: {node: '>=12'}
     dependencies:
       '@babel/code-frame': 7.16.7
-      '@babel/runtime': 7.16.3
+      '@babel/runtime': 7.18.3
       '@types/aria-query': 4.2.2
       aria-query: 5.0.0
       chalk: 4.1.2
@@ -10948,25 +10948,25 @@ packages:
     resolution: {integrity: sha512-9iN1ka/9zmX1ZvLV9ewJYEk9h7RyRRtqdK0woXcqohu8EWIerfPUjYJPg0ULy0UqP7cslmdGc8xKDJcojlKiaw==}
     dev: true
 
-  /next-auth/4.0.2_zpnidt7m3osuk7shl3s4oenomq:
-    resolution: {integrity: sha512-skTQoIKIakesHeuCtLs2n+uMFsThWrqD+uUSdrj/1TCQ+dRGRkQmr/d0jvbAw8U8h8njUQBSvT6HoncjO8cp5Q==}
+  /next-auth/4.5.0_zpnidt7m3osuk7shl3s4oenomq:
+    resolution: {integrity: sha512-B6gYRIbqtj8nlDsx3y2Ruwp/mvZnItPs7VUULY43QYw+M9xtDPIM9EBZ3ryd/wNYA3MDteBJlzGm/ivseXcmJA==}
     engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
     peerDependencies:
       nodemailer: ^6.6.5
-      react: ^17.0.2
-      react-dom: ^17.0.2
+      react: ^17.0.2 || ^18
+      react-dom: ^17.0.2 || ^18
     peerDependenciesMeta:
       nodemailer:
         optional: true
     dependencies:
-      '@babel/runtime': 7.16.3
+      '@babel/runtime': 7.18.3
       '@panva/hkdf': 1.0.1
       cookie: 0.4.1
       jose: 4.3.7
       oauth: 0.9.15
-      openid-client: 5.0.2
-      preact: 10.6.2
-      preact-render-to-string: 5.1.19_preact@10.6.2
+      openid-client: 5.1.6
+      preact: 10.8.1
+      preact-render-to-string: 5.1.19_preact@10.8.1
       react: 18.0.0
       react-dom: 18.0.0_react@18.0.0
       uuid: 8.3.2
@@ -11171,7 +11171,7 @@ packages:
     resolution: {integrity: sha512-h2AatdwYH+JHiZpv7pt/gSX1XoRGb7L/qSIeuqA6GwYoF9w1vP1cw42TO0aI2pNyshRK5893hNSl+1//vHK7hQ==}
 
   /oauth/0.9.15:
-    resolution: {integrity: sha1-vR/vr2hslrdUda7VGWQS/2DPucE=}
+    resolution: {integrity: sha512-a5ERWK1kh38ExDEfoO6qUHJb32rd7aYmPHuyCu3Fta/cnICvYmgd2uhuKXvPD+PXB+gCEYYEaQdIRAjCOwAKNA==}
     dev: false
 
   /object-assign/4.1.1:
@@ -11330,8 +11330,8 @@ packages:
       is-wsl: 2.2.0
     dev: true
 
-  /openid-client/5.0.2:
-    resolution: {integrity: sha512-Z3fuzy5S/ohIBonXdTFYAKIjMAf0ycRMW0Rs1cXSH1UBJDB2CJTcVR5u7MPlPui5lA1f+mQ9DktPNEwrYVoY+A==}
+  /openid-client/5.1.6:
+    resolution: {integrity: sha512-HTFaXWdUHvLFw4GaEMgC0jXYBgpjgzQQNHW1pZsSqJorSgrXzxJ+4u/LWCGaClDEse5HLjXRV+zU5Bn3OefiZw==}
     engines: {node: ^12.19.0 || ^14.15.0 || ^16.13.0}
     dependencies:
       jose: 4.3.7
@@ -11946,17 +11946,17 @@ packages:
     resolution: {integrity: sha512-choctRBIV9EMT9WGAZHn3V7t0Z2pMQyl0EZE6pFc/6ml3ssw7Dlf/oAOvFwjm1HVsqfQN8GfeFyJ+d8tRzqueQ==}
     dev: false
 
-  /preact-render-to-string/5.1.19_preact@10.6.2:
+  /preact-render-to-string/5.1.19_preact@10.8.1:
     resolution: {integrity: sha512-bj8sn/oytIKO6RtOGSS/1+5CrQyRSC99eLUnEVbqUa6MzJX5dYh7wu9bmT0d6lm/Vea21k9KhCQwvr2sYN3rrQ==}
     peerDependencies:
       preact: '>=10'
     dependencies:
-      preact: 10.6.2
+      preact: 10.8.1
       pretty-format: 3.8.0
     dev: false
 
-  /preact/10.6.2:
-    resolution: {integrity: sha512-ppDjurt75nSxyikpyali+uKwRl8CK9N6ntOPovGIEGQagjMLVzEgVqFEsUUyUrqyE9Ch90KE0jmFc9q2QcPLBA==}
+  /preact/10.8.1:
+    resolution: {integrity: sha512-p5CKQ0MCEXTGKGOHiFaNE2V2nDq2hvDHykXvIlz+4lbfJ9umLZr8JS/fa1bXUwRcHXK+Ljk8zqmDhr25n0LtVg==}
     dev: false
 
   /prelude-ls/1.1.2:
@@ -12370,7 +12370,7 @@ packages:
     peerDependencies:
       react: ^16.8.4 || ^17.0.0
     dependencies:
-      '@babel/runtime': 7.16.3
+      '@babel/runtime': 7.18.3
       is-dom: 1.1.0
       prop-types: 15.7.2
       react: 18.0.0
