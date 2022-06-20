@@ -1,7 +1,6 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
 import React from 'react';
 
-import {ColumnJustified} from '../../components/Commons';
 import {Logo as LogoComponent} from '../../components/Logo';
 
 /*
@@ -19,11 +18,7 @@ export default {
   component: LogoComponent
 } as ComponentMeta<LogoType>;
 
-const Template: ComponentStory<LogoType> = args => (
-  <ColumnJustified>
-    <LogoComponent {...args} />
-  </ColumnJustified>
-);
+const Template: ComponentStory<LogoType> = args => <LogoComponent {...args} />;
 
 /*
  * Stories.
