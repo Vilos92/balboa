@@ -1,5 +1,5 @@
 import {Placement} from '@popperjs/core';
-import {FC, MouseEventHandler, ReactNode, useEffect, useRef, useState} from 'react';
+import {FC, MouseEventHandler, ReactNode, useRef, useState} from 'react';
 import {usePopper} from 'react-popper';
 import tw, {styled} from 'twin.macro';
 
