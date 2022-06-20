@@ -2,7 +2,6 @@ import {ComponentMeta, ComponentStory} from '@storybook/react';
 import React from 'react';
 import tw from 'twin.macro';
 
-import {ColumnJustified} from '../../components/Commons';
 import {HoverTooltip as HoverTooltipComponent} from '../../components/popover/HoverTooltip';
 
 /*
@@ -15,8 +14,13 @@ type TooltipType = typeof HoverTooltipComponent;
  * Styles.
  */
 
+const StyledTemplateDiv = tw.div`
+  w-20
+`;
+
 const StyledAnchorDiv = tw.div`
   flex
+  justify-center
   items-center
 
   bg-gray-300
@@ -38,11 +42,11 @@ export default {
 } as ComponentMeta<TooltipType>;
 
 const Template: ComponentStory<TooltipType> = args => (
-  <ColumnJustified>
+  <StyledTemplateDiv>
     <HoverTooltipComponent {...args}>
       <StyledAnchorDiv>Anchor</StyledAnchorDiv>
     </HoverTooltipComponent>
-  </ColumnJustified>
+  </StyledTemplateDiv>
 );
 
 /*

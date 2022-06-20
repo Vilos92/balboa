@@ -1,7 +1,7 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
 import React from 'react';
+import tw from 'twin.macro';
 
-import {ColumnJustified} from '../../components/Commons';
 import {LoadingGrue as LoadingGrueComponent} from '../../components/LoadingGrue';
 
 /*
@@ -9,6 +9,14 @@ import {LoadingGrue as LoadingGrueComponent} from '../../components/LoadingGrue'
  */
 
 type LoadingGrueType = typeof LoadingGrueComponent;
+
+/*
+ * Styles.
+ */
+
+const StyledTemplateDiv = tw.div`
+  flex
+`;
 
 /*
  * Config.
@@ -20,9 +28,9 @@ export default {
 } as ComponentMeta<LoadingGrueType>;
 
 const Template: ComponentStory<LoadingGrueType> = args => (
-  <ColumnJustified>
+  <StyledTemplateDiv>
     <LoadingGrueComponent {...args} />
-  </ColumnJustified>
+  </StyledTemplateDiv>
 );
 
 /*
