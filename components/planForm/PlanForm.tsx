@@ -322,12 +322,7 @@ export const PlanForm: FC<PlanFormProps> = props => {
 const ColorInputWithTooltip: FC<ColorInputWithTooltipProps> = ({shouldShowColorHint, value, onChange}) => {
   const {isScreenSmall} = useMediaBreakpoint();
 
-  const [isTooltipVisible, setIsTooltipVisible] = useState(false);
-
-  // Set initial visibility after first render to avoid location flash.
-  useInitialEffect(() => {
-    setIsTooltipVisible(shouldShowColorHint);
-  });
+  const [isTooltipVisible, setIsTooltipVisible] = useState(shouldShowColorHint);
 
   const onChangeColor = (newColor: string) => {
     setIsTooltipVisible(false);

@@ -1,5 +1,5 @@
 import {Placement} from '@popperjs/core';
-import {FC, MouseEventHandler, ReactNode, useRef} from 'react';
+import {FC, MouseEventHandler, ReactNode, useEffect, useRef, useState} from 'react';
 import {usePopper} from 'react-popper';
 import tw, {styled} from 'twin.macro';
 
@@ -57,6 +57,11 @@ export const Popover: FC<PopoverProps> = props => {
     placement
   });
 
+  const [isVisibleLocal, setIsVisibleLocal] = useState(false);
+  useEffect(() => {
+    setIsVisibleLocal(isVisible);
+  }, [isVisible]);
+
   return (
     <>
       <span ref={containerRef} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
@@ -67,7 +72,7 @@ export const Popover: FC<PopoverProps> = props => {
         ref={popperRef}
         style={styles.popper}
         {...attributes.popper}
-        $isVisible={isVisible}
+        $isVisible={isVisibleLocal}
         onClick={onClick}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}

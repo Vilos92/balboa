@@ -16,9 +16,12 @@ type TooltipType = typeof TooltipComponent;
  */
 
 const StyledAnchorDiv = tw.div`
+  flex
+  items-center
+
   bg-gray-300
-  w-16
-  h-16
+  p-3
+  rounded-lg
 `;
 
 /*
@@ -38,7 +41,7 @@ export default {
 const Template: ComponentStory<TooltipType> = args => (
   <ColumnJustified>
     <TooltipComponent {...args}>
-      <StyledAnchorDiv>Tooltip Anchor</StyledAnchorDiv>
+      <StyledAnchorDiv>Anchor</StyledAnchorDiv>
     </TooltipComponent>
   </ColumnJustified>
 );
