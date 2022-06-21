@@ -1,6 +1,6 @@
 import {ComponentMeta, ComponentStory} from '@storybook/react';
 import React from 'react';
-import tw from 'twin.macro';
+import tw, {styled} from 'twin.macro';
 
 import {Card as CardComponent} from '../../components/Card';
 
@@ -11,18 +11,25 @@ import {Card as CardComponent} from '../../components/Card';
 type CardType = typeof CardComponent;
 
 /*
+ * Constants.
+ */
+
+const text =
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.';
+
+/*
  * Styles.
  */
 
 const StyledBackgroundDiv = tw.div`
   bg-black
-  w-60
+  inline-flex
   p-4
 `;
 
-const StyledCard = tw(CardComponent)`
-  w-52
-  h-52
+const StyledCard = styled(CardComponent)`
+  width: 240px;
+  min-height: 240px;
 `;
 
 /*
@@ -30,7 +37,7 @@ const StyledCard = tw(CardComponent)`
  */
 
 export default {
-  title: 'Components/Common',
+  title: 'Components/Common/Card',
   component: CardComponent
 } as ComponentMeta<CardType>;
 
@@ -44,9 +51,9 @@ const Template: ComponentStory<CardType> = args => (
  * Stories.
  */
 
-export const Card = Template.bind({});
+export const Standard = Template.bind({});
 
-export const CardWithContent = Template.bind({});
-CardWithContent.args = {
-  children: <div>Hello</div>
+export const Content = Template.bind({});
+Content.args = {
+  children: text
 };

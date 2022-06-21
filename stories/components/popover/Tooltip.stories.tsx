@@ -2,7 +2,7 @@ import {ComponentMeta, ComponentStory} from '@storybook/react';
 import React from 'react';
 import tw from 'twin.macro';
 
-import {Tooltip as TooltipComponent} from '../../components/popover/Tooltip';
+import {Tooltip as TooltipComponent} from '../../../components/popover/Tooltip';
 
 /*
  * Types.

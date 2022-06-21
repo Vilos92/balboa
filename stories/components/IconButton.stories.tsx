@@ -21,7 +21,7 @@ const computeTransform = (hasHover: boolean) => {
 };
 
 export default {
-  title: 'Components/Button',
+  title: 'Components/Button/IconButton',
   component: IconButtonComponent,
   args: {
     iconType: IconTypesEnum.ADD_CIRCLE,
@@ -37,9 +37,9 @@ const Template: ComponentStory<IconButtonType> = args => (
  * Stories.
  */
 
-export const IconButton = Template.bind({});
+export const Standard = Template.bind({});
 
-export const IconButtonWithAnimation = Template.bind({});
-IconButtonWithAnimation.args = {
+export const Animated = Template.bind({});
+Animated.args = {
   computeTransform
 };
