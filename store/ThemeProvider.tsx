@@ -6,7 +6,7 @@ import {ThemesEnum, getInitialTheme, rawSetTheme} from '../utils/theme';
  * Types.
  */
 
-type ThemeProviderProps = PropsWithChildren;
+type ThemeProviderProps = PropsWithChildren<unknown>;
 
 interface ThemeContextState {
   theme: ThemesEnum;
