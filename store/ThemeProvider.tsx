@@ -1,6 +1,12 @@
-import React, {FC, useContext, useEffect, useState} from 'react';
+import React, {FC, PropsWithChildren, useContext, useEffect, useState} from 'react';
 
 import {ThemesEnum, getInitialTheme, rawSetTheme} from '../utils/theme';
+
+/*
+ * Types.
+ */
+
+type ThemeProviderProps = PropsWithChildren;
 
 interface ThemeContextState {
   theme: ThemesEnum;
@@ -20,7 +26,7 @@ const ThemeContext = React.createContext<ThemeContextState>({
  * Provider.
  */
 
-export const ThemeProvider: FC = ({children}) => {
+export const ThemeProvider: FC<ThemeProviderProps> = ({children}) => {
   const [theme, setTheme] = useState<ThemesEnum>(getInitialTheme);
 
   useEffect(() => {

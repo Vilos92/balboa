@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, PropsWithChildren} from 'react';
 import tw from 'twin.macro';
 
 import {Handler} from '../types/common';
@@ -8,7 +8,7 @@ import {useClickWindow} from '../utils/hooks';
  * Types.
  */
 
-interface ModalProps {
+interface ModalProps extends PropsWithChildren<unknown> {
   className?: string;
   closeModal: Handler;
 }

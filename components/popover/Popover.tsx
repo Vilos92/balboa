@@ -1,5 +1,5 @@
 import {Placement} from '@popperjs/core';
-import {FC, MouseEventHandler, ReactNode, useRef, useState} from 'react';
+import {FC, MouseEventHandler, PropsWithChildren, ReactNode, useRef, useState} from 'react';
 import {usePopper} from 'react-popper';
 import tw, {styled} from 'twin.macro';
 
@@ -12,7 +12,7 @@ import {useInitialEffect} from '../../utils/hooks';
 
 type PopoverPlacement = Placement;
 
-export interface PopoverProps {
+export interface PopoverProps extends PropsWithChildren<unknown> {
   popoverChildren: ReactNode;
   isVisible: boolean;
   placement?: PopoverPlacement;

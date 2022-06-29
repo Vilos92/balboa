@@ -1,5 +1,13 @@
-import {FC} from 'react';
+import {FC, PropsWithChildren} from 'react';
 import tw from 'twin.macro';
+
+/*
+ * Types.
+ */
+
+type ColumnJustifiedProps = PropsWithChildren<unknown>;
+
+type ColumnHorizontalCenteredProps = PropsWithChildren<unknown>;
 
 /*
  * Styles.
@@ -35,10 +43,10 @@ const StyledColumnHorizontalCenteredDiv = tw.div`
  * Components.
  */
 
-export const ColumnJustified: FC = ({children}) => (
+export const ColumnJustified: FC<ColumnJustifiedProps> = ({children}) => (
   <StyledColumnJustifiedDiv>{children}</StyledColumnJustifiedDiv>
 );
 
-export const ColumnHorizontalCentered: FC = ({children}) => (
+export const ColumnHorizontalCentered: FC<ColumnHorizontalCenteredProps> = ({children}) => (
   <StyledColumnHorizontalCenteredDiv>{children}</StyledColumnHorizontalCenteredDiv>
 );

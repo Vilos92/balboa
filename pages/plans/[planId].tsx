@@ -1,6 +1,6 @@
 import {GetServerSideProps} from 'next';
 import {useRouter} from 'next/router';
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, PropsWithChildren, useEffect, useState} from 'react';
 import {animated, useSpring} from 'react-spring';
 import {KeyedMutator, SWRConfig} from 'swr';
 import tw, {TwStyle, css, styled, theme} from 'twin.macro';
@@ -74,7 +74,7 @@ interface PlanPageProps {
   planId: string;
 }
 
-interface AnimatedHeightProps {
+interface AnimatedHeightProps extends PropsWithChildren<unknown> {
   defaultHeight: number;
 }
 
