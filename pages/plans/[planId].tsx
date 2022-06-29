@@ -381,6 +381,7 @@ export const getServerSideProps: GetServerSideProps<PlanPageContainerProps> = as
  */
 
 const PlanPageContainer: FC<PlanPageContainerProps> = ({providers, fallback, planId}) => (
+  // @ts-ignore: SWRConfig missing children type def.
   <SWRConfig value={{fallback}}>
     <PlanPage providers={providers} planId={planId} />
   </SWRConfig>
