@@ -1,15 +1,14 @@
 import {GetStaticProps, NextPage} from 'next';
 import {useRouter} from 'next/router';
-import {FC, useState} from 'react';
+import {useState} from 'react';
 import tw from 'twin.macro';
 
-import {ChromelessButton} from '../components/ChromelessButton';
 import {ColumnHorizontalCentered} from '../components/Commons';
 import {Header} from '../components/Header';
-import {Icon, IconTypesEnum} from '../components/Icon';
+import {IconTypesEnum} from '../components/Icon';
+import {LandingButton} from '../components/LandingButton';
 import {LoginModal} from '../components/LoginModal';
 import {SearchEngineOptimizer} from '../components/SearchEngineOptimizer';
-import {Handler} from '../types/common';
 import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '../utils/auth';
 
 /*
@@ -18,12 +17,6 @@ import {Providers, SessionStatusesEnum, getAuthProviders, useAuthSession} from '
 
 interface LandingPageProps {
   providers: Providers;
-}
-
-interface LandingButtonProps {
-  text: string;
-  iconType: IconTypesEnum;
-  onClick: Handler;
 }
 
 /*
@@ -44,38 +37,6 @@ const StyledButtonContainerDiv = tw.div`
 
   sm:mt-8
   sm:mb-8
-`;
-
-const StyledButtonDiv = tw(ChromelessButton)`
-  flex
-  justify-center
-  items-center
-  
-  h-24
-  w-40
-  sm:h-32
-  sm:w-48
-
-  p-3
-  rounded-2xl
-
-  bg-white
-  shadow-xl
-  hover:bg-purple-100
-`;
-
-const StyledButtonContentDiv = tw.div`
-  w-28
-
-  flex
-  flex-row
-  items-center
-  justify-evenly
-  gap-1.5
-
-  text-black
-  text-left
-  text-xl
 `;
 
 /*
@@ -130,15 +91,3 @@ const LandingPage: NextPage<LandingPageProps> = ({providers}) => {
 };
 
 export default LandingPage;
-
-/*
- * Components.
- */
-
-const LandingButton: FC<LandingButtonProps> = ({text, iconType, onClick}) => (
-  <StyledButtonDiv onClick={onClick}>
-    <StyledButtonContentDiv>
-      <span>{text}</span> <Icon type={iconType} size={32} />
-    </StyledButtonContentDiv>
-  </StyledButtonDiv>
-);
